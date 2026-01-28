@@ -1,46 +1,100 @@
-<!-- Firebase compat SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>NOVA Chat</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
+    header {
+      padding: 12px;
+      background: #020617;
+      text-align: center;
+      font-weight: bold;
+    }
 
-    // Firebase config
-    var firebaseConfig = {
-      apiKey: "AIzaSyDybhWHcf85KDoBYdFWYIPCH0df3oKy7vU",
-      authDomain: "nova-chat-408a2.firebaseapp.com",
-      databaseURL: "https://nova-chat-408a2-default-rtdb.firebaseio.com",
-      projectId: "nova-chat-408a2",
-      storageBucket: "nova-chat-408a2.firebasestorage.app",
-      messagingSenderId: "481208222196",
-      appId: "1:481208222196:web:40a1c47adb6dd3ec77f9a1"
-    };
+    #messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
 
-    // Init Firebase
-    firebase.initializeApp(firebaseConfig);
-    var database = firebase.database();
-    var messagesRef = database.ref("messages");
+    .msg {
+      background: #1e293b;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
 
-    var input = document.getElementById("input");
-    var messages = document.getElementById("messages");
+    footer {
+      display: flex;
+      padding: 10px;
+      background: #020617;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+    }
+
+    button {
+      margin-left: 8px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #38bdf8;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>NOVA</header>
+
+  <div id="messages"></div>
+
+  <footer>
+    <input id="input" placeholder="پیام بنویس..." />
+    <button onclick="send()">ارسال</button>
+  </footer>
+
+  <script>
+    const input = document.getElementById("input");
+    const messages = document.getElementById("messages");
 
     function send() {
       if (!input.value.trim()) return;
-      messagesRef.push({ text: input.value });
+
+      const div = document.createElement("div");
+      div.className = "msg";
+      div.innerText = input.value;
+
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
       input.value = "";
     }
 
     input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") send();
+      if (e.key === "Enter") {
+        send();
+      }
     });
+  </script>
 
-    messagesRef.limitToLast(50).on("child_added", function (snapshot) {
-      var div = document.createElement("div");
-      div.className = "msg";
-      div.innerText = snapshot.val().text;
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-    });
-
-  });
-</script>
+</body>
+</html>
