@@ -1,89 +1,41 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-  <meta charset="UTF-8">
-  <title>NOVA Chat</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background: #1e293b;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    #messages {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-    }
-    .msg {
-      background: #334155;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      max-width: 70%;
-    }
-    footer {
-      display: flex;
-      padding: 10px;
-      background: #1e293b;
-    }
-    input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-    }
-    button {
-      margin-left: 10px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      background: #38bdf8;
-      cursor: pointer;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-<header>NOVA 💬</header>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDybhWHcf85KDoBYdFWYIPCH0df3oKy7vU",
+    authDomain: "nova-chat-408a2.firebaseapp.com",
+    databaseURL: "https://nova-chat-408a2-default-rtdb.firebaseio.com",
+    projectId: "nova-chat-408a2",
+    storageBucket: "nova-chat-408a2.firebasestorage.app",
+    messagingSenderId: "481208222196",
+    appId: "1:481208222196:web:40a1c47adb6dd3ec77f9a1"
+  };
 
-<div id="messages"></div>
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messagesRef = ref(db, "messages");
 
-<footer>
-  <input id="input" placeholder="پیام بنویس…" />
-  <button onclick="send()">ارسال</button>
-</footer>
-
-<script>
   const input = document.getElementById("input");
   const messages = document.getElementById("messages");
 
   function send() {
-    if (input.value.trim() === "") return;
-    const div = document.createElement("div");
-    div.className = "msg";
-    div.innerText = input.value;
-    messages.appendChild(div);
+    if (!input.value.trim()) return;
+    push(messagesRef, { text: input.value });
     input.value = "";
-    messages.scrollTop = messages.scrollHeight;
   }
+
+  window.send = send;
 
   input.addEventListener("keydown", e => {
     if (e.key === "Enter") send();
   });
-</script>
 
-</body>
-</html>
+  onChildAdded(messagesRef, snap => {
+    const div = document.createElement("div");
+    div.className = "msg";
+    div.innerText = snap.val().text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  });
+</script>
