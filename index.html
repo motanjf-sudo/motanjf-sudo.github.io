@@ -7,63 +7,85 @@
 
 <style>
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: sans-serif;
   background: #0f172a;
   color: white;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.container {
+.app {
   width: 100%;
-  max-width: 500px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  max-width: 420px;
+  background: #020617;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
-header {
-  background: #020617;
-  padding: 12px;
+/* ---------- AUTH ---------- */
+.auth {
+  padding: 20px;
+}
+
+.auth h2 {
   text-align: center;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  background: #1e293b;
+}
+
+.tab.active {
+  background: #38bdf8;
+  color: black;
   font-weight: bold;
 }
 
-.screen {
-  display: none;
-  flex: 1;
-  flex-direction: column;
-}
-
-.screen.active {
-  display: flex;
-}
-
 .form {
-  padding: 20px;
+  display: none;
+}
+
+.form.active {
+  display: block;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
   border-radius: 6px;
   border: none;
   outline: none;
 }
 
-button {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background: #38bdf8;
+/* ---------- CHAT ---------- */
+.chat {
+  display: none;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+}
+
+header {
+  padding: 12px;
+  background: #020617;
+  text-align: center;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 #messages {
@@ -75,8 +97,9 @@ button {
 .msg {
   background: #1e293b;
   padding: 8px;
-  margin-bottom: 8px;
   border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .time {
@@ -92,44 +115,60 @@ footer {
 
 footer input {
   flex: 1;
-  margin-right: 6px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: #38bdf8;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.send-btn {
+  width: auto;
+  margin-left: 6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<!-- SIGN UP -->
-<div id="signup" class="screen active">
-  <header>NOVA – Sign up</header>
-  <div class="form">
+<!-- AUTH -->
+<div class="auth" id="auth">
+  <h2>NOVA</h2>
+
+  <div class="tabs">
+    <div class="tab active" id="tabSignup" onclick="showSignup()">Sign up</div>
+    <div class="tab" id="tabLogin" onclick="showLogin()">Login</div>
+  </div>
+
+  <!-- SIGN UP -->
+  <div class="form active" id="signupForm">
     <input id="suUser" placeholder="Username">
     <input id="suPass" type="password" placeholder="Password">
     <button onclick="signup()">Create account</button>
-    <button onclick="showLogin()">Already have an account?</button>
   </div>
-</div>
 
-<!-- LOGIN -->
-<div id="login" class="screen">
-  <header>NOVA – Login</header>
-  <div class="form">
+  <!-- LOGIN -->
+  <div class="form" id="loginForm">
     <input id="liUser" placeholder="Username">
     <input id="liPass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
-    <button onclick="showSignup()">New user? Sign up</button>
   </div>
 </div>
 
 <!-- CHAT -->
-<div id="chat" class="screen">
+<div class="chat" id="chat">
   <header>NOVA Chat</header>
   <div id="messages"></div>
   <footer>
     <input id="input" placeholder="پیام بنویس..." />
-    <button onclick="send()">ارسال</button>
+    <button class="send-btn" onclick="send()">ارسال</button>
   </footer>
 </div>
 
@@ -155,17 +194,22 @@ const db = firebase.database();
 
 let currentUser = "";
 
-// navigation
-function showLogin() {
-  signup.classList.remove("active");
-  login.classList.add("active");
-}
+/* ---------- UI ---------- */
 function showSignup() {
-  login.classList.remove("active");
-  signup.classList.add("active");
+  tabSignup.classList.add("active");
+  tabLogin.classList.remove("active");
+  signupForm.classList.add("active");
+  loginForm.classList.remove("active");
 }
 
-// SIGN UP
+function showLogin() {
+  tabLogin.classList.add("active");
+  tabSignup.classList.remove("active");
+  loginForm.classList.add("active");
+  signupForm.classList.remove("active");
+}
+
+/* ---------- AUTH ---------- */
 function signup() {
   const u = suUser.value.trim();
   const p = suPass.value.trim();
@@ -181,7 +225,6 @@ function signup() {
   });
 }
 
-// LOGIN
 function login() {
   const u = liUser.value.trim();
   const p = liPass.value.trim();
@@ -189,7 +232,7 @@ function login() {
 
   db.ref("users/" + u).once("value", snap => {
     if (!snap.exists()) {
-      alert("کاربری با این نام وجود ندارد");
+      alert("کاربر وجود ندارد");
     } else if (snap.val().password !== p) {
       alert("رمز اشتباه است");
     } else {
@@ -198,12 +241,11 @@ function login() {
   });
 }
 
-// ENTER CHAT
+/* ---------- CHAT ---------- */
 function enterChat(u) {
   currentUser = u;
-  signup.classList.remove("active");
-  login.classList.remove("active");
-  chat.classList.add("active");
+  auth.style.display = "none";
+  chat.style.display = "flex";
 
   db.ref("messages").limitToLast(50).on("child_added", snap => {
     const m = snap.val();
@@ -215,12 +257,11 @@ function enterChat(u) {
   });
 }
 
-// SEND MESSAGE
 function send() {
   if (!input.value.trim()) return;
 
   const now = new Date();
-  const time = now.getHours() + ":" + String(now.getMinutes()).padStart(2,"0");
+  const time = now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0");
 
   db.ref("messages").push({
     user: currentUser,
@@ -231,7 +272,6 @@ function send() {
   input.value = "";
 }
 
-// ENTER KEY
 input.addEventListener("keydown", e => {
   if (e.key === "Enter") send();
 });
