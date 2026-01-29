@@ -12,12 +12,33 @@ body{
   font-family:system-ui,-apple-system;
   background:#e5ddd5;
 }
+
+/* -------- LOGIN -------- */
+.login{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.login-box{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  width:280px;
+}
+.login-box input, .login-box button{
+  width:100%;
+  margin-bottom:10px;
+  padding:10px;
+}
+
+/* -------- APP -------- */
 .app{
   max-width:420px;
   height:100vh;
   margin:auto;
   background:#fff;
-  display:flex;
+  display:none;
   flex-direction:column;
 }
 
@@ -27,37 +48,39 @@ header{
   color:white;
   padding:14px;
   text-align:center;
-  font-size:18px;
   font-weight:600;
 }
 
-/* CHAT LIST */
-.chat-list{
+/* MAIN */
+.main{
   flex:1;
+  display:flex;
+}
+
+/* GROUP LIST */
+.groups{
+  width:120px;
+  background:#f0f0f0;
+  padding:6px;
   overflow-y:auto;
 }
-.chat-item{
-  display:flex;
-  padding:12px;
-  border-bottom:1px solid #eee;
-  cursor:pointer;
+.groups button{
+  width:100%;
+  margin-bottom:6px;
+  padding:6px;
+  border:none;
+  background:#ddd;
 }
-.chat-item:hover{background:#f5f5f5}
-.avatar{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:#bbb;
-  margin-left:10px;
+.groups small{
+  display:block;
+  text-align:center;
+  opacity:.6;
 }
-.chat-info{flex:1}
-.chat-name{font-weight:600}
-.chat-preview{font-size:13px;color:#555}
 
 /* CHAT */
 .chat{
-  display:none;
   flex:1;
+  display:flex;
   flex-direction:column;
   background:#e5ddd5;
 }
@@ -68,130 +91,188 @@ header{
 }
 .msg{
   max-width:75%;
-  margin-bottom:8px;
-  padding:8px 10px;
-  border-radius:7px;
-  font-size:14px;
-  word-wrap:break-word;
+  background:#fff;
+  padding:8px;
+  border-radius:6px;
+  margin-bottom:6px;
+  position:relative;
 }
 .me{
   background:#dcf8c6;
   margin-left:auto;
 }
-.other{background:#fff}
-.time{
-  font-size:11px;
-  opacity:.5;
-  text-align:right;
+.msg button{
+  position:absolute;
+  top:4px;
+  right:4px;
+  border:none;
+  background:none;
+  cursor:pointer;
 }
 
 /* INPUT */
 .input-bar{
   display:flex;
-  padding:8px;
+  padding:6px;
   background:#f0f0f0;
 }
 .input-bar textarea{
   flex:1;
   resize:none;
-  border:none;
-  border-radius:20px;
-  padding:10px;
-  outline:none;
-  height:40px;
+  padding:8px;
 }
 .input-bar button{
-  margin-right:6px;
-  border:none;
-  background:#075e54;
-  color:white;
-  width:40px;
-  border-radius:50%;
-  font-size:18px;
+  margin-left:6px;
+  padding:8px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .main{flex-direction:column}
+  .groups{width:100%;display:flex;overflow-x:auto}
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="login-box">
+    <h3>NovaChat</h3>
+    <input id="user" placeholder="Username">
+    <input id="pass" type="password" placeholder="Password">
+    <button onclick="auth()">Login / Sign up</button>
+  </div>
+</div>
 
-<header id="title">NovaChat</header>
+<!-- APP -->
+<div class="app" id="app">
+  <header id="title">NovaChat</header>
 
-<!-- CHAT LIST -->
-<div class="chat-list" id="list">
-  <div class="chat-item" onclick="openChat('Family Group')">
-    <div class="avatar"></div>
-    <div class="chat-info">
-      <div class="chat-name">Family Group</div>
-      <div class="chat-preview">آخرین پیام…</div>
+  <div class="main">
+
+    <!-- GROUPS -->
+    <div class="groups">
+      <button onclick="createGroup()">+ Group</button>
+      <button onclick="joinGroup()">Join</button>
+      <div id="groupList"></div>
+      <small id="noGroup">No groups</small>
     </div>
+
+    <!-- CHAT -->
+    <div class="chat">
+      <div class="messages" id="messages"></div>
+      <div class="input-bar">
+        <textarea id="input" placeholder="Message..."></textarea>
+        <button onclick="send()">➤</button>
+      </div>
+    </div>
+
   </div>
-</div>
-
-<!-- CHAT -->
-<div class="chat" id="chat">
-  <div class="messages" id="messages"></div>
-
-  <div class="input-bar">
-    <textarea id="input" placeholder="پیام بنویس…"></textarea>
-    <button onclick="send()">➤</button>
-  </div>
-</div>
-
 </div>
 
 <script>
-let currentChat="";
-const username="You";
+let currentUser="";
+let currentGroup="";
 
-/* OPEN CHAT */
-function openChat(name){
-  currentChat=name;
-  title.innerText=name;
-  list.style.display="none";
-  chat.style.display="flex";
+function auth(){
+  if(!user.value||!pass.value)return;
+  const users=JSON.parse(localStorage.users||"{}");
+  if(!users[user.value]){
+    users[user.value]=pass.value;
+    localStorage.users=JSON.stringify(users);
+  }
+  if(users[user.value]!==pass.value){
+    alert("Wrong password");return;
+  }
+  currentUser=user.value;
+  login.style.display="none";
+  app.style.display="flex";
+  loadGroups();
+}
+
+function loadGroups(){
+  groupList.innerHTML="";
+  const groups=JSON.parse(localStorage.groups||"{}");
+  let has=false;
+  for(let g in groups){
+    if(groups[g].members.includes(currentUser)){
+      const b=document.createElement("button");
+      b.textContent=g;
+      b.onclick=()=>openGroup(g);
+      groupList.appendChild(b);
+      has=true;
+    }
+  }
+  noGroup.style.display=has?"none":"block";
+}
+
+function createGroup(){
+  const name=prompt("Group name");
+  const pass=prompt("Password (min 5)");
+  if(!name||!pass||pass.length<5)return;
+  const groups=JSON.parse(localStorage.groups||"{}");
+  groups[name]={pass, members:[currentUser], messages:[]};
+  localStorage.groups=JSON.stringify(groups);
+  loadGroups();
+}
+
+function joinGroup(){
+  const name=prompt("Group name");
+  const pass=prompt("Password");
+  const groups=JSON.parse(localStorage.groups||"{}");
+  if(!groups[name]||groups[name].pass!==pass){
+    alert("Wrong");return;
+  }
+  if(!groups[name].members.includes(currentUser)){
+    groups[name].members.push(currentUser);
+    localStorage.groups=JSON.stringify(groups);
+  }
+  loadGroups();
+}
+
+function openGroup(g){
+  currentGroup=g;
+  title.textContent=g;
   messages.innerHTML="";
-  load();
+  const groups=JSON.parse(localStorage.groups||"{}");
+  groups[g].messages.forEach(showMsg);
 }
 
-/* SEND MESSAGE */
 function send(){
-  const text=input.value.trim();
-  if(!text)return;
-
-  const time=new Date().toLocaleTimeString([],{
-    hour:"2-digit",minute:"2-digit"
-  });
-
-  const msg={user:username,text,time};
-  const data=JSON.parse(localStorage.getItem(currentChat)||"[]");
-  data.push(msg);
-  localStorage.setItem(currentChat,JSON.stringify(data));
+  if(!input.value||!currentGroup)return;
+  const groups=JSON.parse(localStorage.groups||"{}");
+  const m={
+    user:currentUser,
+    text:input.value,
+    time:new Date().toLocaleTimeString([],{
+      hour:"2-digit",minute:"2-digit"
+    })
+  };
+  groups[currentGroup].messages.push(m);
+  localStorage.groups=JSON.stringify(groups);
   input.value="";
-  show(msg);
+  showMsg(m);
 }
 
-/* SHOW MESSAGE */
-function show(m){
+function showMsg(m){
   const d=document.createElement("div");
-  d.className="msg me";
-  d.innerHTML=`${m.text}<div class="time">${m.time}</div>`;
+  d.className="msg"+(m.user===currentUser?" me":"");
+  d.innerHTML=`<b>${m.user}</b>: ${m.text}<br><small>${m.time}</small>`;
+  if(m.user===currentUser){
+    const del=document.createElement("button");
+    del.textContent="🗑️";
+    del.onclick=()=>{d.remove()};
+    d.appendChild(del);
+  }
   messages.appendChild(d);
   messages.scrollTop=messages.scrollHeight;
 }
 
-/* LOAD */
-function load(){
-  const data=JSON.parse(localStorage.getItem(currentChat)||"[]");
-  data.forEach(show);
-}
-
-/* ENTER TO SEND */
 input.addEventListener("keydown",e=>{
-  if(e.key==="Enter" && !e.shiftKey){
-    e.preventDefault();
-    send();
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();send();
   }
 });
 </script>
