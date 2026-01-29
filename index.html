@@ -10,7 +10,7 @@
 body{
   margin:0;
   font-family:system-ui,-apple-system;
-  background:#0f172a;
+  background:#e5f0ee;
 }
 
 /* -------- LOGIN -------- */
@@ -21,8 +21,8 @@ body{
   align-items:center;
 }
 .login-box{
-  background:#020617;
-  color:white;
+  background:#ffffff;
+  color:#111;
   padding:20px;
   border-radius:10px;
   width:280px;
@@ -35,17 +35,17 @@ body{
 
 /* -------- APP -------- */
 .app{
-  max-width:420px;
+  max-width:520px; /* کمی عریض‌تر */
   height:100vh;
   margin:auto;
-  background:#020617;
+  background:#ffffff;
   display:none;
   flex-direction:column;
 }
 
 /* HEADER */
 header{
-  background:#022c22;
+  background:#0f766e;
   color:white;
   padding:14px;
   text-align:center;
@@ -60,8 +60,8 @@ header{
 
 /* GROUP LIST */
 .groups{
-  width:120px;
-  background:#020617;
+  width:130px;
+  background:#f1f5f9;
   padding:6px;
   overflow-y:auto;
 }
@@ -70,8 +70,7 @@ header{
   margin-bottom:6px;
   padding:6px;
   border:none;
-  background:#134e4a;
-  color:white;
+  background:#99f6e4;
   border-radius:6px;
 }
 .groups small{
@@ -85,7 +84,7 @@ header{
   flex:1;
   display:flex;
   flex-direction:column;
-  background:linear-gradient(#022c22,#020617);
+  background:#f0fdfa;
 }
 .messages{
   flex:1;
@@ -93,16 +92,17 @@ header{
   overflow-y:auto;
 }
 .msg{
-  max-width:75%;
-  padding:8px;
-  border-radius:8px;
-  margin-bottom:6px;
+  max-width:80%;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:8px;
   position:relative;
-  color:white;
+  background:#ffffff;
+  word-wrap:break-word;
+  white-space:pre-wrap; /* مهم برای متن طولانی */
 }
 .me{
-  background:#22c55e;
-  color:black;
+  background:#ccfbf1;
   margin-left:auto;
 }
 .msg button{
@@ -119,7 +119,7 @@ header{
   display:flex;
   flex-direction:column;
   padding:6px;
-  background:#020617;
+  background:#ecfeff;
 }
 .emoji-bar{
   padding:4px;
@@ -135,8 +135,10 @@ header{
 .input-row textarea{
   flex:1;
   resize:none;
-  padding:8px;
-  border-radius:6px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  min-height:40px;
 }
 .input-row button{
   margin-left:6px;
