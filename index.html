@@ -10,7 +10,7 @@
 body{
   margin:0;
   font-family:system-ui,-apple-system;
-  background:#e5ddd5;
+  background:#0f172a;
 }
 
 /* -------- LOGIN -------- */
@@ -21,7 +21,8 @@ body{
   align-items:center;
 }
 .login-box{
-  background:#fff;
+  background:#020617;
+  color:white;
   padding:20px;
   border-radius:10px;
   width:280px;
@@ -37,14 +38,14 @@ body{
   max-width:420px;
   height:100vh;
   margin:auto;
-  background:#fff;
+  background:#020617;
   display:none;
   flex-direction:column;
 }
 
 /* HEADER */
 header{
-  background:#075e54;
+  background:#022c22;
   color:white;
   padding:14px;
   text-align:center;
@@ -60,7 +61,7 @@ header{
 /* GROUP LIST */
 .groups{
   width:120px;
-  background:#f0f0f0;
+  background:#020617;
   padding:6px;
   overflow-y:auto;
 }
@@ -69,7 +70,9 @@ header{
   margin-bottom:6px;
   padding:6px;
   border:none;
-  background:#ddd;
+  background:#134e4a;
+  color:white;
+  border-radius:6px;
 }
 .groups small{
   display:block;
@@ -82,7 +85,7 @@ header{
   flex:1;
   display:flex;
   flex-direction:column;
-  background:#e5ddd5;
+  background:linear-gradient(#022c22,#020617);
 }
 .messages{
   flex:1;
@@ -91,20 +94,21 @@ header{
 }
 .msg{
   max-width:75%;
-  background:#fff;
   padding:8px;
-  border-radius:6px;
+  border-radius:8px;
   margin-bottom:6px;
   position:relative;
+  color:white;
 }
 .me{
-  background:#dcf8c6;
+  background:#22c55e;
+  color:black;
   margin-left:auto;
 }
 .msg button{
   position:absolute;
   top:4px;
-  right:4px;
+  right:6px;
   border:none;
   background:none;
   cursor:pointer;
@@ -113,15 +117,28 @@ header{
 /* INPUT */
 .input-bar{
   display:flex;
+  flex-direction:column;
   padding:6px;
-  background:#f0f0f0;
+  background:#020617;
 }
-.input-bar textarea{
+.emoji-bar{
+  padding:4px;
+}
+.emoji-bar span{
+  font-size:20px;
+  margin-right:6px;
+  cursor:pointer;
+}
+.input-row{
+  display:flex;
+}
+.input-row textarea{
   flex:1;
   resize:none;
   padding:8px;
+  border-radius:6px;
 }
-.input-bar button{
+.input-row button{
   margin-left:6px;
   padding:8px;
 }
@@ -163,9 +180,19 @@ header{
     <!-- CHAT -->
     <div class="chat">
       <div class="messages" id="messages"></div>
+
       <div class="input-bar">
-        <textarea id="input" placeholder="Message..."></textarea>
-        <button onclick="send()">➤</button>
+        <div class="emoji-bar">
+          <span onclick="addEmoji('😀')">😀</span>
+          <span onclick="addEmoji('😂')">😂</span>
+          <span onclick="addEmoji('❤️')">❤️</span>
+          <span onclick="addEmoji('🔥')">🔥</span>
+          <span onclick="addEmoji('👍')">👍</span>
+        </div>
+        <div class="input-row">
+          <textarea id="input" placeholder="Message..."></textarea>
+          <button onclick="send()">➤</button>
+        </div>
       </div>
     </div>
 
@@ -268,6 +295,11 @@ function showMsg(m){
   }
   messages.appendChild(d);
   messages.scrollTop=messages.scrollHeight;
+}
+
+function addEmoji(e){
+  input.value+=e;
+  input.focus();
 }
 
 input.addEventListener("keydown",e=>{
