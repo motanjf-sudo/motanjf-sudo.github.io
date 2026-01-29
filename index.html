@@ -40,7 +40,7 @@ input,button{
   margin-bottom:10px;
 }
 button{background:#38bdf8;font-weight:bold}
-.list button{margin-bottom:6px}
+.list button{margin-bottom:6px;width:100%}
 #messages{flex:1;padding:10px;overflow-y:auto}
 .msg{
   background:#1e293b;
@@ -56,7 +56,6 @@ button{background:#38bdf8;font-weight:bold}
   right:6px;
   cursor:pointer;
   display:none;
-  font-size:14px;
 }
 .time{font-size:11px;opacity:.6}
 footer{display:flex;padding:10px}
@@ -68,9 +67,9 @@ footer input{flex:1;margin-right:6px}
 
 <div class="app">
 
-<!-- AUTH -->
+<!-- LOGIN / SIGNUP -->
 <div id="auth" class="screen active">
-<header>NOVA – Login</header>
+<header>NOVA – Login / Sign up</header>
 <div style="padding:20px">
 <input id="user" placeholder="Username">
 <input id="pass" type="password" placeholder="Password">
@@ -102,6 +101,7 @@ footer input{flex:1;margin-right:6px}
 
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -120,13 +120,13 @@ let currentUser="",currentGroup="",msgRef=null;
 // LOGIN
 function login(){
   currentUser=user.value.trim();
-  if(!currentUser)return;
+  if(!currentUser)return alert("Username را وارد کن");
   auth.classList.remove("active");
   groups.classList.add("active");
   loadGroups();
 }
 
-// GROUPS
+// LOAD GROUPS
 function loadGroups(){
   groupList.innerHTML="";
   db.ref("groups").on("child_added",snap=>{
@@ -138,15 +138,18 @@ function loadGroups(){
   });
 }
 
+// CREATE GROUP
 function createGroup(){
   if(!gname.value||!gpass.value)return;
   db.ref("groups/"+gname.value).set({
     password:gpass.value,
     owner:currentUser
   });
-  gname.value=gpass.value="";
+  gname.value="";
+  gpass.value="";
 }
 
+// JOIN GROUP
 function joinGroup(name){
   const p=prompt("Group password:");
   db.ref("groups/"+name).once("value",snap=>{
@@ -171,14 +174,16 @@ function enterChat(group){
     const m=snap.val();
     const div=document.createElement("div");
     div.className="msg";
-    div.innerHTML=`<b>${m.user}</b>: ${m.text}
-    <span class="del" onclick="delMsg('${snap.key}','${m.user}')">🗑️</span>
-    <div class="time">${m.time}</div>`;
+    div.innerHTML=`
+      <b>${m.user}</b>: ${m.text}
+      <span class="del" onclick="delMsg('${snap.key}','${m.user}')">🗑️</span>
+      <div class="time">${m.time}</div>`;
     messages.appendChild(div);
     messages.scrollTop=messages.scrollHeight;
   });
 }
 
+// SEND
 function send(){
   if(!input.value)return;
   const t=new Date();
@@ -190,11 +195,13 @@ function send(){
   input.value="";
 }
 
+// DELETE MESSAGE
 function delMsg(id,user){
-  if(user!==currentUser)return alert("Only owner can delete");
+  if(user!==currentUser)return alert("فقط صاحب پیام می‌تواند حذف کند");
   msgRef.child(id).remove();
 }
 
+// ENTER KEY
 input.addEventListener("keydown",e=>{
   if(e.key==="Enter")send();
 });
