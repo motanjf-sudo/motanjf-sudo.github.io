@@ -6,7 +6,7 @@
 <title>NovaChat</title>
 
 <style>
-/* ================= BASE ================= */
+/* ================= RESET ================= */
 *{box-sizing:border-box}
 body{
   margin:0;
@@ -27,16 +27,12 @@ body{
   border-radius:14px;
   width:320px;
 }
-.login-box h3{
-  text-align:center;
-  margin-top:0;
-}
+.login-box h3{text-align:center;margin-top:0}
 .login-box input,
 .login-box button{
   width:100%;
   padding:10px;
   margin-bottom:12px;
-  font-size:14px;
 }
 .switch{
   text-align:center;
@@ -54,8 +50,6 @@ body{
   display:none;
   flex-direction:column;
 }
-
-/* HEADER */
 header{
   background:#0f766e;
   color:white;
@@ -65,10 +59,7 @@ header{
 }
 
 /* ================= MAIN ================= */
-.main{
-  flex:1;
-  display:flex;
-}
+.main{flex:1;display:flex}
 
 /* ================= GROUPS ================= */
 .groups{
@@ -85,27 +76,14 @@ header{
   border-radius:8px;
   background:#99f6e4;
 }
-.group-item{
-  display:flex;
-  gap:4px;
-  margin-bottom:6px;
-}
+.group-item{display:flex;gap:4px;margin-bottom:6px}
 .open{flex:1}
 .leave{width:32px;background:#fecaca}
 .delete{width:32px;background:#f87171;color:white}
-.groups small{
-  display:block;
-  text-align:center;
-  opacity:.6;
-}
+.groups small{text-align:center;opacity:.6}
 
 /* ================= CHAT ================= */
-.chat{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  background:#f8fffd;
-}
+.chat{flex:1;display:flex;flex-direction:column;background:#f8fffd}
 .messages{
   flex:1;
   padding:12px;
@@ -120,24 +98,12 @@ header{
   white-space:pre-wrap;
   overflow-wrap:anywhere;
 }
-.me{
-  background:#ccfbf1;
-  margin-left:auto;
-}
+.me{background:#ccfbf1;margin-left:auto}
 
 /* ================= INPUT ================= */
-.input-bar{
-  padding:8px;
-  background:#ecfeff;
-}
-.emoji-bar span{
-  font-size:20px;
-  margin-right:6px;
-  cursor:pointer;
-}
-.input-row{
-  display:flex;
-}
+.input-bar{padding:8px;background:#ecfeff}
+.emoji-bar span{font-size:20px;margin-right:6px;cursor:pointer}
+.input-row{display:flex}
 textarea{
   flex:1;
   resize:none;
@@ -158,11 +124,7 @@ textarea{
 /* ================= MOBILE ================= */
 @media(max-width:600px){
 .main{flex-direction:column}
-.groups{
-  width:100%;
-  display:flex;
-  overflow-x:auto;
-}
+.groups{width:100%;display:flex;overflow-x:auto}
 }
 </style>
 </head>
@@ -172,7 +134,7 @@ textarea{
 <!-- ================= LOGIN ================= -->
 <div class="login" id="login">
   <div class="login-box">
-    <h3 id="loginTitle">Create account</h3>
+    <h3>Create account</h3>
     <input id="user" placeholder="Username">
     <input id="pass" type="password" placeholder="Password">
     <button onclick="auth()">Continue</button>
@@ -186,7 +148,6 @@ textarea{
 
 <div class="main">
 
-<!-- GROUPS -->
 <div class="groups">
   <button onclick="createGroup()">+ Group</button>
   <button onclick="joinGroup()">Join</button>
@@ -194,7 +155,6 @@ textarea{
   <small id="noGroup">No groups</small>
 </div>
 
-<!-- CHAT -->
 <div class="chat">
   <div class="messages" id="messages"></div>
 
@@ -220,6 +180,7 @@ textarea{
 /* ================= STATE ================= */
 let currentUser="";
 let currentGroup="";
+let sending=false;
 
 /* ================= AUTH ================= */
 function resetAuth(){
@@ -230,16 +191,10 @@ function resetAuth(){
 function auth(){
   if(!user.value||!pass.value)return;
   const users=JSON.parse(localStorage.users||"{}");
-
-  if(!users[user.value]){
-    users[user.value]=pass.value;
-  }else if(users[user.value]!==pass.value){
-    alert("Wrong password");return;
-  }
-
+  if(!users[user.value]) users[user.value]=pass.value;
+  else if(users[user.value]!==pass.value){alert("Wrong password");return}
   localStorage.users=JSON.stringify(users);
   currentUser=user.value;
-
   login.style.display="none";
   app.style.display="flex";
   loadGroups();
@@ -251,8 +206,8 @@ function loadGroups(){
   const groups=JSON.parse(localStorage.groups||"{}");
   let has=false;
 
-  for(let g in groups){
-    if(groups[g].members.includes(currentUser)){
+  for(const g in groups){
+    if(groups[g].members?.includes(currentUser)){
       const wrap=document.createElement("div");
       wrap.className="group-item";
 
@@ -266,8 +221,7 @@ function loadGroups(){
       leave.className="leave";
       leave.onclick=()=>leaveGroup(g);
 
-      wrap.appendChild(open);
-      wrap.appendChild(leave);
+      wrap.append(open,leave);
 
       if(groups[g].owner===currentUser){
         const del=document.createElement("button");
@@ -288,37 +242,20 @@ function createGroup(){
   const name=prompt("Group name");
   const passw=prompt("Password (min 5)");
   if(!name||!passw||passw.length<5)return;
-
   const groups=JSON.parse(localStorage.groups||"{}");
-  groups[name]={
-    owner:currentUser,
-    pass:passw,
-    members:[currentUser],
-    messages:[]
-  };
+  groups[name]={owner:currentUser,pass:passw,members:[currentUser],messages:[]};
   localStorage.groups=JSON.stringify(groups);
   loadGroups();
 }
 
-/* JOIN → لیست همه گروه‌ها */
 function joinGroup(){
   const groups=JSON.parse(localStorage.groups||"{}");
   const names=Object.keys(groups);
-  if(names.length===0){
-    alert("No groups exist");
-    return;
-  }
-
-  const choice=prompt(
-    "Available groups:\n\n"+names.join("\n")
-  );
-  if(!choice||!groups[choice])return;
-
+  if(!names.length)return alert("No groups");
+  const choice=prompt("Available groups:\n\n"+names.join("\n"));
+  if(!groups[choice])return;
   const p=prompt("Group password");
-  if(groups[choice].pass!==p){
-    alert("Wrong password");return;
-  }
-
+  if(groups[choice].pass!==p)return alert("Wrong password");
   if(!groups[choice].members.includes(currentUser)){
     groups[choice].members.push(currentUser);
     localStorage.groups=JSON.stringify(groups);
@@ -330,11 +267,7 @@ function leaveGroup(g){
   const groups=JSON.parse(localStorage.groups);
   groups[g].members=groups[g].members.filter(u=>u!==currentUser);
   localStorage.groups=JSON.stringify(groups);
-  if(currentGroup===g){
-    messages.innerHTML="";
-    title.textContent="NovaChat";
-    currentGroup="";
-  }
+  if(currentGroup===g){messages.innerHTML="";title.textContent="NovaChat";currentGroup=""}
   loadGroups();
 }
 
@@ -354,24 +287,33 @@ function openGroup(g){
   currentGroup=g;
   title.textContent=g;
   messages.innerHTML="";
-  const groups=JSON.parse(localStorage.groups);
-  groups[g].messages.forEach(showMsg);
+  const groups=JSON.parse(localStorage.groups||"{}");
+  (groups[g]?.messages||[]).forEach(showMsg);
 }
 
 function send(){
-  if(!input.value||!currentGroup)return;
-  const groups=JSON.parse(localStorage.groups);
+  if(sending) return;
+  const text=input.value.trim();
+  if(!text||!currentGroup) return;
+
+  sending=true;
+  const groups=JSON.parse(localStorage.groups||"{}");
+  if(!groups[currentGroup]){sending=false;return;}
+
   const msg={
     user:currentUser,
-    text:input.value,
+    text,
     time:new Date().toLocaleTimeString([],{
       hour:"2-digit",minute:"2-digit"
     })
   };
+
   groups[currentGroup].messages.push(msg);
   localStorage.groups=JSON.stringify(groups);
+
   input.value="";
   showMsg(msg);
+  sending=false;
 }
 
 function showMsg(m){
