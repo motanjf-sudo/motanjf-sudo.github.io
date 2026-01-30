@@ -13,7 +13,7 @@ body{margin:0;font-family:system-ui;background:#e6f2ef}
 .login{height:100vh;display:flex;justify-content:center;align-items:center}
 .login-box{background:#fff;padding:20px;border-radius:12px;width:300px}
 .login-box input,.login-box button{width:100%;margin-bottom:12px;padding:10px}
-.switch{font-size:12px;text-align:center;color:#0f766e;cursor:pointer}
+.switch{text-align:center;font-size:12px;color:#0f766e;cursor:pointer}
 
 /* APP */
 .app{max-width:560px;height:100vh;margin:auto;background:#fff;display:none;flex-direction:column}
@@ -23,10 +23,12 @@ header{background:#0f766e;color:white;padding:14px;text-align:center;font-weight
 .main{flex:1;display:flex}
 
 /* GROUPS */
-.groups{width:150px;background:#f0fdfa;padding:8px;overflow-y:auto}
+.groups{width:170px;background:#f0fdfa;padding:8px;overflow-y:auto}
 .group-item{display:flex;gap:4px;margin-bottom:6px}
-.group-item button{flex:1;padding:6px;border:none;background:#99f6e4;border-radius:8px;font-size:13px}
-.leave{background:#fecaca !important;flex:0 0 32px}
+.group-item button{flex:1;padding:6px;border:none;border-radius:8px;font-size:13px}
+.open{background:#99f6e4}
+.leave{background:#fecaca;width:32px}
+.delete{background:#f87171;width:32px;color:white}
 .groups small{text-align:center;opacity:.6}
 
 /* CHAT */
@@ -34,7 +36,6 @@ header{background:#0f766e;color:white;padding:14px;text-align:center;font-weight
 .messages{flex:1;padding:12px;overflow-y:auto}
 .msg{max-width:78%;padding:10px 12px;border-radius:12px;margin-bottom:8px;background:#fff;white-space:pre-wrap;overflow-wrap:anywhere}
 .me{background:#ccfbf1;margin-left:auto}
-.msg button{position:absolute;top:4px;right:6px;border:none;background:none;cursor:pointer;opacity:.6}
 
 /* INPUT */
 .input-bar{padding:8px;background:#ecfeff}
@@ -53,6 +54,7 @@ textarea{flex:1;resize:none;padding:10px;border-radius:10px;border:1px solid #cc
 
 <body>
 
+<!-- LOGIN -->
 <div class="login" id="login">
   <div class="login-box">
     <h3 id="loginTitle">Create account</h3>
@@ -63,6 +65,7 @@ textarea{flex:1;resize:none;padding:10px;border-radius:10px;border:1px solid #cc
   </div>
 </div>
 
+<!-- APP -->
 <div class="app" id="app">
   <header id="title">NovaChat</header>
 
@@ -76,7 +79,6 @@ textarea{flex:1;resize:none;padding:10px;border-radius:10px;border:1px solid #cc
 
     <div class="chat">
       <div class="messages" id="messages"></div>
-
       <div class="input-bar">
         <div class="emoji-bar">
           <span onclick="addEmoji('😀')">😀</span>
@@ -122,17 +124,27 @@ function loadGroups(){
       const wrap=document.createElement("div");
       wrap.className="group-item";
 
-      const btn=document.createElement("button");
-      btn.textContent=g;
-      btn.onclick=()=>openGroup(g);
+      const open=document.createElement("button");
+      open.textContent=g;
+      open.className="open";
+      open.onclick=()=>openGroup(g);
 
       const leave=document.createElement("button");
       leave.textContent="🚪";
       leave.className="leave";
       leave.onclick=()=>leaveGroup(g);
 
-      wrap.appendChild(btn);
+      wrap.appendChild(open);
       wrap.appendChild(leave);
+
+      if(groups[g].owner===currentUser){
+        const del=document.createElement("button");
+        del.textContent="🗑️";
+        del.className="delete";
+        del.onclick=()=>deleteGroup(g);
+        wrap.appendChild(del);
+      }
+
       groupList.appendChild(wrap);
       has=true;
     }
@@ -140,9 +152,38 @@ function loadGroups(){
   noGroup.style.display=has?"none":"block";
 }
 
-function leaveGroup(g){
-  if(!confirm("Leave group "+g+" ?"))return;
+function createGroup(){
+  const name=prompt("Group name");
+  const pass=prompt("Password (min 5)");
+  if(!name||!pass||pass.length<5)return;
   const groups=JSON.parse(localStorage.groups||"{}");
+  groups[name]={pass,owner:currentUser,members:[currentUser],messages:[]};
+  localStorage.groups=JSON.stringify(groups);
+  loadGroups();
+}
+
+/* JOIN GROUP – لیست همه گروه‌ها */
+function joinGroup(){
+  const groups=JSON.parse(localStorage.groups||"{}");
+  const names=Object.keys(groups);
+  if(names.length===0)return alert("No groups exist");
+
+  const choice=prompt("Available groups:\n\n"+names.join("\n"));
+  if(!choice||!groups[choice])return;
+
+  const p=prompt("Enter password");
+  if(groups[choice].pass!==p)return alert("Wrong password");
+
+  if(!groups[choice].members.includes(currentUser)){
+    groups[choice].members.push(currentUser);
+    localStorage.groups=JSON.stringify(groups);
+  }
+  loadGroups();
+}
+
+function leaveGroup(g){
+  if(!confirm("Leave "+g+" ?"))return;
+  const groups=JSON.parse(localStorage.groups);
   groups[g].members=groups[g].members.filter(u=>u!==currentUser);
   localStorage.groups=JSON.stringify(groups);
   if(currentGroup===g){
@@ -153,28 +194,14 @@ function leaveGroup(g){
   loadGroups();
 }
 
-function createGroup(){
-  const name=prompt("Group name");
-  const pass=prompt("Password (min 5)");
-  if(!name||!pass||pass.length<5)return;
-  const groups=JSON.parse(localStorage.groups||"{}");
-  groups[name]={pass,members:[currentUser],messages:[]};
+function deleteGroup(g){
+  if(!confirm("Delete group "+g+" ?"))return;
+  const groups=JSON.parse(localStorage.groups);
+  delete groups[g];
   localStorage.groups=JSON.stringify(groups);
-  loadGroups();
-}
-
-function joinGroup(){
-  const groups=JSON.parse(localStorage.groups||"{}");
-  const names=Object.keys(groups);
-  if(names.length===0)return alert("No groups");
-  const g=prompt("Groups:\n"+names.join("\n"));
-  if(!groups[g])return;
-  const p=prompt("Password");
-  if(groups[g].pass!==p)return alert("Wrong");
-  if(!groups[g].members.includes(currentUser)){
-    groups[g].members.push(currentUser);
-    localStorage.groups=JSON.stringify(groups);
-  }
+  messages.innerHTML="";
+  title.textContent="NovaChat";
+  currentGroup="";
   loadGroups();
 }
 
@@ -209,7 +236,9 @@ function showMsg(m){
 function addEmoji(e){input.value+=e}
 
 input.addEventListener("keydown",e=>{
-  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();send();
+  }
 });
 </script>
 
