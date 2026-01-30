@@ -25,6 +25,11 @@ body{
   padding:20px;
   border-radius:12px;
   width:300px;
+  position:relative;
+}
+.login-box h3{
+  margin-top:0;
+  text-align:center;
 }
 .login-box input,
 .login-box button{
@@ -33,10 +38,16 @@ body{
   padding:10px;
   font-size:14px;
 }
+.switch{
+  font-size:12px;
+  text-align:center;
+  color:#0f766e;
+  cursor:pointer;
+}
 
 /* -------- APP -------- */
 .app{
-  max-width:560px; /* عریض‌تر ولی منطقی */
+  max-width:560px;
   height:100vh;
   margin:auto;
   background:#ffffff;
@@ -51,7 +62,6 @@ header{
   padding:14px;
   text-align:center;
   font-weight:600;
-  font-size:16px;
 }
 
 /* MAIN */
@@ -94,8 +104,6 @@ header{
   padding:12px;
   overflow-y:auto;
 }
-
-/* MESSAGE */
 .msg{
   max-width:78%;
   padding:10px 12px;
@@ -103,11 +111,8 @@ header{
   margin-bottom:8px;
   position:relative;
   background:#ffffff;
-
-  /* کلیدی برای متن طولانی */
   white-space:pre-wrap;
   overflow-wrap:anywhere;
-  word-break:break-word;
 }
 .me{
   background:#ccfbf1;
@@ -146,7 +151,6 @@ header{
   border-radius:10px;
   border:1px solid #ccc;
   min-height:42px;
-  font-family:inherit;
 }
 .input-row button{
   margin-left:6px;
@@ -176,10 +180,11 @@ header{
 <!-- LOGIN -->
 <div class="login" id="login">
   <div class="login-box">
-    <h3>NovaChat</h3>
+    <h3 id="loginTitle">Create account</h3>
     <input id="user" placeholder="Username">
     <input id="pass" type="password" placeholder="Password">
-    <button onclick="auth()">Login / Sign up</button>
+    <button onclick="auth()">Continue</button>
+    <div class="switch" onclick="resetAuth()">Create another account</div>
   </div>
 </div>
 
@@ -223,16 +228,34 @@ header{
 let currentUser="";
 let currentGroup="";
 
+user.addEventListener("input",()=>{
+  const users=JSON.parse(localStorage.users||"{}");
+  if(users[user.value]){
+    loginTitle.innerText="Welcome back";
+    pass.placeholder="Password";
+  }else{
+    loginTitle.innerText="Create account";
+    pass.placeholder="Choose a password";
+  }
+});
+
+function resetAuth(){
+  user.value="";
+  pass.value="";
+  loginTitle.innerText="Create account";
+}
+
 function auth(){
   if(!user.value||!pass.value)return;
   const users=JSON.parse(localStorage.users||"{}");
+
   if(!users[user.value]){
     users[user.value]=pass.value;
     localStorage.users=JSON.stringify(users);
-  }
-  if(users[user.value]!==pass.value){
+  }else if(users[user.value]!==pass.value){
     alert("Wrong password");return;
   }
+
   currentUser=user.value;
   login.style.display="none";
   app.style.display="flex";
