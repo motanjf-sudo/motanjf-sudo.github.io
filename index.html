@@ -62,6 +62,7 @@ header{
   padding:14px;
   text-align:center;
   font-weight:600;
+  font-size:16px;
 }
 
 /* MAIN */
@@ -151,6 +152,7 @@ header{
   border-radius:10px;
   border:1px solid #ccc;
   min-height:42px;
+  font-family:inherit;
 }
 .input-row button{
   margin-left:6px;
@@ -228,6 +230,7 @@ header{
 let currentUser="";
 let currentGroup="";
 
+/* -------- AUTH -------- */
 user.addEventListener("input",()=>{
   const users=JSON.parse(localStorage.users||"{}");
   if(users[user.value]){
@@ -262,6 +265,7 @@ function auth(){
   loadGroups();
 }
 
+/* -------- GROUPS -------- */
 function loadGroups(){
   groupList.innerHTML="";
   const groups=JSON.parse(localStorage.groups||"{}");
@@ -288,20 +292,36 @@ function createGroup(){
   loadGroups();
 }
 
+/* ✅ JOIN GROUP – لیست همه گروه‌ها */
 function joinGroup(){
-  const name=prompt("Group name");
-  const pass=prompt("Password");
   const groups=JSON.parse(localStorage.groups||"{}");
-  if(!groups[name]||groups[name].pass!==pass){
-    alert("Wrong");return;
+  const names=Object.keys(groups);
+  if(names.length===0){
+    alert("No groups available");
+    return;
   }
-  if(!groups[name].members.includes(currentUser)){
-    groups[name].members.push(currentUser);
+
+  const choice=prompt(
+    "Available groups:\n\n"+names.join("\n")+
+    "\n\nType group name:"
+  );
+  if(!choice || !groups[choice]){
+    alert("Invalid group");return;
+  }
+
+  const pass=prompt("Enter group password");
+  if(groups[choice].pass!==pass){
+    alert("Wrong password");return;
+  }
+
+  if(!groups[choice].members.includes(currentUser)){
+    groups[choice].members.push(currentUser);
     localStorage.groups=JSON.stringify(groups);
   }
   loadGroups();
 }
 
+/* -------- CHAT -------- */
 function openGroup(g){
   currentGroup=g;
   title.textContent=g;
