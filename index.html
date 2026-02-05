@@ -27,7 +27,6 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font); background: var(--bg-main); color: var(--text); min-height: 100vh; }
 
-    /* ---- Auth ---- */
     .auth-wrap {
       min-height: 100vh;
       display: flex;
@@ -125,7 +124,6 @@
     .auth-submit:hover { background: var(--accent-hover); }
     .auth-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
-    /* ---- App shell ---- */
     .app-shell {
       display: none;
       height: 100vh;
@@ -208,7 +206,6 @@
     .group-chip.is-selected { background: #e0f2fe; border-color: var(--accent); color: var(--accent-hover); }
     .groups-empty { font-size: 14px; color: var(--text-soft); padding: 8px 0; }
 
-    /* ---- Chat area ---- */
     .chat-area {
       flex: 1;
       display: flex;
@@ -346,7 +343,6 @@
     .emoji-drawer span:hover { background: var(--bg-input); }
     .compose-wrap { position: relative; }
 
-    /* ---- Toast ---- */
     .snack {
       position: fixed;
       bottom: 24px;
@@ -438,7 +434,6 @@
 (function() {
   'use strict';
 
-  // --- Config: replace with your Firebase project values ---
   var config = {
     apiKey: 'YOUR_API_KEY',
     authDomain: 'YOUR_PROJECT.firebaseapp.com',
@@ -537,7 +532,6 @@
     return t[code] || 'Something went wrong. Try again.';
   }
 
-  // Auth tabs
   document.querySelectorAll('.auth-tab').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var panel = btn.getAttribute('data-panel');
@@ -580,12 +574,10 @@
     signupSubmit.disabled = true;
     auth.createUserWithEmailAndPassword(toEmail(u), p)
       .then(function(cred) {
-        return db.collection('users').doc(cred.user.uid).set({ username: u }, { merge: true });
-      })
-      .then(function() {
         setAuthAlert('Account created. You are signed in.', 'ok');
         authWrap.classList.add('is-hidden');
         appShell.classList.add('is-visible');
+        db.collection('users').doc(cred.user.uid).set({ username: u }, { merge: true }).catch(function() {});
       })
       .catch(function(err) {
         setAuthAlert(authErrorMsg(err.code) || err.message, 'error');
