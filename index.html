@@ -30,8 +30,6 @@
       min-height: 100vh;
       overflow: hidden;
     }
-
-    /* ========== Auth Screen ========== */
     #auth-screen {
       min-height: 100vh;
       display: flex;
@@ -58,7 +56,6 @@
     }
     .auth-tabs {
       display: flex;
-      gap: 0;
       margin-bottom: 1.5rem;
       border-bottom: 1px solid var(--border);
     }
@@ -121,13 +118,20 @@
     .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--primary); color: white; }
     .btn-primary:hover { background: var(--primary-hover); }
-
-    /* ========== Chat Layout ========== */
-    #chat-app { display: none; height: 100vh; flex-direction: row; }
+    #chat-app {
+      display: none;
+      height: 100vh;
+      flex-direction: row;
+    }
     #chat-app.visible { display: flex; }
     @media (max-width: 768px) {
       #chat-app { flex-direction: column; }
-      #sidebar { width: 100%; max-height: 40vh; border-right: none; border-bottom: 1px solid var(--border); }
+      #sidebar {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
       #sidebar.collapsed { max-height: 52px; overflow: hidden; }
       #sidebar.collapsed .sidebar-body { display: none; }
       .sidebar-toggle { display: block !important; }
@@ -159,9 +163,7 @@
       font-size: 1.1rem;
     }
     .sidebar-body { flex: 1; overflow-y: auto; padding: 1rem; }
-    .sidebar-section {
-      margin-bottom: 1.5rem;
-    }
+    .sidebar-section { margin-bottom: 1.5rem; }
     .sidebar-section h3 {
       font-size: 0.85rem;
       color: var(--text-muted);
@@ -190,7 +192,10 @@
       border: 1px solid transparent;
     }
     .group-item:hover { background: var(--border); }
-    .group-item.active { background: rgba(99,102,241,0.2); border-color: var(--primary); }
+    .group-item.active {
+      background: rgba(99,102,241,0.2);
+      border-color: var(--primary);
+    }
     .group-item .name { font-weight: 600; }
     .empty-msg { color: var(--text-muted); font-size: 0.9rem; padding: 0.5rem 0; }
     .toast {
@@ -207,8 +212,6 @@
     .toast.error { background: var(--error); color: #1a1a20; }
     .toast.success { background: var(--success); color: #1a1a20; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    /* ========== Main Chat ========== */
     #main-chat {
       flex: 1;
       display: flex;
@@ -233,6 +236,13 @@
       padding: 2rem;
       text-align: center;
     }
+    #messages-wrap {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+    #messages-wrap.visible { display: flex; }
     #messages-container {
       flex: 1;
       overflow-y: auto;
@@ -250,12 +260,14 @@
       align-self: flex-start;
       word-wrap: break-word;
     }
-    .message.own { align-self: flex-end; background: rgba(99,102,241,0.25); border-color: var(--primary); }
+    .message.own {
+      align-self: flex-end;
+      background: rgba(99,102,241,0.25);
+      border-color: var(--primary);
+    }
     .message .sender { font-size: 0.8rem; color: var(--primary); margin-bottom: 0.2rem; }
     .message .time { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
     .message .text { white-space: pre-wrap; word-break: break-word; }
-
-    /* ========== Input + Emoji ========== */
     .input-wrap {
       padding: 1rem 1.25rem;
       background: var(--surface);
@@ -335,7 +347,6 @@
   </style>
 </head>
 <body>
-  <!-- Auth Screen -->
   <div id="auth-screen">
     <div class="auth-card">
       <h1>Nova</h1>
@@ -361,7 +372,6 @@
     </div>
   </div>
 
-  <!-- Chat App -->
   <div id="chat-app">
     <aside id="sidebar">
       <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">Groups</button>
@@ -388,7 +398,7 @@
     <main id="main-chat">
       <header class="chat-header" id="chat-header">Select a group</header>
       <div class="chat-placeholder" id="chat-placeholder">Choose a group from the sidebar to start chatting.</div>
-      <div id="messages-wrap" style="display: none; flex: 1; flex-direction: column; min-height: 0;">
+      <div id="messages-wrap">
         <div id="messages-container"></div>
         <div class="input-wrap">
           <div class="emoji-wrap">
@@ -407,8 +417,11 @@
   <div id="toast" class="toast" aria-live="polite"></div>
 
   <script>
-    // ---------- Firebase config (replace with your project) ----------
-    const firebaseConfig = {
+(function() {
+    'use strict';
+
+    // ==================== Firebase ====================
+    var firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
       projectId: "YOUR_PROJECT_ID",
@@ -416,62 +429,71 @@
       messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
+    if (typeof firebase === 'undefined') {
+      document.body.innerHTML = '<p style="padding:2rem;color:#f87171;">Firebase scripts failed to load. Check your connection.</p>';
+      return;
+    }
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    var auth = firebase.auth();
+    var db = firebase.firestore();
 
-    const EMAIL_SUFFIX = '@nova.chat';
-    const PASSWORD_MIN = 6;
-    const EMOJIS = ['😀','😃','😄','😁','😅','😂','🤣','😊','😇','🙂','😉','😍','🥰','😘','😗','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','👍','👎','👏','🙌','👋','🤝','🙏','❤️','🧡','💛','💚','💙','💜','🖤','💔','❣️','💕','💞','💓','💗','💖','💘','💝','😀','🔥','⭐','✨','💯'];
+    var EMAIL_SUFFIX = '@nova.chat';
+    var PASSWORD_MIN = 6;
+    var EMOJIS = ['😀','😃','😄','😁','😅','😂','🤣','😊','😇','🙂','😉','😍','🥰','😘','😗','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','🙄','😏','😣','😥','😮','😯','😪','😫','👍','👎','👏','🙌','👋','🤝','🙏','❤️','🧡','💛','💚','💙','💜','🖤','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🔥','⭐','✨','💯'];
 
-    // ---------- DOM ----------
-    const authScreen = document.getElementById('auth-screen');
-    const chatApp = document.getElementById('chat-app');
-    const authMsg = document.getElementById('auth-msg');
-    const loginPanel = document.getElementById('login-panel');
-    const signupPanel = document.getElementById('signup-panel');
-    const loginUsername = document.getElementById('login-username');
-    const loginPassword = document.getElementById('login-password');
-    const signupUsername = document.getElementById('signup-username');
-    const signupPassword = document.getElementById('signup-password');
-    const myGroupsList = document.getElementById('my-groups-list');
-    const joinName = document.getElementById('join-name');
-    const joinPassword = document.getElementById('join-password');
-    const createName = document.getElementById('create-name');
-    const createPassword = document.getElementById('create-password');
-    const chatHeader = document.getElementById('chat-header');
-    const chatPlaceholder = document.getElementById('chat-placeholder');
-    const messagesWrap = document.getElementById('messages-wrap');
-    const messagesContainer = document.getElementById('messages-container');
-    const messageInput = document.getElementById('message-input');
-    const emojiPanel = document.getElementById('emoji-panel');
-    const emojiBtn = document.getElementById('emoji-btn');
-    const sendBtn = document.getElementById('send-btn');
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebar-toggle');
+    // ==================== DOM refs ====================
+    var authScreen = document.getElementById('auth-screen');
+    var chatApp = document.getElementById('chat-app');
+    var authMsg = document.getElementById('auth-msg');
+    var loginPanel = document.getElementById('login-panel');
+    var signupPanel = document.getElementById('signup-panel');
+    var loginUsername = document.getElementById('login-username');
+    var loginPassword = document.getElementById('login-password');
+    var signupUsername = document.getElementById('signup-username');
+    var signupPassword = document.getElementById('signup-password');
+    var loginBtn = document.getElementById('login-btn');
+    var signupBtn = document.getElementById('signup-btn');
+    var myGroupsList = document.getElementById('my-groups-list');
+    var joinName = document.getElementById('join-name');
+    var joinPassword = document.getElementById('join-password');
+    var createName = document.getElementById('create-name');
+    var createPassword = document.getElementById('create-password');
+    var joinBtn = document.getElementById('join-btn');
+    var createBtn = document.getElementById('create-btn');
+    var chatHeader = document.getElementById('chat-header');
+    var chatPlaceholder = document.getElementById('chat-placeholder');
+    var messagesWrap = document.getElementById('messages-wrap');
+    var messagesContainer = document.getElementById('messages-container');
+    var messageInput = document.getElementById('message-input');
+    var emojiPanel = document.getElementById('emoji-panel');
+    var emojiBtn = document.getElementById('emoji-btn');
+    var sendBtn = document.getElementById('send-btn');
+    var sidebar = document.getElementById('sidebar');
+    var sidebarToggle = document.getElementById('sidebar-toggle');
 
-    let currentUser = null;
-    let currentUsername = null;
-    let currentGroupId = null;
-    let unsubscribeMessages = null;
+    var currentUser = null;
+    var currentUsername = null;
+    var currentGroupId = null;
+    var unsubscribeMessages = null;
 
-    // ---------- Helpers ----------
+    // ==================== Helpers ====================
     function showAuthMsg(text, type) {
       authMsg.textContent = text;
-      authMsg.className = 'auth-msg ' + type;
+      authMsg.className = 'auth-msg ' + (type === 'error' ? 'error' : 'success');
       authMsg.style.display = 'block';
     }
     function hideAuthMsg() {
+      authMsg.textContent = '';
       authMsg.className = 'auth-msg';
       authMsg.style.display = 'none';
     }
     function toast(text, type) {
-      const el = document.getElementById('toast');
+      var el = document.getElementById('toast');
       el.textContent = text;
-      el.className = 'toast ' + type;
+      el.className = 'toast ' + (type === 'error' ? 'error' : 'success');
       el.style.display = 'block';
-      clearTimeout(el._t);
-      el._t = setTimeout(function() { el.style.display = 'none'; }, 3500);
+      if (el._toastTimer) clearTimeout(el._toastTimer);
+      el._toastTimer = setTimeout(function() { el.style.display = 'none'; }, 3500);
     }
     function validatePassword(p) {
       if (typeof p !== 'string') return false;
@@ -480,52 +502,104 @@
       return true;
     }
     function usernameToEmail(u) {
-      return (u || '').trim().toLowerCase() + EMAIL_SUFFIX;
+      return String(u).trim().toLowerCase() + EMAIL_SUFFIX;
+    }
+    function escapeHtml(s) {
+      if (s == null) return '';
+      var div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+    function getAuthErrorMessage(code) {
+      var map = {
+        'auth/invalid-email': 'Invalid username format.',
+        'auth/user-disabled': 'This account is disabled.',
+        'auth/user-not-found': 'No account with this username. Sign up first.',
+        'auth/wrong-password': 'Wrong password.',
+        'auth/invalid-credential': 'Wrong username or password.',
+        'auth/email-already-in-use': 'This username is already taken.',
+        'auth/weak-password': 'Password must be at least 6 characters with no spaces.',
+        'auth/operation-not-allowed': 'Email/password sign-in is not enabled in Firebase Console.',
+        'auth/network-request-failed': 'Network error. Check your connection.'
+      };
+      return map[code] || 'Something went wrong. Try again.';
     }
 
-    // ---------- Auth ----------
+    // ==================== Auth UI (tabs) ====================
     document.querySelectorAll('.auth-tab').forEach(function(tab) {
       tab.addEventListener('click', function() {
-        document.querySelectorAll('.auth-tab').forEach(function(t) { t.classList.remove('active'); });
-        document.querySelectorAll('.auth-panel').forEach(function(p) { p.classList.remove('active'); });
-        tab.classList.add('active');
-        var panel = tab.getAttribute('data-tab') === 'login' ? loginPanel : signupPanel;
-        panel.classList.add('active');
+        var target = tab.getAttribute('data-tab');
+        document.querySelectorAll('.auth-tab').forEach(function(t) {
+          t.classList.toggle('active', t.getAttribute('data-tab') === target);
+        });
+        loginPanel.classList.toggle('active', target === 'login');
+        signupPanel.classList.toggle('active', target === 'signup');
         hideAuthMsg();
       });
     });
 
-    document.getElementById('login-btn').addEventListener('click', function() {
+    // ==================== Login ====================
+    loginBtn.addEventListener('click', function() {
       hideAuthMsg();
       var u = (loginUsername.value || '').trim();
       var p = loginPassword.value;
-      if (!u) { showAuthMsg('Please enter your username.', 'error'); return; }
-      if (!validatePassword(p)) { showAuthMsg('Password must be at least 6 characters with no spaces.', 'error'); return; }
+      if (!u) {
+        showAuthMsg('Please enter your username.', 'error');
+        return;
+      }
+      if (!validatePassword(p)) {
+        showAuthMsg('Password must be at least 6 characters with no spaces.', 'error');
+        return;
+      }
       var email = usernameToEmail(u);
+      loginBtn.disabled = true;
       auth.signInWithEmailAndPassword(email, p)
-        .then(function() { showAuthMsg('Signed in.', 'success'); })
+        .then(function() {
+          showAuthMsg('Signed in.', 'success');
+          authScreen.classList.add('hidden');
+          chatApp.classList.add('visible');
+        })
         .catch(function(err) {
-          showAuthMsg(err.message || 'Login failed.', 'error');
+          showAuthMsg(getAuthErrorMessage(err.code) || err.message, 'error');
+        })
+        .finally(function() {
+          loginBtn.disabled = false;
         });
     });
 
-    document.getElementById('signup-btn').addEventListener('click', function() {
+    // ==================== Sign up ====================
+    signupBtn.addEventListener('click', function() {
       hideAuthMsg();
       var u = (signupUsername.value || '').trim();
       var p = signupPassword.value;
-      if (!u) { showAuthMsg('Please choose a username.', 'error'); return; }
-      if (!validatePassword(p)) { showAuthMsg('Password must be at least 6 characters with no spaces.', 'error'); return; }
+      if (!u) {
+        showAuthMsg('Please choose a username.', 'error');
+        return;
+      }
+      if (!validatePassword(p)) {
+        showAuthMsg('Password must be at least 6 characters with no spaces.', 'error');
+        return;
+      }
       var email = usernameToEmail(u);
+      signupBtn.disabled = true;
       auth.createUserWithEmailAndPassword(email, p)
-        .then(function(user) {
-          return db.collection('users').doc(user.user.uid).set({ username: u }, { merge: true });
+        .then(function(cred) {
+          return db.collection('users').doc(cred.user.uid).set({ username: u }, { merge: true });
         })
-        .then(function() { showAuthMsg('Account created. You can log in.', 'success'); })
+        .then(function() {
+          showAuthMsg('Account created. You are now signed in.', 'success');
+          authScreen.classList.add('hidden');
+          chatApp.classList.add('visible');
+        })
         .catch(function(err) {
-          showAuthMsg(err.message || 'Sign up failed.', 'error');
+          showAuthMsg(getAuthErrorMessage(err.code) || err.message, 'error');
+        })
+        .finally(function() {
+          signupBtn.disabled = false;
         });
     });
 
+    // ==================== Auth state ====================
     auth.onAuthStateChanged(function(user) {
       if (!user) {
         authScreen.classList.remove('hidden');
@@ -533,72 +607,99 @@
         currentUser = null;
         currentUsername = null;
         currentGroupId = null;
-        if (unsubscribeMessages) { unsubscribeMessages(); unsubscribeMessages = null; }
+        if (unsubscribeMessages) {
+          unsubscribeMessages();
+          unsubscribeMessages = null;
+        }
         return;
       }
       currentUser = user;
       authScreen.classList.add('hidden');
       chatApp.classList.add('visible');
-      db.collection('users').doc(user.uid).get().then(function(snap) {
-        currentUsername = (snap && snap.exists && snap.data().username) || user.email.replace(EMAIL_SUFFIX, '') || 'User';
-        renderMyGroups();
-      }).catch(function() {
-        currentUsername = user.email.replace(EMAIL_SUFFIX, '') || 'User';
-        renderMyGroups();
-      });
+      db.collection('users').doc(user.uid).get()
+        .then(function(snap) {
+          if (snap && snap.exists && snap.data()) {
+            currentUsername = snap.data().username || user.email.replace(EMAIL_SUFFIX, '') || 'User';
+          } else {
+            currentUsername = (user.email || '').replace(EMAIL_SUFFIX, '') || 'User';
+          }
+          renderMyGroups();
+        })
+        .catch(function() {
+          currentUsername = (user.email || '').replace(EMAIL_SUFFIX, '') || 'User';
+          renderMyGroups();
+        });
     });
 
-    // ---------- Groups ----------
+    // ==================== Groups: My Groups list ====================
     function renderMyGroups() {
       if (!currentUser) return;
       db.collection('groups').where('members', 'array-contains', currentUser.uid).get()
         .then(function(snap) {
           myGroupsList.innerHTML = '';
-          if (snap.empty) {
+          if (!snap || snap.empty) {
             myGroupsList.innerHTML = '<p class="empty-msg">You are not in any group yet. Join or create one.</p>';
             return;
           }
           snap.docs.forEach(function(doc) {
             var d = doc.data();
+            var name = d.name || 'Unnamed';
             var el = document.createElement('div');
             el.className = 'group-item' + (doc.id === currentGroupId ? ' active' : '');
             el.setAttribute('data-id', doc.id);
-            el.innerHTML = '<span class="name">' + escapeHtml(d.name || 'Unnamed') + '</span>';
-            el.addEventListener('click', function() { selectGroup(doc.id, d.name); });
+            el.innerHTML = '<span class="name">' + escapeHtml(name) + '</span>';
+            el.addEventListener('click', function() {
+              selectGroup(doc.id, name);
+            });
             myGroupsList.appendChild(el);
           });
         })
-        .catch(function() { toast('Could not load groups.', 'error'); });
+        .catch(function() {
+          toast('Could not load groups.', 'error');
+        });
     }
 
     function selectGroup(id, name) {
       currentGroupId = id;
       chatHeader.textContent = name || 'Chat';
       chatPlaceholder.style.display = 'none';
-      messagesWrap.style.display = 'flex';
-      document.querySelectorAll('.group-item').forEach(function(g) {
-        g.classList.toggle('active', g.getAttribute('data-id') === id);
-      });
-      if (unsubscribeMessages) unsubscribeMessages();
+      messagesWrap.classList.add('visible');
+      var items = myGroupsList.querySelectorAll('.group-item');
+      for (var i = 0; i < items.length; i++) {
+        items[i].classList.toggle('active', items[i].getAttribute('data-id') === id);
+      }
+      if (unsubscribeMessages) {
+        unsubscribeMessages();
+        unsubscribeMessages = null;
+      }
       messagesContainer.innerHTML = '';
       var ref = db.collection('groups').doc(id).collection('messages').orderBy('timestamp', 'asc');
-      unsubscribeMessages = ref.onSnapshot(function(snap) {
-        snap.docChanges().forEach(function(change) {
-          if (change.type !== 'added') return;
-          var msg = change.doc.data();
-          appendMessage(change.doc.id, msg, msg.senderId === currentUser.uid);
-        });
-        scrollToBottom();
-      }, function() { toast('Could not load messages.', 'error'); });
+      unsubscribeMessages = ref.onSnapshot(
+        function(snap) {
+          if (!snap) return;
+          snap.docChanges().forEach(function(change) {
+            if (change.type !== 'added') return;
+            var msg = change.doc.data();
+            var isOwn = currentUser && msg.senderId === currentUser.uid;
+            appendMessage(change.doc.id, msg, isOwn);
+          });
+          scrollToBottom();
+        },
+        function() {
+          toast('Could not load messages.', 'error');
+        }
+      );
     }
 
     function appendMessage(id, msg, isOwn) {
       var div = document.createElement('div');
       div.className = 'message' + (isOwn ? ' own' : '');
       div.setAttribute('data-id', id);
-      var time = msg.timestamp && msg.timestamp.toDate ? msg.timestamp.toDate() : new Date();
+      var ts = msg.timestamp;
+      var time = (ts && ts.toDate) ? ts.toDate() : new Date();
       var timeStr = time.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-      div.innerHTML = '<div class="sender">' + escapeHtml(msg.senderUsername || '?') + '</div>' +
+      div.innerHTML =
+        '<div class="sender">' + escapeHtml(msg.senderUsername || '?') + '</div>' +
         '<div class="text">' + escapeHtml(msg.text || '') + '</div>' +
         '<div class="time">' + escapeHtml(timeStr) + '</div>';
       messagesContainer.appendChild(div);
@@ -608,78 +709,66 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    document.getElementById('join-btn').addEventListener('click', function() {
+    // ==================== Join group (single handler) ====================
+    joinBtn.addEventListener('click', function() {
       var name = (joinName.value || '').trim();
       var pass = joinPassword.value;
-      if (!name) { toast('Enter group name.', 'error'); return; }
-      if (!validatePassword(pass)) { toast('Password: min 6 characters, no spaces.', 'error'); return; }
+      if (!name) {
+        toast('Enter group name.', 'error');
+        return;
+      }
+      if (!validatePassword(pass)) {
+        toast('Password: min 6 characters, no spaces.', 'error');
+        return;
+      }
       db.collection('groups').where('name', '==', name).get()
         .then(function(snap) {
-          if (snap.empty) { toast('Group not found.', 'error'); return; }
+          if (!snap || snap.empty) {
+            toast('Group not found.', 'error');
+            return Promise.reject(new Error('not found'));
+          }
           var doc = snap.docs[0];
           var data = doc.data();
-          if (data.password !== pass) { toast('Wrong password.', 'error'); return; }
+          if (data.password !== pass) {
+            toast('Wrong password.', 'error');
+            return Promise.reject(new Error('wrong password'));
+          }
           var members = data.members || [];
           if (members.indexOf(currentUser.uid) !== -1) {
             toast('You are already in this group.', 'success');
             selectGroup(doc.id, data.name);
-            return;
+            return Promise.resolve();
           }
           members.push(currentUser.uid);
-          return doc.ref.update({ members: members });
+          return doc.ref.update({ members: members }).then(function() { return { doc: doc, data: data }; });
         })
-        .then(function() {
+        .then(function(result) {
+          if (!result) return;
           joinName.value = '';
           joinPassword.value = '';
           toast('Joined group.', 'success');
           renderMyGroups();
-          if (snap && snap.docs[0]) {
-            var d = snap.docs[0];
-            selectGroup(d.id, d.data().name);
-          }
+          selectGroup(result.doc.id, result.doc.data().name);
         })
-        .catch(function() { toast('Could not join group.', 'error'); });
+        .catch(function(err) {
+          if (err && err.message !== 'not found' && err.message !== 'wrong password') {
+            toast('Could not join group.', 'error');
+          }
+        });
     });
 
-    var joinSnap;
-    document.getElementById('join-btn').addEventListener('click', function joinHandler() {
-      var name = (joinName.value || '').trim();
-      var pass = joinPassword.value;
-      if (!name) { toast('Enter group name.', 'error'); return; }
-      if (!validatePassword(pass)) { toast('Password: min 6 characters, no spaces.', 'error'); return; }
-      db.collection('groups').where('name', '==', name).get()
-        .then(function(snap) {
-          joinSnap = snap;
-          if (snap.empty) { toast('Group not found.', 'error'); return; }
-          var doc = snap.docs[0];
-          var data = doc.data();
-          if (data.password !== pass) { toast('Wrong password.', 'error'); return; }
-          var members = data.members || [];
-          if (members.indexOf(currentUser.uid) !== -1) {
-            toast('You are already in this group.', 'success');
-            selectGroup(doc.id, data.name);
-            return;
-          }
-          members.push(currentUser.uid);
-          return doc.ref.update({ members: members });
-        })
-        .then(function() {
-          if (!joinSnap || joinSnap.empty) return;
-          joinName.value = '';
-          joinPassword.value = '';
-          toast('Joined group.', 'success');
-          renderMyGroups();
-          var d = joinSnap.docs[0];
-          selectGroup(d.id, d.data().name);
-        })
-        .catch(function() { toast('Could not join group.', 'error'); });
-    });
-
-    document.getElementById('create-btn').addEventListener('click', function() {
+    // ==================== Create group ====================
+    createBtn.addEventListener('click', function() {
       var name = (createName.value || '').trim();
       var pass = createPassword.value;
-      if (!name) { toast('Enter group name.', 'error'); return; }
-      if (!validatePassword(pass)) { toast('Password: min 6 characters, no spaces.', 'error'); return; }
+      if (!name) {
+        toast('Enter group name.', 'error');
+        return;
+      }
+      if (!validatePassword(pass)) {
+        toast('Password: min 6 characters, no spaces.', 'error');
+        return;
+      }
       db.collection('groups').add({
         name: name,
         password: pass,
@@ -694,53 +783,24 @@
           renderMyGroups();
           selectGroup(ref.id, name);
         })
-        .catch(function() { toast('Could not create group.', 'error'); });
+        .catch(function() {
+          toast('Could not create group.', 'error');
+        });
     });
 
-    // ---------- Remove duplicate join handler (keep only one) ----------
-    var joinBtn = document.getElementById('join-btn');
-    joinBtn.replaceWith(joinBtn.cloneNode(true));
-    document.getElementById('join-btn').addEventListener('click', function() {
-      var name = (joinName.value || '').trim();
-      var pass = joinPassword.value;
-      if (!name) { toast('Enter group name.', 'error'); return; }
-      if (!validatePassword(pass)) { toast('Password: min 6 characters, no spaces.', 'error'); return; }
-      db.collection('groups').where('name', '==', name).get()
-        .then(function(snap) {
-          if (snap.empty) { toast('Group not found.', 'error'); return; }
-          var doc = snap.docs[0];
-          var data = doc.data();
-          if (data.password !== pass) { toast('Wrong password.', 'error'); return; }
-          var members = data.members || [];
-          if (members.indexOf(currentUser.uid) !== -1) {
-            toast('You are already in this group.', 'success');
-            selectGroup(doc.id, data.name);
-            return;
-          }
-          members.push(currentUser.uid);
-          return doc.ref.update({ members: members });
-        })
-        .then(function() {
-          joinName.value = '';
-          joinPassword.value = '';
-          toast('Joined group.', 'success');
-          renderMyGroups();
-        })
-        .catch(function() { toast('Could not join group.', 'error'); });
-    });
-
-    // ---------- Send message ----------
+    // ==================== Send message ====================
     function sendMessage() {
       var text = (messageInput.value || '').trim();
       if (!text || !currentGroupId || !currentUser) return;
       messageInput.value = '';
-      var ref = db.collection('groups').doc(currentGroupId).collection('messages');
-      ref.add({
+      db.collection('groups').doc(currentGroupId).collection('messages').add({
         text: text,
         senderId: currentUser.uid,
         senderUsername: currentUsername || 'User',
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).catch(function() { toast('Failed to send.', 'error'); });
+      }).catch(function() {
+        toast('Failed to send.', 'error');
+      });
     }
 
     sendBtn.addEventListener('click', sendMessage);
@@ -751,38 +811,41 @@
       }
     });
 
-    // ---------- Emoji ----------
+    // ==================== Emoji ====================
     EMOJIS.forEach(function(emoji) {
       var span = document.createElement('span');
       span.textContent = emoji;
       span.setAttribute('role', 'button');
       span.addEventListener('click', function() {
         var ta = messageInput;
-        var start = ta.selectionStart, end = ta.selectionEnd;
-        var before = ta.value.substring(0, start), after = ta.value.substring(end);
+        var start = ta.selectionStart;
+        var end = ta.selectionEnd;
+        var before = ta.value.substring(0, start);
+        var after = ta.value.substring(end);
         ta.value = before + emoji + after;
         ta.selectionStart = ta.selectionEnd = start + emoji.length;
         ta.focus();
       });
       emojiPanel.appendChild(span);
     });
-    emojiBtn.addEventListener('click', function() {
+    emojiBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       emojiPanel.classList.toggle('visible');
     });
-    document.addEventListener('click', function(e) {
-      if (!emojiPanel.contains(e.target) && e.target !== emojiBtn) emojiPanel.classList.remove('visible');
+    document.addEventListener('click', function() {
+      emojiPanel.classList.remove('visible');
+    });
+    emojiPanel.addEventListener('click', function(e) {
+      e.stopPropagation();
     });
 
-    function escapeHtml(s) {
-      var div = document.createElement('div');
-      div.textContent = s;
-      return div.innerHTML;
+    // ==================== Sidebar toggle (mobile) ====================
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
+      });
     }
-
-    // ---------- Sidebar toggle (mobile) ----------
-    if (sidebarToggle) sidebarToggle.addEventListener('click', function() {
-      sidebar.classList.toggle('collapsed');
-    });
+})();
   </script>
 </body>
 </html>
