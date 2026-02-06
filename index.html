@@ -1,808 +1,1231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nova</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-  <style>
-    :root {
-      --bg: #111827;
-      --surface: #1f2937;
-      --surface2: #374151;
-      --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --text: #f9fafb;
-      --muted: #9ca3af;
-      --border: #4b5563;
-      --err: #ef4444;
-      --ok: #22c55e;
-      --r: 12px;
-      --font: 'Inter', system-ui, sans-serif;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Chat - Modern Real-time Chat Application</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/emoji-picker-element"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .auth-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    }
-    .auth-screen.hide { display: none; }
-    .auth-card {
-      width: 100%;
-      max-width: 420px;
-      background: var(--surface);
-      border-radius: var(--r);
-      padding: 32px;
-      border: 1px solid var(--border);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-    }
-    .auth-title { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 24px; }
-    .auth-tabs {
-      display: flex;
-      border-bottom: 2px solid var(--border);
-      margin-bottom: 20px;
-    }
-    .auth-tab {
-      flex: 1;
-      padding: 12px 16px;
-      border: none;
-      background: none;
-      font-family: var(--font);
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .auth-tab:hover:not(.active) { color: var(--text); }
-    .auth-form { display: none; }
-    .auth-form.active { display: block; }
-    .auth-form label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
-    .auth-form input {
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface2);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 15px;
-    }
-    .auth-form input:focus { outline: none; border-color: var(--primary); }
-    .auth-msg {
-      padding: 10px 14px;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      font-size: 14px;
-      display: none;
-    }
-    .auth-msg.show { display: block; }
-    .auth-msg.err { background: rgba(239,68,68,0.2); color: var(--err); }
-    .auth-msg.ok { background: rgba(34,197,94,0.2); color: var(--ok); }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-family: var(--font);
-      font-size: 16px;
-      font-weight: 600;
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: var(--primary-hover); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
 
-    .app { display: none; height: 100vh; flex-direction: row; }
-    .app.show { display: flex; }
-    @media (max-width: 768px) {
-      .app { flex-direction: column; }
-      .sidebar { width: 100%; max-height: 50vh; border-right: none; border-bottom: 1px solid var(--border); }
-      .sidebar.collapsed .sidebar-inner { display: none; }
-      .sidebar .toggle-btn { display: block; }
-    }
-    .sidebar .toggle-btn {
-      display: none;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .sidebar {
-      width: 280px;
-      min-width: 260px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-    }
-    .sidebar-head { padding: 16px 20px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 18px; }
-    .sidebar-inner { flex: 1; overflow-y: auto; padding: 16px; }
-    .sidebar-section { margin-bottom: 24px; }
-    .sidebar-section h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 10px; }
-    .sidebar-section input {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--surface2);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 14px;
-    }
-    .sidebar-section .btn { margin-top: 4px; }
-    .group-row {
-      padding: 10px 12px;
-      margin-bottom: 6px;
-      background: var(--surface2);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      border: 2px solid transparent;
-      transition: background 0.2s, border-color 0.2s;
-    }
-    .group-row:hover { background: var(--border); }
-    .group-row.selected { background: rgba(59,130,246,0.2); border-color: var(--primary); }
-    .sidebar-empty { font-size: 14px; color: var(--muted); padding: 8px 0; }
-    .join-trigger { margin-bottom: 8px; }
-    .join-list { max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
-    .join-list .group-row { margin-bottom: 4px; }
-    .join-password-wrap { margin-top: 10px; }
-    .join-password-wrap input { margin-bottom: 8px; }
-    .join-password-wrap .btn { margin-top: 4px; }
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
 
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      background: var(--bg);
-    }
-    .main-head {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      font-weight: 600;
-      font-size: 17px;
-    }
-    .main-placeholder {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: var(--muted);
-      font-size: 16px;
-      text-align: center;
-    }
-    .chat-box { display: none; flex: 1; flex-direction: column; min-height: 0; }
-    .chat-box.show { display: flex; }
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .msg {
-      max-width: 82%;
-      padding: 10px 14px;
-      border-radius: 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      align-self: flex-start;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-    .msg.mine { align-self: flex-end; background: rgba(59,130,246,0.25); border-color: var(--primary); }
-    .msg-user { font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 4px; }
-    .msg-text { white-space: pre-wrap; word-break: break-word; font-size: 15px; }
-    .msg-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
-    .compose-wrap {
-      padding: 16px 20px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      position: relative;
-    }
-    .compose-row { display: flex; gap: 10px; align-items: flex-end; }
-    .emoji-btn {
-      flex-shrink: 0;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 22px;
-      cursor: pointer;
-    }
-    .emoji-btn:hover { background: var(--border); }
-    .compose-input {
-      flex: 1;
-      min-height: 44px;
-      max-height: 160px;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface2);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 15px;
-      resize: none;
-    }
-    .compose-input:focus { outline: none; border-color: var(--primary); }
-    .send-btn {
-      flex-shrink: 0;
-      padding: 10px 20px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-family: var(--font);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .send-btn:hover { background: var(--primary-hover); }
-    .emoji-panel {
-      position: absolute;
-      bottom: 100%;
-      right: 0;
-      margin-bottom: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px;
-      max-height: 180px;
-      overflow-y: auto;
-      display: none;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 4px;
-      z-index: 50;
-    }
-    .emoji-panel.show { display: grid; }
-    .emoji-panel span { font-size: 22px; cursor: pointer; padding: 4px; border-radius: 6px; text-align: center; }
-    .emoji-panel span:hover { background: var(--border); }
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            animation: slideUp 0.4s ease-out;
+        }
 
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 1000;
-      display: none;
-    }
-    .toast.err { background: var(--err); color: white; }
-    .toast.ok { background: var(--ok); color: white; }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-      padding: 20px;
-    }
-    .modal.show { display: flex; }
-    .modal-box {
-      background: var(--surface);
-      border-radius: var(--r);
-      padding: 24px;
-      max-width: 400px;
-      width: 100%;
-      border: 1px solid var(--border);
-    }
-    .modal-box h3 { margin-bottom: 16px; font-size: 18px; }
-    .modal-box input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); color: var(--text); font-size: 15px; }
-    .modal-box .btn { margin-top: 8px; }
-  </style>
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 10px 0;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: #667eea;
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .auth-tab:hover {
+            color: #667eea;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .auth-input-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .auth-input-group input {
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .auth-input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .auth-input-group input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .auth-error {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #fcc;
+        }
+
+        .auth-submit {
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #445566;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #ecf0f1;
+        }
+
+        .empty-message {
+            color: #95a5a6;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .group-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .group-item {
+            padding: 15px;
+            background: #34495e;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .group-item:hover {
+            background: #3d566e;
+            transform: translateX(5px);
+        }
+
+        .group-item.active {
+            background: #667eea;
+            border-color: #764ba2;
+        }
+
+        .group-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .sidebar-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .sidebar-form {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .sidebar-input,
+        .sidebar-select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #445566;
+            border-radius: 8px;
+            background: #2c3e50;
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .sidebar-input:focus,
+        .sidebar-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .sidebar-select option {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .sidebar-submit {
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sidebar-submit:hover {
+            background: #229954;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid #445566;
+            background: #34495e;
+        }
+
+        .user-info {
+            margin-bottom: 15px;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #ecf0f1;
+            font-size: 16px;
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-button:hover {
+            background: #c0392b;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ecf0f1;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-header h2 {
+            font-size: 24px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        .chat-error {
+            background: #fee;
+            color: #c33;
+            padding: 12px 30px;
+            border-bottom: 1px solid #fcc;
+            font-size: 14px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .empty-chat {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #95a5a6;
+            font-size: 18px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.own {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .message-time {
+            opacity: 0.7;
+            margin-left: 10px;
+        }
+
+        .message-text {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .chat-input-container {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input-form {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            position: relative;
+        }
+
+        .emoji-picker-wrapper {
+            position: relative;
+        }
+
+        .emoji-button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-button:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+        }
+
+        .emoji-picker-container {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .no-group-selected {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .no-group-content {
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+
+        .no-group-content h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .no-group-content p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .chat-main {
+                width: 100%;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .auth-card {
+                padding: 30px 20px;
+            }
+
+            .auth-title {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-header {
+                padding: 15px 20px;
+            }
+
+            .messages-container {
+                padding: 15px 20px;
+            }
+
+            .chat-input-container {
+                padding: 15px 20px;
+            }
+
+            .emoji-picker-container {
+                width: 100vw;
+                left: -20px;
+                right: -20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="auth-screen" id="authScreen">
-    <div class="auth-card">
-      <h1 class="auth-title">Nova</h1>
-      <div class="auth-tabs">
-        <button type="button" class="auth-tab active" data-tab="login">Login</button>
-        <button type="button" class="auth-tab" data-tab="signup">Sign up</button>
-      </div>
-      <div class="auth-msg" id="authMsg"></div>
-      <form id="loginForm" class="auth-form active">
-        <label for="loginUser">Username</label>
-        <input type="text" id="loginUser" autocomplete="username" placeholder="Username">
-        <label for="loginPass">Password</label>
-        <input type="password" id="loginPass" autocomplete="current-password" placeholder="Password">
-        <button type="submit" class="btn" id="loginBtn">Log in</button>
-      </form>
-      <form id="signupForm" class="auth-form">
-        <label for="signupUser">Username</label>
-        <input type="text" id="signupUser" autocomplete="username" placeholder="Username">
-        <label for="signupPass">Password</label>
-        <input type="password" id="signupPass" autocomplete="new-password" placeholder="Password (min 6 chars, no spaces)">
-        <button type="submit" class="btn" id="signupBtn">Create account</button>
-      </form>
-    </div>
-  </div>
+    <div id="root"></div>
 
-  <div class="app" id="app">
-    <aside class="sidebar" id="sidebar">
-      <button type="button" class="toggle-btn" id="sidebarToggle">Groups</button>
-      <div class="sidebar-head">Nova</div>
-      <div class="sidebar-inner">
-        <div class="sidebar-section">
-          <h3>My Groups</h3>
-          <div id="myGroupsList"></div>
-        </div>
-        <div class="sidebar-section">
-          <h3>Join Group</h3>
-          <button type="button" class="btn join-trigger" id="joinTrigger">Show groups to join</button>
-          <div id="joinListWrap" style="display:none;">
-            <div class="join-list" id="joinList"></div>
-            <div class="join-password-wrap" id="joinPasswordWrap" style="display:none;">
-              <input type="password" id="joinPasswordInput" placeholder="Group password">
-              <button type="button" class="btn" id="joinConfirmBtn">Join</button>
-            </div>
-          </div>
-        </div>
-        <div class="sidebar-section">
-          <h3>Create Group</h3>
-          <input type="text" id="createName" placeholder="Group name">
-          <input type="password" id="createPass" placeholder="Password (min 6 chars, no spaces)">
-          <button type="button" class="btn" id="createBtn">Create</button>
-        </div>
-      </div>
-    </aside>
-    <main class="main">
-      <header class="main-head" id="mainHead">Select a group</header>
-      <div class="main-placeholder" id="mainPlaceholder">Choose a group from the sidebar to start chatting.</div>
-      <div class="chat-box" id="chatBox">
-        <div class="messages" id="messages"></div>
-        <div class="compose-wrap">
-          <div class="emoji-panel" id="emojiPanel"></div>
-          <div class="compose-row">
-            <button type="button" class="emoji-btn" id="emojiBtn" aria-label="Emoji">😀</button>
-            <textarea class="compose-input" id="composeInput" rows="1" placeholder="Type a message..."></textarea>
-            <button type="button" class="send-btn" id="sendBtn">Send</button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-  <div class="modal" id="joinPasswordModal">
-    <div class="modal-box">
-      <h3>Enter group password</h3>
-      <input type="password" id="modalJoinPassword" placeholder="Group password">
-      <button type="button" class="btn" id="modalJoinConfirm">Join</button>
-    </div>
-  </div>
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-  <div class="toast" id="toast"></div>
+        const emojiPicker = document.createElement('emoji-picker');
+        emojiPicker.style.width = '100%';
+        emojiPicker.style.height = '350px';
 
-  <script>
-(function() {
-  'use strict';
+        class NovaChat {
+            constructor() {
+                this.currentUser = null;
+                this.selectedGroup = null;
+                this.groups = [];
+                this.myGroups = [];
+                this.messages = [];
+                this.showEmojiPicker = false;
+                this.showCreateGroup = false;
+                this.showJoinGroup = false;
+                this.init();
+            }
 
-  var firebaseConfig = {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_PROJECT.firebaseapp.com',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT.appspot.com',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    appId: 'YOUR_APP_ID'
-  };
+            init() {
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        this.currentUser = user;
+                        this.username = user.email.split('@')[0];
+                        this.renderChat();
+                        this.loadGroups();
+                        this.loadMyGroups();
+                    } else {
+                        this.renderAuth();
+                    }
+                });
+            }
 
-  if (typeof firebase === 'undefined') {
-    document.body.innerHTML = '<p style="padding:24px;color:#ef4444;">Firebase SDK failed to load.</p>';
-    return;
-  }
-  firebase.initializeApp(firebaseConfig);
-  var auth = firebase.auth();
-  var db = firebase.firestore();
+            validatePassword(password) {
+                if (password.length <= 5) {
+                    return 'Password must be more than 5 characters';
+                }
+                if (password.includes(' ')) {
+                    return 'Password must not contain spaces';
+                }
+                return null;
+            }
 
-  var EMAIL_SUFFIX = '@nova.chat';
-  var MIN_PASSWORD_LEN = 6;
-  var EMOJIS = ['😀','😃','😄','😁','😅','😂','🤣','😊','😇','🙂','😉','😍','🥰','😘','😗','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','🙄','😏','😣','😥','😮','😯','😪','😫','👍','👎','👏','🙌','👋','🤝','🙏','❤️','🧡','💛','💚','💙','💜','🖤','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🔥','⭐','✨','💯'];
+            async signUp(username, password) {
+                if (!username.trim()) {
+                    return 'Username is required';
+                }
 
-  var authScreen = document.getElementById('authScreen');
-  var appEl = document.getElementById('app');
-  var authMsg = document.getElementById('authMsg');
-  var loginForm = document.getElementById('loginForm');
-  var signupForm = document.getElementById('signupForm');
-  var loginUser = document.getElementById('loginUser');
-  var loginPass = document.getElementById('loginPass');
-  var signupUser = document.getElementById('signupUser');
-  var signupPass = document.getElementById('signupPass');
-  var loginBtn = document.getElementById('loginBtn');
-  var signupBtn = document.getElementById('signupBtn');
-  var myGroupsList = document.getElementById('myGroupsList');
-  var joinTrigger = document.getElementById('joinTrigger');
-  var joinListWrap = document.getElementById('joinListWrap');
-  var joinList = document.getElementById('joinList');
-  var joinPasswordWrap = document.getElementById('joinPasswordWrap');
-  var joinPasswordInput = document.getElementById('joinPasswordInput');
-  var joinConfirmBtn = document.getElementById('joinConfirmBtn');
-  var createName = document.getElementById('createName');
-  var createPass = document.getElementById('createPass');
-  var createBtn = document.getElementById('createBtn');
-  var mainHead = document.getElementById('mainHead');
-  var mainPlaceholder = document.getElementById('mainPlaceholder');
-  var chatBox = document.getElementById('chatBox');
-  var messagesEl = document.getElementById('messages');
-  var composeInput = document.getElementById('composeInput');
-  var sendBtn = document.getElementById('sendBtn');
-  var emojiPanel = document.getElementById('emojiPanel');
-  var emojiBtn = document.getElementById('emojiBtn');
-  var sidebar = document.getElementById('sidebar');
-  var sidebarToggle = document.getElementById('sidebarToggle');
-  var joinPasswordModal = document.getElementById('joinPasswordModal');
-  var modalJoinPassword = document.getElementById('modalJoinPassword');
-  var modalJoinConfirm = document.getElementById('modalJoinConfirm');
-  var toast = document.getElementById('toast');
+                const passwordError = this.validatePassword(password);
+                if (passwordError) {
+                    return passwordError;
+                }
 
-  var currentUser = null;
-  var currentUsername = null;
-  var currentGroupId = null;
-  var messagesUnsub = null;
-  var joinSelectedGroupId = null;
-  var joinSelectedGroupName = null;
+                try {
+                    const email = `${username}@nova.local`;
+                    await auth.createUserWithEmailAndPassword(email, password);
+                    return null;
+                } catch (err) {
+                    if (err.code === 'auth/email-already-in-use') {
+                        return 'Username already exists. Please login instead.';
+                    }
+                    return 'Sign up failed. Please try again.';
+                }
+            }
 
-  function setAuthMsg(txt, type) {
-    authMsg.textContent = txt;
-    authMsg.className = 'auth-msg show ' + (type === 'error' ? 'err' : 'ok');
-  }
-  function clearAuthMsg() {
-    authMsg.textContent = '';
-    authMsg.className = 'auth-msg';
-  }
-  function showToast(txt, type) {
-    toast.textContent = txt;
-    toast.className = 'toast ' + (type === 'error' ? 'err' : 'ok');
-    toast.style.display = 'block';
-    if (toast._t) clearTimeout(toast._t);
-    toast._t = setTimeout(function() { toast.style.display = 'none'; }, 3500);
-  }
-  function validPassword(p) {
-    if (typeof p !== 'string') return false;
-    if (p.length < MIN_PASSWORD_LEN) return false;
-    if (/\s/.test(p)) return false;
-    return true;
-  }
-  function toEmail(u) {
-    return String(u).trim().toLowerCase() + EMAIL_SUFFIX;
-  }
-  function esc(s) {
-    if (s == null) return '';
-    var d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-  }
-  function authErr(code) {
-    var m = {
-      'auth/invalid-email': 'Invalid username.',
-      'auth/user-disabled': 'Account disabled.',
-      'auth/user-not-found': 'No account with this username.',
-      'auth/wrong-password': 'Wrong password.',
-      'auth/invalid-credential': 'Wrong username or password.',
-      'auth/email-already-in-use': 'Username already taken.',
-      'auth/weak-password': 'Password must be more than 5 characters and contain no spaces.',
-      'auth/operation-not-allowed': 'Email/password sign-in is not enabled.',
-      'auth/network-request-failed': 'Network error.',
-      'auth/api-key-not-valid': 'Invalid Firebase config. Check your API key.'
-    };
-    return m[code] || 'Something went wrong. Try again.';
-  }
+            async login(username, password) {
+                if (!username.trim()) {
+                    return 'Username is required';
+                }
 
-  document.querySelectorAll('.auth-tab').forEach(function(t) {
-    t.addEventListener('click', function() {
-      var tab = t.getAttribute('data-tab');
-      document.querySelectorAll('.auth-tab').forEach(function(x) { x.classList.toggle('active', x.getAttribute('data-tab') === tab); });
-      loginForm.classList.toggle('active', tab === 'login');
-      signupForm.classList.toggle('active', tab === 'signup');
-      clearAuthMsg();
-    });
-  });
+                if (!password) {
+                    return 'Password is required';
+                }
 
-  loginForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    clearAuthMsg();
-    var u = (loginUser.value || '').trim();
-    var p = loginPass.value;
-    if (!u) { setAuthMsg('Enter your username.', 'error'); return; }
-    if (!validPassword(p)) { setAuthMsg('Password must be more than 5 characters and no spaces.', 'error'); return; }
-    loginBtn.disabled = true;
-    auth.signInWithEmailAndPassword(toEmail(u), p)
-      .then(function() {
-        setAuthMsg('Signed in.', 'ok');
-        authScreen.classList.add('hide');
-        appEl.classList.add('show');
-      })
-      .catch(function(err) {
-        setAuthMsg(authErr(err.code) || err.message, 'error');
-      })
-      .finally(function() { loginBtn.disabled = false; });
-  });
+                try {
+                    const email = `${username}@nova.local`;
+                    await auth.signInWithEmailAndPassword(email, password);
+                    return null;
+                } catch (err) {
+                    if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                        return 'Invalid username or password';
+                    }
+                    return 'Login failed. Please try again.';
+                }
+            }
 
-  signupForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    clearAuthMsg();
-    var u = (signupUser.value || '').trim();
-    var p = signupPass.value;
-    if (!u) { setAuthMsg('Enter a username.', 'error'); return; }
-    if (!validPassword(p)) { setAuthMsg('Password must be more than 5 characters and no spaces.', 'error'); return; }
-    signupBtn.disabled = true;
-    auth.createUserWithEmailAndPassword(toEmail(u), p)
-      .then(function(cred) {
-        setAuthMsg('Account created. You are signed in.', 'ok');
-        authScreen.classList.add('hide');
-        appEl.classList.add('show');
-        db.collection('users').doc(cred.user.uid).set({ username: u }, { merge: true }).catch(function() {});
-      })
-      .catch(function(err) {
-        setAuthMsg(authErr(err.code) || err.message, 'error');
-      })
-      .finally(function() { signupBtn.disabled = false; });
-  });
+            async logout() {
+                try {
+                    await auth.signOut();
+                } catch (err) {
+                    this.showError('Failed to logout. Please try again.');
+                }
+            }
 
-  auth.onAuthStateChanged(function(user) {
-    if (!user) {
-      authScreen.classList.remove('hide');
-      appEl.classList.remove('show');
-      currentUser = null;
-      currentUsername = null;
-      currentGroupId = null;
-      if (messagesUnsub) { messagesUnsub(); messagesUnsub = null; }
-      return;
-    }
-    currentUser = user;
-    authScreen.classList.add('hide');
-    appEl.classList.add('show');
-    db.collection('users').doc(user.uid).get()
-      .then(function(snap) {
-        currentUsername = (snap && snap.exists && snap.data().username) ? snap.data().username : (user.email || '').replace(EMAIL_SUFFIX, '') || 'User';
-        loadMyGroups();
-      })
-      .catch(function() {
-        currentUsername = (user.email || '').replace(EMAIL_SUFFIX, '') || 'User';
-        loadMyGroups();
-      });
-  });
+            loadGroups() {
+                database.ref('groups').on('value', (snapshot) => {
+                    const groupsData = snapshot.val() || {};
+                    this.groups = Object.entries(groupsData).map(([id, data]) => ({
+                        id,
+                        ...data
+                    }));
+                    this.renderChat();
+                });
+            }
 
-  function loadMyGroups() {
-    if (!currentUser) return;
-    db.collection('groups').where('members', 'array-contains', currentUser.uid).get()
-      .then(function(snap) {
-        myGroupsList.innerHTML = '';
-        if (!snap || !snap.docs || snap.docs.length === 0) {
-          myGroupsList.innerHTML = '<div class="sidebar-empty">No groups yet. Join or create one.</div>';
-          return;
+            loadMyGroups() {
+                if (!this.username) return;
+
+                database.ref(`users/${this.username}/groups`).on('value', (snapshot) => {
+                    const myGroupsData = snapshot.val() || {};
+                    this.myGroups = Object.keys(myGroupsData);
+                    this.renderChat();
+                });
+            }
+
+            loadMessages(groupId) {
+                if (!groupId) {
+                    this.messages = [];
+                    this.renderChat();
+                    return;
+                }
+
+                database.ref(`groups/${groupId}/messages`).on('value', (snapshot) => {
+                    const messagesData = snapshot.val() || {};
+                    this.messages = Object.entries(messagesData)
+                        .map(([id, data]) => ({
+                            id,
+                            ...data
+                        }))
+                        .sort((a, b) => a.timestamp - b.timestamp);
+                    this.renderChat();
+                    this.scrollToBottom();
+                });
+            }
+
+            scrollToBottom() {
+                setTimeout(() => {
+                    const container = document.querySelector('.messages-container');
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                }, 100);
+            }
+
+            async createGroup(name, password) {
+                if (!name.trim()) {
+                    return 'Group name is required';
+                }
+
+                const passwordError = this.validatePassword(password);
+                if (passwordError) {
+                    return passwordError;
+                }
+
+                try {
+                    const groupRef = database.ref('groups').push();
+                    const groupId = groupRef.key;
+
+                    await groupRef.set({
+                        name: name.trim(),
+                        password: password,
+                        creator: this.username,
+                        createdAt: Date.now()
+                    });
+
+                    await database.ref(`users/${this.username}/groups/${groupId}`).set(true);
+
+                    this.selectedGroup = { id: groupId, name: name.trim() };
+                    this.loadMessages(groupId);
+                    this.showCreateGroup = false;
+                    return null;
+                } catch (err) {
+                    return 'Failed to create group. Please try again.';
+                }
+            }
+
+            async joinGroup(groupId, password) {
+                if (!groupId) {
+                    return 'Please select a group';
+                }
+
+                if (!password) {
+                    return 'Password is required';
+                }
+
+                try {
+                    const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
+                    
+                    if (!groupSnapshot.exists()) {
+                        return 'Group not found';
+                    }
+
+                    const groupData = groupSnapshot.val();
+                    
+                    if (groupData.password !== password) {
+                        return 'Incorrect password';
+                    }
+
+                    await database.ref(`users/${this.username}/groups/${groupId}`).set(true);
+                    
+                    this.selectedGroup = { id: groupId, name: groupData.name };
+                    this.loadMessages(groupId);
+                    this.showJoinGroup = false;
+                    return null;
+                } catch (err) {
+                    return 'Failed to join group. Please try again.';
+                }
+            }
+
+            async sendMessage(text) {
+                if (!text.trim() || !this.selectedGroup) return;
+
+                try {
+                    await database.ref(`groups/${this.selectedGroup.id}/messages`).push({
+                        text: text.trim(),
+                        sender: this.username,
+                        timestamp: Date.now()
+                    });
+                } catch (err) {
+                    this.showError('Failed to send message. Please try again.');
+                }
+            }
+
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'chat-error';
+                errorDiv.textContent = message;
+                const chatMain = document.querySelector('.chat-main');
+                if (chatMain) {
+                    chatMain.insertBefore(errorDiv, chatMain.firstChild);
+                    setTimeout(() => errorDiv.remove(), 5000);
+                }
+            }
+
+            renderAuth() {
+                let isLogin = true;
+                let username = '';
+                let password = '';
+                let error = '';
+                let loading = false;
+
+                const render = () => {
+                    document.getElementById('root').innerHTML = `
+                        <div class="auth-container">
+                            <div class="auth-card">
+                                <div class="auth-header">
+                                    <h1 class="auth-title">Nova</h1>
+                                    <p class="auth-subtitle">Modern Real-time Chat</p>
+                                </div>
+                                <div class="auth-tabs">
+                                    <button class="auth-tab ${isLogin ? 'active' : ''}" id="loginTab">Login</button>
+                                    <button class="auth-tab ${!isLogin ? 'active' : ''}" id="signupTab">Sign Up</button>
+                                </div>
+                                ${error ? `<div class="auth-error">${error}</div>` : ''}
+                                <form class="auth-form" id="authForm">
+                                    <div class="auth-input-group">
+                                        <label for="username">Username</label>
+                                        <input id="username" type="text" value="${username}" placeholder="Enter your username" ${loading ? 'disabled' : ''} />
+                                    </div>
+                                    <div class="auth-input-group">
+                                        <label for="password">Password</label>
+                                        <input id="password" type="password" value="${password}" placeholder="${isLogin ? 'Enter your password' : 'More than 5 characters, no spaces'}" ${loading ? 'disabled' : ''} />
+                                    </div>
+                                    <button type="submit" class="auth-submit" ${loading ? 'disabled' : ''}>
+                                        ${loading ? 'Please wait...' : (isLogin ? 'Login' : 'Sign Up')}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById('loginTab').onclick = () => {
+                        isLogin = true;
+                        error = '';
+                        password = '';
+                        render();
+                    };
+
+                    document.getElementById('signupTab').onclick = () => {
+                        isLogin = false;
+                        error = '';
+                        password = '';
+                        render();
+                    };
+
+                    document.getElementById('authForm').onsubmit = async (e) => {
+                        e.preventDefault();
+                        loading = true;
+                        error = '';
+                        username = document.getElementById('username').value;
+                        password = document.getElementById('password').value;
+                        render();
+
+                        const result = isLogin 
+                            ? await this.login(username, password)
+                            : await this.signUp(username, password);
+
+                        loading = false;
+                        if (result) {
+                            error = result;
+                        }
+                        render();
+                    };
+
+                    document.getElementById('username').oninput = (e) => {
+                        username = e.target.value;
+                        error = '';
+                        render();
+                    };
+
+                    document.getElementById('password').oninput = (e) => {
+                        password = e.target.value;
+                        error = '';
+                        render();
+                    };
+                };
+
+                render();
+            }
+
+            renderChat() {
+                const sidebarOpen = window.innerWidth > 768;
+                let newGroupName = '';
+                let newGroupPassword = '';
+                let joinGroupId = '';
+                let joinGroupPassword = '';
+                let messageText = '';
+                let sidebarVisible = sidebarOpen;
+
+                const render = () => {
+                    const selectedGroupData = this.groups.find(g => g.id === this.selectedGroup?.id);
+                    const myGroupsList = this.myGroups.map(groupId => {
+                        const group = this.groups.find(g => g.id === groupId);
+                        return group ? `<div class="group-item ${this.selectedGroup?.id === groupId ? 'active' : ''}" data-group-id="${group.id}">${group.name}</div>` : '';
+                    }).join('');
+
+                    document.getElementById('root').innerHTML = `
+                        <div class="chat-container">
+                            <div class="sidebar ${sidebarVisible ? 'open' : ''}">
+                                <div class="sidebar-header">
+                                    <h2>Nova Chat</h2>
+                                    <button class="sidebar-toggle" id="sidebarToggle">${sidebarVisible ? '←' : '→'}</button>
+                                </div>
+                                <div class="sidebar-content">
+                                    <div class="sidebar-section">
+                                        <h3>My Groups</h3>
+                                        ${this.myGroups.length === 0 
+                                            ? '<p class="empty-message">You haven\'t joined any groups yet.</p>'
+                                            : `<div class="group-list">${myGroupsList}</div>`
+                                        }
+                                    </div>
+                                    <div class="sidebar-section">
+                                        <button class="sidebar-button" id="joinGroupBtn">Join Group</button>
+                                        ${this.showJoinGroup ? `
+                                            <div class="sidebar-form">
+                                                <select id="joinGroupSelect" class="sidebar-select">
+                                                    <option value="">Select a group</option>
+                                                    ${this.groups.map(g => `<option value="${g.id}">${g.name}</option>`).join('')}
+                                                </select>
+                                                <form id="joinGroupForm">
+                                                    <input type="password" id="joinPassword" class="sidebar-input" placeholder="Group password" />
+                                                    <button type="submit" class="sidebar-submit">Join</button>
+                                                </form>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="sidebar-section">
+                                        <button class="sidebar-button" id="createGroupBtn">Create Group</button>
+                                        ${this.showCreateGroup ? `
+                                            <form id="createGroupForm" class="sidebar-form">
+                                                <input type="text" id="newGroupName" class="sidebar-input" placeholder="Group name" />
+                                                <input type="password" id="newGroupPassword" class="sidebar-input" placeholder="Password (more than 5 chars, no spaces)" />
+                                                <button type="submit" class="sidebar-submit">Create</button>
+                                            </form>
+                                        ` : ''}
+                                    </div>
+                                    <div class="sidebar-footer">
+                                        <div class="user-info">
+                                            <span class="username">${this.username}</span>
+                                        </div>
+                                        <button class="logout-button" id="logoutBtn">Logout</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-main">
+                                ${this.selectedGroup ? `
+                                    <div class="chat-header">
+                                        <h2>${this.selectedGroup.name}</h2>
+                                    </div>
+                                    <div class="messages-container" id="messagesContainer">
+                                        ${this.messages.length === 0 
+                                            ? '<div class="empty-chat"><p>No messages yet. Start the conversation!</p></div>'
+                                            : this.messages.map(msg => `
+                                                <div class="message ${msg.sender === this.username ? 'own' : ''}">
+                                                    <div class="message-header">
+                                                        <span class="message-sender">${msg.sender}</span>
+                                                        <span class="message-time">${this.formatTime(msg.timestamp)}</span>
+                                                    </div>
+                                                    <div class="message-text">${msg.text.replace(/\n/g, '<br>')}</div>
+                                                </div>
+                                            `).join('')
+                                        }
+                                    </div>
+                                    <div class="chat-input-container">
+                                        <form class="chat-input-form" id="messageForm">
+                                            <div class="emoji-picker-wrapper">
+                                                <button type="button" class="emoji-button" id="emojiBtn">😊</button>
+                                                ${this.showEmojiPicker ? `
+                                                    <div class="emoji-picker-container" id="emojiPickerContainer"></div>
+                                                ` : ''}
+                                            </div>
+                                            <textarea id="messageInput" class="chat-input" placeholder="Type a message... (Enter to send, Shift+Enter for new line)" rows="1">${messageText}</textarea>
+                                            <button type="submit" class="send-button" ${!messageText.trim() ? 'disabled' : ''}>Send</button>
+                                        </form>
+                                    </div>
+                                ` : `
+                                    <div class="no-group-selected">
+                                        <div class="no-group-content">
+                                            <h2>Welcome to Nova Chat!</h2>
+                                            <p>Select a group from the sidebar or create a new one to start chatting.</p>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+                        sidebarVisible = !sidebarVisible;
+                        render();
+                    });
+
+                    document.querySelectorAll('.group-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const groupId = item.dataset.groupId;
+                            const group = this.groups.find(g => g.id === groupId);
+                            if (group) {
+                                this.selectedGroup = { id: groupId, name: group.name };
+                                this.loadMessages(groupId);
+                            }
+                        });
+                    });
+
+                    document.getElementById('joinGroupBtn')?.addEventListener('click', () => {
+                        this.showJoinGroup = !this.showJoinGroup;
+                        this.showCreateGroup = false;
+                        render();
+                    });
+
+                    document.getElementById('createGroupBtn')?.addEventListener('click', () => {
+                        this.showCreateGroup = !this.showCreateGroup;
+                        this.showJoinGroup = false;
+                        render();
+                    });
+
+                    document.getElementById('joinGroupForm')?.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        joinGroupId = document.getElementById('joinGroupSelect').value;
+                        joinGroupPassword = document.getElementById('joinPassword').value;
+                        const error = await this.joinGroup(joinGroupId, joinGroupPassword);
+                        if (error) {
+                            this.showError(error);
+                        } else {
+                            joinGroupPassword = '';
+                            joinGroupId = '';
+                            render();
+                        }
+                    });
+
+                    document.getElementById('createGroupForm')?.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        newGroupName = document.getElementById('newGroupName').value;
+                        newGroupPassword = document.getElementById('newGroupPassword').value;
+                        const error = await this.createGroup(newGroupName, newGroupPassword);
+                        if (error) {
+                            this.showError(error);
+                        } else {
+                            newGroupName = '';
+                            newGroupPassword = '';
+                            render();
+                        }
+                    });
+
+                    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                        this.logout();
+                    });
+
+                    const emojiBtn = document.getElementById('emojiBtn');
+                    const emojiPickerContainer = document.getElementById('emojiPickerContainer');
+                    
+                    if (emojiBtn) {
+                        emojiBtn.addEventListener('click', () => {
+                            this.showEmojiPicker = !this.showEmojiPicker;
+                            render();
+                        });
+                    }
+
+                    if (this.showEmojiPicker && emojiPickerContainer) {
+                        const picker = emojiPicker.cloneNode(true);
+                        picker.addEventListener('emoji-click', (e) => {
+                            const emoji = e.detail.unicode;
+                            const input = document.getElementById('messageInput');
+                            if (input) {
+                                const cursorPos = input.selectionStart || 0;
+                                messageText = messageText.substring(0, cursorPos) + emoji + messageText.substring(cursorPos);
+                                this.showEmojiPicker = false;
+                                render();
+                                setTimeout(() => {
+                                    input.focus();
+                                    input.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+                                }, 0);
+                            }
+                        });
+                        emojiPickerContainer.appendChild(picker);
+                    }
+
+                    const messageInput = document.getElementById('messageInput');
+                    if (messageInput) {
+                        messageInput.addEventListener('input', (e) => {
+                            messageText = e.target.value;
+                            e.target.style.height = 'auto';
+                            e.target.style.height = e.target.scrollHeight + 'px';
+                            const sendBtn = document.querySelector('.send-button');
+                            if (sendBtn) {
+                                sendBtn.disabled = !messageText.trim();
+                            }
+                        });
+
+                        messageInput.addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                document.getElementById('messageForm').dispatchEvent(new Event('submit'));
+                            }
+                        });
+                    }
+
+                    document.getElementById('messageForm')?.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        if (messageText.trim()) {
+                            await this.sendMessage(messageText);
+                            messageText = '';
+                            this.showEmojiPicker = false;
+                            render();
+                        }
+                    });
+
+                    document.addEventListener('click', (e) => {
+                        if (this.showEmojiPicker && !e.target.closest('.emoji-picker-wrapper')) {
+                            this.showEmojiPicker = false;
+                            render();
+                        }
+                    });
+                };
+
+                render();
+            }
         }
-        snap.docs.forEach(function(doc) {
-          var d = doc.data();
-          var name = d.name || 'Unnamed';
-          var row = document.createElement('div');
-          row.className = 'group-row' + (doc.id === currentGroupId ? ' selected' : '');
-          row.dataset.id = doc.id;
-          row.dataset.name = name;
-          row.textContent = name;
-          row.addEventListener('click', function() { selectGroup(doc.id, name); });
-          myGroupsList.appendChild(row);
-        });
-      })
-      .catch(function() { showToast('Could not load groups.', 'error'); });
-  }
 
-  function selectGroup(id, name) {
-    currentGroupId = id;
-    mainHead.textContent = name || 'Chat';
-    mainPlaceholder.style.display = 'none';
-    chatBox.classList.add('show');
-    myGroupsList.querySelectorAll('.group-row').forEach(function(r) {
-      r.classList.toggle('selected', r.dataset.id === id);
-    });
-    if (messagesUnsub) { messagesUnsub(); messagesUnsub = null; }
-    messagesEl.innerHTML = '';
-    var q = db.collection('groups').doc(id).collection('messages').orderBy('timestamp', 'asc');
-    messagesUnsub = q.onSnapshot(
-      function(snap) {
-        if (!snap) return;
-        snap.docChanges().forEach(function(ch) {
-          if (ch.type !== 'added') return;
-          var msg = ch.doc.data();
-          addMessage(ch.doc.id, msg, msg.senderId === currentUser.uid);
-        });
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      },
-      function() { showToast('Could not load messages.', 'error'); }
-    );
-  }
-
-  function addMessage(id, msg, isMine) {
-    var div = document.createElement('div');
-    div.className = 'msg' + (isMine ? ' mine' : '');
-    div.dataset.id = id;
-    var ts = msg.timestamp;
-    var date = (ts && typeof ts.toDate === 'function') ? ts.toDate() : new Date();
-    var timeStr = date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-    div.innerHTML = '<div class="msg-user">' + esc(msg.senderUsername || '?') + '</div><div class="msg-text">' + esc(msg.text || '') + '</div><div class="msg-time">' + esc(timeStr) + '</div>';
-    messagesEl.appendChild(div);
-  }
-
-  joinTrigger.addEventListener('click', function() {
-    if (joinListWrap.style.display === 'none') {
-      joinList.innerHTML = '';
-      joinListWrap.style.display = 'block';
-      joinPasswordWrap.style.display = 'none';
-      joinPasswordInput.value = '';
-      joinSelectedGroupId = null;
-      joinSelectedGroupName = null;
-      db.collection('groups').get()
-        .then(function(snap) {
-          joinList.innerHTML = '';
-          if (!snap || !snap.docs || snap.docs.length === 0) {
-            joinList.innerHTML = '<div class="sidebar-empty">No groups exist yet. Create one first.</div>';
-            return;
-          }
-          snap.docs.forEach(function(doc) {
-            var d = doc.data();
-            var name = d.name || 'Unnamed';
-            var row = document.createElement('div');
-            row.className = 'group-row';
-            row.textContent = name;
-            row.addEventListener('click', function() {
-              joinSelectedGroupId = doc.id;
-              joinSelectedGroupName = name;
-              joinPasswordWrap.style.display = 'block';
-              joinPasswordInput.value = '';
-              joinPasswordInput.focus();
-            });
-            joinList.appendChild(row);
-          });
-        })
-        .catch(function() { showToast('Could not load groups.', 'error'); });
-    } else {
-      joinListWrap.style.display = 'none';
-    }
-  });
-
-  function doJoinWithPassword(groupId, groupName, password) {
-    if (!currentUser || !groupId) return;
-    db.collection('groups').doc(groupId).get()
-      .then(function(snap) {
-        if (!snap || !snap.exists) { showToast('Group not found.', 'error'); return; }
-        var d = snap.data();
-        if (d.password !== password) { showToast('Wrong password.', 'error'); return; }
-        var members = d.members || [];
-        if (members.indexOf(currentUser.uid) >= 0) {
-          showToast('You are already in this group.', 'ok');
-          selectGroup(groupId, groupName);
-          return;
-        }
-        members.push(currentUser.uid);
-        return snap.ref.update({ members: members });
-      })
-      .then(function() {
-        if (!currentUser) return;
-        joinPasswordInput.value = '';
-        joinPasswordWrap.style.display = 'none';
-        joinListWrap.style.display = 'none';
-        showToast('Joined group.', 'ok');
-        loadMyGroups();
-        selectGroup(joinSelectedGroupId, joinSelectedGroupName);
-      })
-      .catch(function(err) {
-        if (err && err.message) showToast(err.message, 'error');
-        else showToast('Could not join.', 'error');
-      });
-  }
-
-  joinConfirmBtn.addEventListener('click', function() {
-    var p = joinPasswordInput.value;
-    if (!joinSelectedGroupId || !joinSelectedGroupName) { showToast('Select a group first.', 'error'); return; }
-    if (!validPassword(p)) { showToast('Password must be more than 5 characters and no spaces.', 'error'); return; }
-    doJoinWithPassword(joinSelectedGroupId, joinSelectedGroupName, p);
-  });
-
-  createBtn.addEventListener('click', function() {
-    var name = (createName.value || '').trim();
-    var p = createPass.value;
-    if (!name) { showToast('Enter group name.', 'error'); return; }
-    if (!validPassword(p)) { showToast('Password must be more than 5 characters and no spaces.', 'error'); return; }
-    db.collection('groups').add({
-      name: name,
-      password: p,
-      members: [currentUser.uid],
-      createdBy: currentUser.uid,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    })
-      .then(function(ref) {
-        createName.value = '';
-        createPass.value = '';
-        showToast('Group created.', 'ok');
-        loadMyGroups();
-        selectGroup(ref.id, name);
-      })
-      .catch(function() { showToast('Could not create group.', 'error'); });
-  });
-
-  function sendMessage() {
-    var text = (composeInput.value || '').trim();
-    if (!text || !currentGroupId || !currentUser) return;
-    composeInput.value = '';
-    db.collection('groups').doc(currentGroupId).collection('messages').add({
-      text: text,
-      senderId: currentUser.uid,
-      senderUsername: currentUsername || 'User',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(function() { showToast('Failed to send.', 'error'); });
-  }
-
-  sendBtn.addEventListener('click', sendMessage);
-  composeInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  EMOJIS.forEach(function(em) {
-    var s = document.createElement('span');
-    s.textContent = em;
-    s.setAttribute('role', 'button');
-    s.addEventListener('click', function() {
-      var ta = composeInput;
-      var start = ta.selectionStart;
-      var end = ta.selectionEnd;
-      ta.value = ta.value.slice(0, start) + em + ta.value.slice(end);
-      ta.selectionStart = ta.selectionEnd = start + em.length;
-      ta.focus();
-    });
-    emojiPanel.appendChild(s);
-  });
-  emojiBtn.addEventListener('click', function(ev) {
-    ev.stopPropagation();
-    emojiPanel.classList.toggle('show');
-  });
-  document.addEventListener('click', function() { emojiPanel.classList.remove('show'); });
-  emojiPanel.addEventListener('click', function(ev) { ev.stopPropagation(); });
-
-  if (sidebarToggle) {
-    sidebarToggle.addEventListener('click', function() {
-      sidebar.classList.toggle('collapsed');
-    });
-  }
-})();
-  </script>
+        const app = new NovaChat();
+    </script>
 </body>
 </html>
