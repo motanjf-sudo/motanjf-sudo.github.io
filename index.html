@@ -1,116 +1,1281 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Nova Chat</title>
-<style>
-/* === CSS SAME AS YOUR CODE – UNCHANGED === */
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);height:100vh}
-.auth-container{display:flex;justify-content:center;align-items:center;height:100vh}
-.auth-box{background:#fff;padding:40px;border-radius:20px;width:350px}
-.auth-tabs{display:flex;margin-bottom:20px}
-.auth-tab{flex:1;padding:10px;border:none;background:none;cursor:pointer}
-.auth-tab.active{border-bottom:2px solid #667eea;font-weight:bold}
-.auth-form{display:none}
-.auth-form.active{display:block}
-.auth-btn{width:100%;padding:12px;background:#667eea;color:#fff;border:none;border-radius:8px}
-.error-message{display:none;color:red;margin-bottom:10px}
-.error-message.show{display:block}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Chat - Real-time Group Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        /* Auth Screen */
+        .auth-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .auth-box h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            font-weight: bold;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Chat UI */
+        .chat-container {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: row;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #34495e;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1a252f;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 24px;
+            color: #667eea;
+        }
+
+        .sidebar-section {
+            padding: 15px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-section h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #95a5a6;
+            margin-bottom: 10px;
+        }
+
+        .group-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .group-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #34495e;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .group-item:hover {
+            background: #3d566e;
+        }
+
+        .group-item.active {
+            background: #667eea;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #3d566e;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+        }
+
+        .chat-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chat-header h2 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.own {
+            align-items: flex-end;
+        }
+
+        .message.other {
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .message.own .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.other .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .message-info {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+            padding: 0 4px;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .input-area {
+            background: white;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .emoji-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 20px;
+            font-size: 16px;
+            resize: none;
+            max-height: 100px;
+            font-family: inherit;
+        }
+
+        .message-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .emoji-panel {
+            position: absolute;
+            bottom: 80px;
+            left: 15px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .emoji-panel.active {
+            display: block;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .emoji-item {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .emoji-item:hover {
+            background: #f0f0f0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 200px;
+                overflow-y: auto;
+            }
+
+            .chat-container {
+                flex-direction: column;
+            }
+
+            .emoji-panel {
+                width: calc(100% - 30px);
+                left: 15px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="auth-container" id="authContainer">
-  <div class="auth-box">
-    <h2>Nova Chat</h2>
-
-    <div class="error-message" id="authError"></div>
-
-    <div class="auth-tabs">
-      <button class="auth-tab active" data-tab="login">Login</button>
-      <button class="auth-tab" data-tab="signup">Sign Up</button>
+    <!-- Auth Screen -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <h1>💬 Nova Chat</h1>
+            <div class="error-message" id="authError"></div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="signupUsername" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>Password (more than 5 characters, no spaces)</label>
+                    <input type="password" id="signupPassword" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="auth-btn">Sign Up</button>
+            </form>
+        </div>
     </div>
 
-    <form id="loginForm" class="auth-form active">
-      <input id="loginUsername" placeholder="Username" required /><br><br>
-      <input id="loginPassword" type="password" placeholder="Password" required /><br><br>
-      <button class="auth-btn">Login</button>
-    </form>
+    <!-- Chat UI -->
+    <div class="container">
+        <div class="chat-container" id="chatContainer">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Nova Chat</h2>
+                </div>
+                <div class="sidebar-section">
+                    <h3>My Groups</h3>
+                    <div class="group-list" id="myGroupsList">
+                        <div class="empty-state">
+                            <p>No groups yet</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <h3>Actions</h3>
+                    <button class="btn btn-primary" id="joinGroupBtn">Join Group</button>
+                    <button class="btn btn-secondary" id="createGroupBtn">Create Group</button>
+                </div>
+                <div class="sidebar-section" style="margin-top: auto; padding-top: 20px;">
+                    <button class="btn btn-danger" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+            <div class="main-chat">
+                <div class="chat-header">
+                    <h2 id="currentGroupName">Select a group to start chatting</h2>
+                </div>
+                <div class="messages-container" id="messagesContainer">
+                    <div class="empty-state">
+                        <h3>Welcome to Nova Chat!</h3>
+                        <p>Select or create a group to start messaging</p>
+                    </div>
+                </div>
+                <div class="input-area">
+                    <button class="emoji-btn" id="emojiBtn">😀</button>
+                    <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn">Send</button>
+                    <div class="emoji-panel" id="emojiPanel">
+                        <div class="emoji-grid" id="emojiGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <form id="signupForm" class="auth-form">
-      <input id="signupUsername" placeholder="Username" required /><br><br>
-      <input id="signupPassword" type="password" placeholder="Password" required /><br><br>
-      <button class="auth-btn">Sign Up</button>
-    </form>
-  </div>
-</div>
+    <!-- Create Group Modal -->
+    <div class="modal" id="createGroupModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeCreateModal">&times;</button>
+            <h3>Create New Group</h3>
+            <div class="error-message" id="createGroupError"></div>
+            <form id="createGroupForm">
+                <div class="form-group">
+                    <label>Group Name</label>
+                    <input type="text" id="groupNameInput" required>
+                </div>
+                <div class="form-group">
+                    <label>Group Password (more than 5 characters, no spaces)</label>
+                    <input type="password" id="groupPasswordInput" required>
+                </div>
+                <button type="submit" class="auth-btn">Create Group</button>
+            </form>
+        </div>
+    </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <!-- Join Group Modal -->
+    <div class="modal" id="joinGroupModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeJoinModal">&times;</button>
+            <h3>Join Group</h3>
+            <div class="error-message" id="joinGroupError"></div>
+            <div class="form-group">
+                <label>Select Group</label>
+                <select id="groupSelect" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px;">
+                    <option value="">Loading groups...</option>
+                </select>
+            </div>
+            <form id="joinGroupForm">
+                <div class="form-group">
+                    <label>Group Password</label>
+                    <input type="password" id="joinGroupPassword" required>
+                </div>
+                <button type="submit" class="auth-btn">Join Group</button>
+            </form>
+        </div>
+    </div>
 
-<script>
-/* ===== FIREBASE CONFIG (بجاش مال خودت) ===== */
-firebase.initializeApp({
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com"
-});
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-const auth = firebase.auth();
+    <script>
+        // ============================================
+        // FIREBASE CONFIGURATION
+        // ============================================
+        // REPLACE THIS WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-/* ====== FIX قطعی سوییچ تب‌ها ====== */
-function initAuthTabs() {
-  document.addEventListener("click", (e) => {
-    const tab = e.target.closest(".auth-tab");
-    if (!tab) return;
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
 
-    const name = tab.dataset.tab;
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let currentUser = null;
+        let currentGroupId = null;
+        let messageListener = null;
+        let groupsListener = null;
+        let allGroupsListener = null;
+        const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
 
-    document.querySelectorAll(".auth-tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".auth-form").forEach(f => f.classList.remove("active"));
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+                setTimeout(() => {
+                    errorEl.classList.remove('show');
+                }, 5000);
+            }
+        }
 
-    tab.classList.add("active");
-    document.getElementById(name + "Form").classList.add("active");
-  });
-}
+        function hideError(elementId) {
+            const errorEl = document.getElementById(elementId);
+            if (errorEl) {
+                errorEl.classList.remove('show');
+            }
+        }
 
-/* ===== LOGIN ===== */
-document.getElementById("loginForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const u = loginUsername.value.trim();
-  const p = loginPassword.value;
-  try {
-    await auth.signInWithEmailAndPassword(`${u}@nova.local`, p);
-    alert("Login OK");
-  } catch {
-    showError("Login failed");
-  }
-});
+        function validatePassword(password) {
+            if (!password || password.length <= 5) {
+                return 'Password must be more than 5 characters';
+            }
+            if (password.includes(' ')) {
+                return 'Password cannot contain spaces';
+            }
+            return null;
+        }
 
-/* ===== SIGNUP ===== */
-document.getElementById("signupForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const u = signupUsername.value.trim();
-  const p = signupPassword.value;
-  try {
-    await auth.createUserWithEmailAndPassword(`${u}@nova.local`, p);
-    alert("Signup OK");
-  } catch {
-    showError("Signup failed");
-  }
-});
+        function getTimeString(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
 
-function showError(msg){
-  const el=document.getElementById("authError");
-  el.textContent=msg;
-  el.classList.add("show");
-}
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
 
-/* ===== INIT ===== */
-document.addEventListener("DOMContentLoaded", initAuthTabs);
-</script>
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        function initAuth() {
+            // Tab switching
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tabName + 'Form').classList.add('active');
+                    hideError('authError');
+                });
+            });
 
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideError('authError');
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                if (!username || !password) {
+                    showError('authError', 'Please fill all fields');
+                    return;
+                }
+
+                try {
+                    const email = `${username}@nova.local`;
+                    await auth.signInWithEmailAndPassword(email, password);
+                } catch (error) {
+                    let message = 'Login failed';
+                    if (error.code === 'auth/user-not-found') {
+                        message = 'User not found. Please sign up first.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        message = 'Incorrect password';
+                    } else if (error.code === 'auth/invalid-email') {
+                        message = 'Invalid username';
+                    } else if (error.code === 'auth/network-request-failed') {
+                        message = 'Network error. Please check your connection.';
+                    }
+                    showError('authError', message);
+                }
+            });
+
+            // Signup form
+            document.getElementById('signupForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideError('authError');
+                const username = document.getElementById('signupUsername').value.trim();
+                const password = document.getElementById('signupPassword').value;
+
+                if (!username || !password) {
+                    showError('authError', 'Please fill all fields');
+                    return;
+                }
+
+                const passwordError = validatePassword(password);
+                if (passwordError) {
+                    showError('authError', passwordError);
+                    return;
+                }
+
+                try {
+                    const email = `${username}@nova.local`;
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    // Store username in database
+                    await database.ref(`users/${user.uid}`).set({
+                        username: username,
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    });
+                } catch (error) {
+                    let message = 'Sign up failed';
+                    if (error.code === 'auth/email-already-in-use') {
+                        message = 'Username already exists. Please login instead.';
+                    } else if (error.code === 'auth/weak-password') {
+                        message = 'Password is too weak';
+                    } else if (error.code === 'auth/network-request-failed') {
+                        message = 'Network error. Please check your connection.';
+                    }
+                    showError('authError', message);
+                }
+            });
+
+            // Auth state observer
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    try {
+                        const userSnapshot = await database.ref(`users/${user.uid}`).once('value');
+                        const userData = userSnapshot.val();
+                        if (!userData || !userData.username) {
+                            // Extract username from email
+                            const email = user.email;
+                            const username = email.replace('@nova.local', '');
+                            await database.ref(`users/${user.uid}`).set({
+                                username: username,
+                                createdAt: firebase.database.ServerValue.TIMESTAMP
+                            });
+                        }
+                        showChatUI();
+                        loadUserGroups();
+                    } catch (error) {
+                        console.error('Error loading user data:', error);
+                        showError('authError', 'Error loading user data');
+                    }
+                } else {
+                    currentUser = null;
+                    showAuthUI();
+                    cleanupListeners();
+                }
+            });
+        }
+
+        function showAuthUI() {
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('chatContainer').classList.remove('active');
+        }
+
+        function showChatUI() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('chatContainer').classList.add('active');
+        }
+
+        // ============================================
+        // GROUP MANAGEMENT
+        // ============================================
+        async function loadUserGroups() {
+            if (!currentUser) return;
+
+            try {
+                const userGroupsRef = database.ref(`userGroups/${currentUser.uid}`);
+                
+                if (groupsListener) {
+                    userGroupsRef.off('value', groupsListener);
+                }
+
+                groupsListener = userGroupsRef.on('value', async (snapshot) => {
+                    const userGroups = snapshot.val() || {};
+                    const groupIds = Object.keys(userGroups);
+                    
+                    const groupsListEl = document.getElementById('myGroupsList');
+                    groupsListEl.innerHTML = '';
+
+                    if (groupIds.length === 0) {
+                        groupsListEl.innerHTML = '<div class="empty-state"><p>No groups yet</p></div>';
+                        return;
+                    }
+
+                    // Load group details
+                    const groupsPromises = groupIds.map(async (groupId) => {
+                        const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
+                        return { id: groupId, ...groupSnapshot.val() };
+                    });
+
+                    const groups = await Promise.all(groupsPromises);
+                    
+                    groups.forEach(group => {
+                        if (group && group.name) {
+                            const groupItem = document.createElement('div');
+                            groupItem.className = 'group-item';
+                            groupItem.textContent = group.name;
+                            groupItem.dataset.groupId = group.id;
+                            groupItem.addEventListener('click', () => selectGroup(group.id, group.name));
+                            groupsListEl.appendChild(groupItem);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading user groups:', error);
+            }
+        }
+
+        async function createGroup() {
+            const name = document.getElementById('groupNameInput').value.trim();
+            const password = document.getElementById('groupPasswordInput').value;
+
+            if (!name || !password) {
+                showError('createGroupError', 'Please fill all fields');
+                return;
+            }
+
+            const passwordError = validatePassword(password);
+            if (passwordError) {
+                showError('createGroupError', passwordError);
+                return;
+            }
+
+            try {
+                const groupRef = database.ref('groups').push();
+                const groupId = groupRef.key;
+
+                await groupRef.set({
+                    name: name,
+                    password: password,
+                    creator: currentUser.uid,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                // Add user to group
+                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
+                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
+
+                document.getElementById('createGroupModal').classList.remove('active');
+                document.getElementById('createGroupForm').reset();
+                hideError('createGroupError');
+
+                // Select the new group
+                selectGroup(groupId, name);
+            } catch (error) {
+                console.error('Error creating group:', error);
+                showError('createGroupError', 'Failed to create group. Please try again.');
+            }
+        }
+
+        async function loadAllGroups() {
+            try {
+                const groupsRef = database.ref('groups');
+                
+                if (allGroupsListener) {
+                    groupsRef.off('value', allGroupsListener);
+                }
+
+                allGroupsListener = groupsRef.on('value', (snapshot) => {
+                    const allGroups = snapshot.val() || {};
+                    const selectEl = document.getElementById('groupSelect');
+                    selectEl.innerHTML = '';
+
+                    const groupIds = Object.keys(allGroups);
+                    if (groupIds.length === 0) {
+                        selectEl.innerHTML = '<option value="">No groups available</option>';
+                        return;
+                    }
+
+                    groupIds.forEach(groupId => {
+                        const group = allGroups[groupId];
+                        if (group && group.name) {
+                            const option = document.createElement('option');
+                            option.value = groupId;
+                            option.textContent = group.name;
+                            selectEl.appendChild(option);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading all groups:', error);
+            }
+        }
+
+        async function joinGroup() {
+            const groupId = document.getElementById('groupSelect').value;
+            const password = document.getElementById('joinGroupPassword').value;
+
+            if (!groupId || !password) {
+                showError('joinGroupError', 'Please select a group and enter password');
+                return;
+            }
+
+            try {
+                // Check if already joined
+                const userGroupSnapshot = await database.ref(`userGroups/${currentUser.uid}/${groupId}`).once('value');
+                if (userGroupSnapshot.exists()) {
+                    showError('joinGroupError', 'You are already a member of this group');
+                    return;
+                }
+
+                // Verify password
+                const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
+                const group = groupSnapshot.val();
+
+                if (!group) {
+                    showError('joinGroupError', 'Group not found');
+                    return;
+                }
+
+                if (group.password !== password) {
+                    showError('joinGroupError', 'Incorrect password');
+                    return;
+                }
+
+                // Add user to group
+                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
+                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
+
+                document.getElementById('joinGroupModal').classList.remove('active');
+                document.getElementById('joinGroupForm').reset();
+                hideError('joinGroupError');
+
+                // Select the joined group
+                selectGroup(groupId, group.name);
+            } catch (error) {
+                console.error('Error joining group:', error);
+                showError('joinGroupError', 'Failed to join group. Please try again.');
+            }
+        }
+
+        // ============================================
+        // MESSAGING
+        // ============================================
+        function selectGroup(groupId, groupName) {
+            if (currentGroupId === groupId) return;
+
+            // Update UI
+            currentGroupId = groupId;
+            document.getElementById('currentGroupName').textContent = groupName;
+            
+            // Update active group in sidebar
+            document.querySelectorAll('.group-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.groupId === groupId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Cleanup old listener
+            if (messageListener) {
+                database.ref(`messages/${groupId}`).off('child_added', messageListener);
+                messageListener = null;
+            }
+
+            // Load messages
+            loadMessages(groupId);
+        }
+
+        async function loadMessages(groupId) {
+            if (!groupId || !currentUser) return;
+
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '';
+
+            try {
+                const messagesRef = database.ref(`messages/${groupId}`);
+                
+                messageListener = messagesRef.on('child_added', async (snapshot) => {
+                    const message = snapshot.val();
+                    if (!message) return;
+
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${message.senderId === currentUser.uid ? 'own' : 'other'}`;
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = 'message-bubble';
+                    bubble.textContent = message.text || '';
+
+                    const info = document.createElement('div');
+                    info.className = 'message-info';
+
+                    if (message.senderId !== currentUser.uid) {
+                        const sender = document.createElement('div');
+                        sender.className = 'message-sender';
+                        try {
+                            const userSnapshot = await database.ref(`users/${message.senderId}`).once('value');
+                            const userData = userSnapshot.val();
+                            sender.textContent = userData ? userData.username : 'Unknown';
+                        } catch (error) {
+                            sender.textContent = 'Unknown';
+                        }
+                        messageEl.appendChild(sender);
+                    }
+
+                    messageEl.appendChild(bubble);
+                    info.textContent = getTimeString(message.timestamp);
+                    messageEl.appendChild(info);
+
+                    messagesContainer.appendChild(messageEl);
+                    scrollToBottom();
+                });
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                messagesContainer.innerHTML = '<div class="empty-state"><p>Error loading messages</p></div>';
+            }
+        }
+
+        async function sendMessage() {
+            if (!currentGroupId || !currentUser) {
+                alert('Please select a group first');
+                return;
+            }
+
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            try {
+                const messageRef = database.ref(`messages/${currentGroupId}`).push();
+                await messageRef.set({
+                    text: text,
+                    senderId: currentUser.uid,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+
+                input.value = '';
+                input.style.height = 'auto';
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        // ============================================
+        // EMOJI SUPPORT
+        // ============================================
+        function initEmojiPanel() {
+            const emojiGrid = document.getElementById('emojiGrid');
+            emojis.forEach(emoji => {
+                const emojiItem = document.createElement('div');
+                emojiItem.className = 'emoji-item';
+                emojiItem.textContent = emoji;
+                emojiItem.addEventListener('click', () => insertEmoji(emoji));
+                emojiGrid.appendChild(emojiItem);
+            });
+
+            document.getElementById('emojiBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const panel = document.getElementById('emojiPanel');
+                panel.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                const panel = document.getElementById('emojiPanel');
+                const btn = document.getElementById('emojiBtn');
+                if (!panel.contains(e.target) && e.target !== btn) {
+                    panel.classList.remove('active');
+                }
+            });
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('messageInput');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+            input.value = text.substring(0, start) + emoji + text.substring(end);
+            input.selectionStart = input.selectionEnd = start + emoji.length;
+            input.focus();
+        }
+
+        // ============================================
+        // EVENT HANDLERS
+        // ============================================
+        function initEventHandlers() {
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                if (confirm('Are you sure you want to logout?')) {
+                    try {
+                        await auth.signOut();
+                    } catch (error) {
+                        console.error('Error logging out:', error);
+                    }
+                }
+            });
+
+            // Create group modal
+            document.getElementById('createGroupBtn').addEventListener('click', () => {
+                document.getElementById('createGroupModal').classList.add('active');
+                loadAllGroups();
+            });
+
+            document.getElementById('closeCreateModal').addEventListener('click', () => {
+                document.getElementById('createGroupModal').classList.remove('active');
+                document.getElementById('createGroupForm').reset();
+                hideError('createGroupError');
+            });
+
+            document.getElementById('createGroupForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                createGroup();
+            });
+
+            // Join group modal
+            document.getElementById('joinGroupBtn').addEventListener('click', () => {
+                document.getElementById('joinGroupModal').classList.add('active');
+                loadAllGroups();
+            });
+
+            document.getElementById('closeJoinModal').addEventListener('click', () => {
+                document.getElementById('joinGroupModal').classList.remove('active');
+                document.getElementById('joinGroupForm').reset();
+                hideError('joinGroupError');
+            });
+
+            document.getElementById('joinGroupForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                joinGroup();
+            });
+
+            // Send message
+            document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+            document.getElementById('messageInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Auto-resize textarea
+            document.getElementById('messageInput').addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            });
+        }
+
+        // ============================================
+        // CLEANUP
+        // ============================================
+        function cleanupListeners() {
+            if (messageListener) {
+                if (currentGroupId) {
+                    database.ref(`messages/${currentGroupId}`).off('child_added', messageListener);
+                }
+                messageListener = null;
+            }
+
+            if (groupsListener) {
+                if (currentUser) {
+                    database.ref(`userGroups/${currentUser.uid}`).off('value', groupsListener);
+                }
+                groupsListener = null;
+            }
+
+            if (allGroupsListener) {
+                database.ref('groups').off('value', allGroupsListener);
+                allGroupsListener = null;
+            }
+
+            currentGroupId = null;
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function init() {
+            try {
+                initAuth();
+                initEventHandlers();
+                initEmojiPanel();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('authError', 'Application initialization failed. Please refresh the page.');
+            }
+        }
+
+        // Start app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
 </body>
 </html>
