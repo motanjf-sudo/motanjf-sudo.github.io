@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amirtaha - Real-time Group Chat</title>
+    <title>Nova Chat - چت گروهی آنلاین</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -11,70 +17,101 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #475569;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-primary);
         }
 
         .container {
-            display: flex;
-            height: 100vh;
+            width: 100%;
             max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+            height: 90vh;
+            background: var(--bg-primary);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Auth Screen */
         .auth-container {
             display: flex;
-            width: 100%;
-            height: 100vh;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            padding: 20px;
         }
 
         .auth-box {
-            background: white;
+            background: var(--bg-secondary);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 400px;
+            box-shadow: 0 10px 40px var(--shadow);
+            width: 100%;
+            max-width: 450px;
         }
 
-        .auth-box h1 {
+        .auth-header {
             text-align: center;
-            color: #667eea;
             margin-bottom: 30px;
-            font-size: 32px;
+        }
+
+        .auth-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
 
         .auth-tabs {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--bg-tertiary);
+            padding: 5px;
+            border-radius: 12px;
         }
 
         .auth-tab {
             flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
+            padding: 12px;
+            background: transparent;
             border: none;
-            background: none;
-            font-size: 16px;
-            color: #666;
-            transition: all 0.3s;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .auth-tab.active {
-            color: #667eea;
-            border-bottom: 2px solid #667eea;
-            font-weight: bold;
+            background: var(--primary);
+            color: white;
         }
 
         .auth-form {
@@ -92,63 +129,74 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: #333;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
-        }
-
-        .auth-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .auth-btn:active {
-            transform: translateY(0);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .error-message {
-            background: #fee;
-            color: #c33;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
             padding: 12px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-top: 10px;
             display: none;
+            font-size: 0.9rem;
         }
 
         .error-message.show {
             display: block;
         }
 
-        /* Chat UI */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Chat Screen */
         .chat-container {
             display: none;
-            width: 100%;
-            height: 100vh;
+            height: 100%;
             flex-direction: row;
         }
 
@@ -156,296 +204,362 @@
             display: flex;
         }
 
+        /* Sidebar */
         .sidebar {
-            width: 300px;
-            background: #2c3e50;
-            color: white;
+            width: 320px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #34495e;
+            overflow: hidden;
         }
 
         .sidebar-header {
             padding: 20px;
-            background: #1a252f;
-            border-bottom: 1px solid #34495e;
-        }
-
-        .sidebar-header h2 {
-            font-size: 24px;
-            color: #667eea;
-        }
-
-        .sidebar-section {
-            padding: 15px;
-            border-bottom: 1px solid #34495e;
-        }
-
-        .sidebar-section h3 {
-            font-size: 14px;
-            text-transform: uppercase;
-            color: #95a5a6;
-            margin-bottom: 10px;
-        }
-
-        .group-list {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .group-item {
-            padding: 10px;
-            margin: 5px 0;
-            background: #34495e;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .group-item:hover {
-            background: #3d566e;
-        }
-
-        .group-item.active {
-            background: #667eea;
-        }
-
-        .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-            width: 100%;
-            margin: 5px 0;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #34495e;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #3d566e;
-        }
-
-        .btn-danger {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c0392b;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .modal.active {
+        .sidebar-header h2 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+        }
+
+        .user-info {
             display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
         }
 
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .close-btn {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 24px;
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
             cursor: pointer;
-            color: #999;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
+        .logout-btn:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .sidebar-actions {
+            padding: 15px 20px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .groups-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .groups-list h3 {
+            padding: 10px 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .group-item {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .group-item:hover {
+            background: var(--bg-primary);
+            transform: translateX(-5px);
+        }
+
+        .group-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .group-name {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .group-menu {
+            position: relative;
+        }
+
+        .group-menu-btn {
+            padding: 5px 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .group-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .group-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px;
+            min-width: 150px;
+            box-shadow: 0 5px 20px var(--shadow);
+            display: none;
+            z-index: 100;
+        }
+
+        .group-menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-item {
+            padding: 10px 15px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .menu-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .menu-item.danger {
+            color: var(--danger);
+        }
+
+        .menu-item.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Main Chat Area */
         .main-chat {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #f8f9fa;
+            background: var(--bg-primary);
         }
 
         .chat-header {
-            background: white;
             padding: 20px;
-            border-bottom: 1px solid #eee;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
         }
 
         .chat-header h2 {
-            color: #333;
-            font-size: 20px;
+            font-size: 1.5rem;
+            color: var(--text-primary);
         }
 
         .messages-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .message {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .message.own {
-            align-items: flex-end;
-        }
-
-        .message.other {
-            align-items: flex-start;
-        }
-
-        .message-bubble {
             max-width: 70%;
             padding: 12px 16px;
             border-radius: 18px;
             word-wrap: break-word;
-            white-space: pre-wrap;
+            animation: slideIn 0.3s ease;
         }
 
-        .message.own .message-bubble {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.own {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             border-bottom-right-radius: 4px;
         }
 
-        .message.other .message-bubble {
-            background: white;
-            color: #333;
+        .message.other {
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .message-info {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-            padding: 0 4px;
+        .message-header {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+            font-weight: 600;
         }
 
-        .message-sender {
-            font-weight: bold;
-            margin-bottom: 4px;
-            font-size: 12px;
-            color: #667eea;
+        .message-content {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
         }
 
         .input-area {
-            background: white;
-            padding: 15px;
-            border-top: 1px solid #eee;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .input-wrapper {
             display: flex;
-            align-items: center;
             gap: 10px;
+            align-items: flex-end;
             position: relative;
         }
 
         .emoji-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
             cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            min-width: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .emoji-btn:hover {
-            background: #f0f0f0;
+            background: var(--primary);
+            border-color: var(--primary);
         }
 
         .message-input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 20px;
-            font-size: 16px;
-            resize: none;
-            max-height: 100px;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
             font-family: inherit;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: all 0.3s ease;
         }
 
         .message-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .send-btn {
             padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
         }
 
         .send-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
         }
 
-        .send-btn:active {
-            transform: translateY(0);
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
+        /* Emoji Panel */
         .emoji-panel {
             position: absolute;
-            bottom: 80px;
-            left: 15px;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 12px;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 15px;
             padding: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none;
-            width: 300px;
-            max-height: 200px;
+            width: 350px;
+            max-height: 300px;
             overflow-y: auto;
-            z-index: 100;
+            box-shadow: 0 10px 40px var(--shadow);
+            display: none;
+            z-index: 1000;
         }
 
-        .emoji-panel.active {
+        .emoji-panel.show {
             display: block;
         }
 
@@ -456,48 +570,107 @@
         }
 
         .emoji-item {
-            font-size: 24px;
-            cursor: pointer;
             padding: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            cursor: pointer;
             text-align: center;
-            border-radius: 6px;
-            transition: background 0.2s;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
         }
 
         .emoji-item:hover {
-            background: #f0f0f0;
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px var(--shadow);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            padding: 10px 20px;
+            background: var(--danger);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
         }
 
         .empty-state {
             text-align: center;
             padding: 40px;
-            color: #999;
+            color: var(--text-secondary);
         }
 
         .empty-state h3 {
             margin-bottom: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                max-height: 200px;
-                overflow-y: auto;
-            }
-
-            .chat-container {
-                flex-direction: column;
-            }
-
-            .emoji-panel {
-                width: calc(100% - 30px);
-                left: 15px;
-            }
+            color: var(--text-primary);
         }
 
         /* Scrollbar */
@@ -506,116 +679,178 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-tertiary);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #888;
+            background: var(--border);
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .chat-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: 40%;
+            }
+
+            .main-chat {
+                height: 60%;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .emoji-panel {
+                width: 100%;
+                left: 0;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Auth Screen -->
-    <div class="auth-container" id="authContainer">
-        <div class="auth-box">
-            <h1>💬 Amirtaha Chat</h1>
-            <div class="error-message" id="authError"></div>
-            <div class="auth-tabs">
-                <button type="button" class="auth-tab active" data-tab="login">Login</button>
-        q       <button type="button" class="auth-tab" data-tab="signup">Sign Up</button>
-            </div>
-            <form class="auth-form active" id="loginForm">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="loginUsername" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="auth-btn">Login</button>
-            </form>
-            <form class="auth-form" id="signupForm">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="signupUsername" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label>Password (more than 5 characters, no spaces)</label>
-                    <input type="password" id="signupPassword" required autocomplete="new-password">
-                </div>
-                <button type="submit" class="auth-btn">Sign Up</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Chat UI -->
     <div class="container">
+        <div class="auth-container" id="authContainer">
+            <div class="auth-box">
+                <div class="auth-header">
+                    <h1>🌟 Nova Chat</h1>
+                    <p style="color: var(--text-secondary);">چت گروهی آنلاین و امن</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">ورود</button>
+                    <button class="auth-tab" data-tab="signup">ثبت نام</button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm">
+                    <div class="form-group">
+                        <label>نام کاربری</label>
+                        <input type="text" id="loginUsername" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>رمز عبور</label>
+                        <input type="password" id="loginPassword" required autocomplete="current-password">
+                    </div>
+                    <div class="error-message" id="loginError"></div>
+                    <button type="submit" class="btn">ورود</button>
+                </form>
+
+                <!-- Sign Up Form -->
+                <form class="auth-form" id="signupForm">
+                    <div class="form-group">
+                        <label>نام کاربری</label>
+                        <input type="text" id="signupUsername" required autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>رمز عبور (حداقل ۶ کاراکتر)</label>
+                        <input type="password" id="signupPassword" required autocomplete="new-password">
+                    </div>
+                    <div class="error-message" id="signupError"></div>
+                    <button type="submit" class="btn">ثبت نام</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
         <div class="chat-container" id="chatContainer">
+            <!-- Sidebar -->
             <div class="sidebar">
                 <div class="sidebar-header">
-                    <h2>Amirtaha Chat</h2>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <div>
+                            <div style="font-weight: 600;" id="userDisplayName">کاربر</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">آنلاین</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">خروج</button>
                 </div>
-                <div class="sidebar-section">
-                    <h3>My Groups</h3>
-                    <div class="group-list" id="myGroupsList">
+
+                <div class="sidebar-actions">
+                    <button class="action-btn" id="createGroupBtn">➕ گروه جدید</button>
+                    <button class="action-btn" id="joinGroupBtn">🔗 پیوستن</button>
+                </div>
+
+                <div class="groups-list">
+                    <h3>گروه‌های من</h3>
+                    <div id="groupsList">
                         <div class="empty-state">
-                            <p>No groups yet</p>
+                            <h3>هنوز گروهی وجود ندارد</h3>
+                            <p>یک گروه جدید بسازید یا به گروهی بپیوندید</p>
                         </div>
                     </div>
                 </div>
-                <div class="sidebar-section">
-                    <h3>Actions</h3>
-                    <button class="btn btn-primary" id="joinGroupBtn">Join Group</button>
-                    <button class="btn btn-secondary" id="createGroupBtn">Create Group</button>
-                </div>
-                <div class="sidebar-section" style="margin-top: auto; padding-top: 20px;">
-                    <button class="btn btn-danger" id="logoutBtn">Logout</button>
-                </div>
             </div>
+
+            <!-- Main Chat Area -->
             <div class="main-chat">
                 <div class="chat-header">
-                    <h2 id="currentGroupName">Select a group to start chatting</h2>
+                    <h2 id="currentGroupName">گروهی انتخاب نشده</h2>
                 </div>
+
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
-                        <h3>Welcome to Amirtaha Chat!</h3>
-                        <p>Select or create a group to start messaging</p>
+                        <h3>گروهی را انتخاب کنید</h3>
+                        <p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p>
                     </div>
                 </div>
+
                 <div class="input-area">
-                    <button class="emoji-btn" id="emojiBtn">😀</button>
-                    <textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn">Send</button>
-                    <div class="emoji-panel" id="emojiPanel">
-                        <div class="emoji-grid" id="emojiGrid"></div>
+                    <div class="input-wrapper" style="position: relative;">
+                        <button class="emoji-btn" id="emojiBtn">😊</button>
+                        <div class="emoji-panel" id="emojiPanel">
+                            <div class="emoji-grid" id="emojiGrid"></div>
+                        </div>
+                        <textarea 
+                            class="message-input" 
+                            id="messageInput" 
+                            placeholder="پیام خود را بنویسید..."
+                            rows="1"
+                        ></textarea>
+                        <button class="send-btn" id="sendBtn">ارسال</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modals -->
     <!-- Create Group Modal -->
     <div class="modal" id="createGroupModal">
         <div class="modal-content">
-            <button class="close-btn" id="closeCreateModal">&times;</button>
-            <h3>Create New Group</h3>
-            <div class="error-message" id="createGroupError"></div>
+            <div class="modal-header">
+                <h3>ایجاد گروه جدید</h3>
+            </div>
             <form id="createGroupForm">
                 <div class="form-group">
-                    <label>Group Name</label>
+                    <label>نام گروه</label>
                     <input type="text" id="groupNameInput" required>
                 </div>
                 <div class="form-group">
-                    <label>Group Password (more than 5 characters, no spaces)</label>
+                    <label>رمز گروه (حداقل ۶ کاراکتر)</label>
                     <input type="password" id="groupPasswordInput" required>
                 </div>
-                <button type="submit" class="auth-btn">Create Group</button>
+                <div class="error-message" id="createGroupError"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelCreateGroup">انصراف</button>
+                    <button type="submit" class="btn">ایجاد</button>
+                </div>
             </form>
         </div>
     </div>
@@ -623,35 +858,48 @@
     <!-- Join Group Modal -->
     <div class="modal" id="joinGroupModal">
         <div class="modal-content">
-            <button class="close-btn" id="closeJoinModal">&times;</button>
-            <h3>Join Group</h3>
-            <div class="error-message" id="joinGroupError"></div>
-            <div class="form-group">
-                <label>Select Group</label>
-                <select id="groupSelect" style="width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px;">
-                    <option value="">Loading groups...</option>
-                </select>
+            <div class="modal-header">
+                <h3>پیوستن به گروه</h3>
             </div>
             <form id="joinGroupForm">
                 <div class="form-group">
-                    <label>Group Password</label>
+                    <label>انتخاب گروه</label>
+                    <select id="joinGroupSelect" style="width: 100%; padding: 12px 16px; background: var(--bg-tertiary); border: 2px solid var(--border); border-radius: 10px; color: var(--text-primary); font-size: 1rem;">
+                        <option value="">-- انتخاب کنید --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>رمز گروه</label>
                     <input type="password" id="joinGroupPassword" required>
                 </div>
-                <button type="submit" class="auth-btn">Join Group</button>
+                <div class="error-message" id="joinGroupError"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelJoinGroup">انصراف</button>
+                    <button type="submit" class="btn">پیوستن</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteGroupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ حذف گروه</h3>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                آیا مطمئن هستید که می‌خواهید این گروه را حذف کنید؟ این عمل غیرقابل بازگشت است و تمام پیام‌ها پاک خواهند شد.
+            </p>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="cancelDeleteGroup">انصراف</button>
+                <button type="button" class="btn-danger" id="confirmDeleteGroup">حذف گروه</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // ============================================
-        // FIREBASE CONFIGURATION
-        // ============================================
-        // REPLACE THIS WITH YOUR FIREBASE CONFIG
+        // Firebase Configuration
+        // ⚠️ IMPORTANT: Replace with your Firebase config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_AUTH_DOMAIN",
@@ -667,19 +915,18 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // ============================================
-        // GLOBAL STATE
-        // ============================================
+        // App State
         let currentUser = null;
         let currentGroupId = null;
-        let messageListener = null;
-        let groupsListener = null;
-        let allGroupsListener = null;
+        let currentGroupRef = null;
+        let messagesRef = null;
+        let groupsRef = null;
+        let userGroupsRef = null;
+
+        // Emoji List
         const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'];
 
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
+        // Utility Functions
         function showError(elementId, message) {
             const errorEl = document.getElementById(elementId);
             if (errorEl) {
@@ -699,583 +946,637 @@
         }
 
         function validatePassword(password) {
-            if (!password || password.length <= 5) {
-                return 'Password must be more than 5 characters';
+            if (password.length < 6) {
+                return { valid: false, message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' };
             }
             if (password.includes(' ')) {
-                return 'Password cannot contain spaces';
+                return { valid: false, message: 'رمز عبور نباید شامل فاصله باشد' };
             }
-            return null;
+            return { valid: true };
         }
 
-        function getTimeString(timestamp) {
+        function formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
             return `${hours}:${minutes}`;
         }
 
-        function scrollToBottom() {
-            const container = document.getElementById('messagesContainer');
-            if (container) {
-                container.scrollTop = container.scrollHeight;
+        function getUsernameFromEmail(email) {
+            return email.replace('@nova.local', '');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auth Tab Switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(`${tabName}Form`).classList.add('active');
+                
+                hideError('loginError');
+                hideError('signupError');
+            });
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError('loginError');
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showError('loginError', 'لطفا تمام فیلدها را پر کنید');
+                return;
             }
-        }
+            
+            const email = `${username}@nova.local`;
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                await loadUserData(userCredential.user);
+                showChatScreen();
+            } catch (error) {
+                let errorMessage = 'خطا در ورود';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage = 'کاربری با این نام کاربری یافت نشد';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'رمز عبور اشتباه است';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'نام کاربری نامعتبر است';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'خطا در اتصال به اینترنت';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'تعداد تلاش‌های ناموفق زیاد است. لطفا کمی صبر کنید';
+                        break;
+                }
+                showError('loginError', errorMessage);
+            }
+        });
 
-        // ============================================
-        // AUTHENTICATION
-        // ============================================
-        function initAuth() {
-            // Tab switching
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabName = tab.dataset.tab;
-                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById(tabName + 'Form').classList.add('active');
-                    hideError('authError');
+        // Sign Up
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError('signupError');
+            
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            
+            if (!username || !password) {
+                showError('signupError', 'لطفا تمام فیلدها را پر کنید');
+                return;
+            }
+            
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.valid) {
+                showError('signupError', passwordValidation.message);
+                return;
+            }
+            
+            const email = `${username}@nova.local`;
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                await database.ref(`users/${userCredential.user.uid}`).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-            });
-
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                hideError('authError');
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value;
-
-                if (!username || !password) {
-                    showError('authError', 'Please fill all fields');
-                    return;
+                
+                await loadUserData(userCredential.user);
+                showChatScreen();
+            } catch (error) {
+                let errorMessage = 'خطا در ثبت نام';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage = 'این نام کاربری قبلا استفاده شده است';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage = 'رمز عبور ضعیف است';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage = 'نام کاربری نامعتبر است';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'خطا در اتصال به اینترنت';
+                        break;
                 }
+                showError('signupError', errorMessage);
+            }
+        });
 
-                try {
-                    const email = `${username}@Amirtaha.local`;
-                    await auth.signInWithEmailAndPassword(email, password);
-                } catch (error) {
-                    let message = 'Login failed';
-                    if (error.code === 'auth/user-not-found') {
-                        message = 'User not found. Please sign up first.';
-                    } else if (error.code === 'auth/wrong-password') {
-                        message = 'Incorrect password';
-                    } else if (error.code === 'auth/invalid-email') {
-                        message = 'Invalid username';
-                    } else if (error.code === 'auth/network-request-failed') {
-                        message = 'Network error. Please check your connection.';
-                    }
-                    showError('authError', message);
-                }
-            });
-
-            // Signup form
-            document.getElementById('signupForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                hideError('authError');
-                const username = document.getElementById('signupUsername').value.trim();
-                const password = document.getElementById('signupPassword').value;
-
-                if (!username || !password) {
-                    showError('authError', 'Please fill all fields');
-                    return;
-                }
-
-                const passwordError = validatePassword(password);
-                if (passwordError) {
-                    showError('authError', passwordError);
-                    return;
-                }
-
-                try {
-                    const email = `${username}@Amirtaha.local`;
-                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                    const user = userCredential.user;
-                    
-                    // Store username in database
-                    await database.ref(`users/${user.uid}`).set({
-                        username: username,
-                        createdAt: firebase.database.ServerValue.TIMESTAMP
-                    });
-                } catch (error) {
-                    let message = 'Sign up failed';
-                    if (error.code === 'auth/email-already-in-use') {
-                        message = 'Username already exists. Please login instead.';
-                    } else if (error.code === 'auth/weak-password') {
-                        message = 'Password is too weak';
-                    } else if (error.code === 'auth/network-request-failed') {
-                        message = 'Network error. Please check your connection.';
-                    }
-                    showError('authError', message);
-                }
-            });
-
-            // Auth state observer
-            auth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    currentUser = user;
-                    try {
-                        const userSnapshot = await database.ref(`users/${user.uid}`).once('value');
-                        const userData = userSnapshot.val();
-                        if (!userData || !userData.username) {
-                            // Extract username from email
-                            const email = user.email;
-                            const username = email.replace('@Amirtaha.local', '');
-                            await database.ref(`users/${user.uid}`).set({
-                                username: username,
-                                createdAt: firebase.database.ServerValue.TIMESTAMP
-                            });
-                        }
-                        showChatUI();
-                        loadUserGroups();
-                    } catch (error) {
-                        console.error('Error loading user data:', error);
-                        showError('authError', 'Error loading user data');
-                    }
-                } else {
-                    currentUser = null;
-                    showAuthUI();
-                    cleanupListeners();
-                }
-            });
+        // Load User Data
+        async function loadUserData(user) {
+            currentUser = user;
+            const userData = await database.ref(`users/${user.uid}`).once('value');
+            const username = userData.val()?.username || getUsernameFromEmail(user.email);
+            
+            document.getElementById('userDisplayName').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            
+            loadUserGroups();
         }
 
-        function showAuthUI() {
-            document.getElementById('authContainer').style.display = 'flex';
-            document.getElementById('chatContainer').classList.remove('active');
-        }
-
-        function showChatUI() {
+        // Show Chat Screen
+        function showChatScreen() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('chatContainer').classList.add('active');
         }
 
-        // ============================================
-        // GROUP MANAGEMENT
-        // ============================================
-        async function loadUserGroups() {
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if (confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')) {
+                if (messagesRef) {
+                    messagesRef.off();
+                    messagesRef = null;
+                }
+                if (currentGroupRef) {
+                    currentGroupRef.off();
+                    currentGroupRef = null;
+                }
+                if (groupsRef) {
+                    groupsRef.off();
+                    groupsRef = null;
+                }
+                if (userGroupsRef) {
+                    userGroupsRef.off();
+                    userGroupsRef = null;
+                }
+                
+                await auth.signOut();
+                currentUser = null;
+                currentGroupId = null;
+                
+                document.getElementById('authContainer').style.display = 'flex';
+                document.getElementById('chatContainer').classList.remove('active');
+                
+                document.getElementById('loginForm').reset();
+                document.getElementById('signupForm').reset();
+            }
+        });
+
+        // Load User Groups
+        function loadUserGroups() {
             if (!currentUser) return;
-
-            try {
-                const userGroupsRef = database.ref(`userGroups/${currentUser.uid}`);
+            
+            userGroupsRef = database.ref(`userGroups/${currentUser.uid}`);
+            userGroupsRef.on('value', (snapshot) => {
+                const userGroups = snapshot.val() || {};
+                const groupIds = Object.keys(userGroups);
                 
-                if (groupsListener) {
-                    userGroupsRef.off('value', groupsListener);
+                if (groupIds.length === 0) {
+                    document.getElementById('groupsList').innerHTML = `
+                        <div class="empty-state">
+                            <h3>هنوز گروهی وجود ندارد</h3>
+                            <p>یک گروه جدید بسازید یا به گروهی بپیوندید</p>
+                        </div>
+                    `;
+                    return;
                 }
-
-                groupsListener = userGroupsRef.on('value', async (snapshot) => {
-                    const userGroups = snapshot.val() || {};
-                    const groupIds = Object.keys(userGroups);
-                    
-                    const groupsListEl = document.getElementById('myGroupsList');
-                    groupsListEl.innerHTML = '';
-
-                    if (groupIds.length === 0) {
-                        groupsListEl.innerHTML = '<div class="empty-state"><p>No groups yet</p></div>';
-                        return;
-                    }
-
-                    // Load group details
-                    const groupsPromises = groupIds.map(async (groupId) => {
-                        const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
-                        return { id: groupId, ...groupSnapshot.val() };
-                    });
-
-                    const groups = await Promise.all(groupsPromises);
-                    
-                    groups.forEach(group => {
-                        if (group && group.name) {
-                            const groupItem = document.createElement('div');
-                            groupItem.className = 'group-item';
-                            groupItem.textContent = group.name;
-                            groupItem.dataset.groupId = group.id;
-                            groupItem.addEventListener('click', () => selectGroup(group.id, group.name));
-                            groupsListEl.appendChild(groupItem);
-                        }
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading user groups:', error);
-            }
-        }
-
-        async function createGroup() {
-            const name = document.getElementById('groupNameInput').value.trim();
-            const password = document.getElementById('groupPasswordInput').value;
-
-            if (!name || !password) {
-                showError('createGroupError', 'Please fill all fields');
-                return;
-            }
-
-            const passwordError = validatePassword(password);
-            if (passwordError) {
-                showError('createGroupError', passwordError);
-                return;
-            }
-
-            try {
-                const groupRef = database.ref('groups').push();
-                const groupId = groupRef.key;
-
-                await groupRef.set({
-                    name: name,
-                    password: password,
-                    creator: currentUser.uid,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                // Add user to group
-                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
-                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
-
-                document.getElementById('createGroupModal').classList.remove('active');
-                document.getElementById('createGroupForm').reset();
-                hideError('createGroupError');
-
-                // Select the new group
-                selectGroup(groupId, name);
-            } catch (error) {
-                console.error('Error creating group:', error);
-                showError('createGroupError', 'Failed to create group. Please try again.');
-            }
-        }
-
-        async function loadAllGroups() {
-            try {
-                const groupsRef = database.ref('groups');
                 
-                if (allGroupsListener) {
-                    groupsRef.off('value', allGroupsListener);
-                }
-
-                allGroupsListener = groupsRef.on('value', (snapshot) => {
-                    const allGroups = snapshot.val() || {};
-                    const selectEl = document.getElementById('groupSelect');
-                    selectEl.innerHTML = '';
-
-                    const groupIds = Object.keys(allGroups);
-                    if (groupIds.length === 0) {
-                        selectEl.innerHTML = '<option value="">No groups available</option>';
-                        return;
-                    }
-
+                groupsRef = database.ref('groups');
+                groupsRef.once('value', (groupsSnapshot) => {
+                    const allGroups = groupsSnapshot.val() || {};
+                    const groupsList = document.getElementById('groupsList');
+                    groupsList.innerHTML = '<h3>گروه‌های من</h3>';
+                    
                     groupIds.forEach(groupId => {
                         const group = allGroups[groupId];
-                        if (group && group.name) {
-                            const option = document.createElement('option');
-                            option.value = groupId;
-                            option.textContent = group.name;
-                            selectEl.appendChild(option);
+                        if (group) {
+                            const groupItem = document.createElement('div');
+                            groupItem.className = 'group-item';
+                            groupItem.dataset.groupId = groupId;
+                            
+                            const isOwner = group.owner === currentUser.uid;
+                            
+                            groupItem.innerHTML = `
+                                <div class="group-name">${escapeHtml(group.name)}</div>
+                                <div class="group-menu">
+                                    <button class="group-menu-btn">⋮</button>
+                                    <div class="group-menu-dropdown">
+                                        <div class="menu-item ${isOwner ? 'danger' : ''}" data-action="${isOwner ? 'delete' : 'leave'}">
+                                            ${isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه'}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            if (currentGroupId === groupId) {
+                                groupItem.classList.add('active');
+                            }
+                            
+                            groupItem.querySelector('.group-name').addEventListener('click', () => {
+                                switchGroup(groupId);
+                            });
+                            
+                            const menuBtn = groupItem.querySelector('.group-menu-btn');
+                            const menuDropdown = groupItem.querySelector('.group-menu-dropdown');
+                            
+                            menuBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                document.querySelectorAll('.group-menu-dropdown').forEach(m => {
+                                    if (m !== menuDropdown) m.classList.remove('show');
+                                });
+                                menuDropdown.classList.toggle('show');
+                            });
+                            
+                            const menuItem = groupItem.querySelector('.menu-item');
+                            menuItem.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const action = menuItem.dataset.action;
+                                if (action === 'leave') {
+                                    leaveGroup(groupId);
+                                } else if (action === 'delete') {
+                                    showDeleteModal(groupId, group.name);
+                                }
+                                menuDropdown.classList.remove('show');
+                            });
+                            
+                            groupsList.appendChild(groupItem);
                         }
                     });
                 });
-            } catch (error) {
-                console.error('Error loading all groups:', error);
-            }
+            });
         }
 
-        async function joinGroup() {
-            const groupId = document.getElementById('groupSelect').value;
-            const password = document.getElementById('joinGroupPassword').value;
-
-            if (!groupId || !password) {
-                showError('joinGroupError', 'Please select a group and enter password');
-                return;
-            }
-
-            try {
-                // Check if already joined
-                const userGroupSnapshot = await database.ref(`userGroups/${currentUser.uid}/${groupId}`).once('value');
-                if (userGroupSnapshot.exists()) {
-                    showError('joinGroupError', 'You are already a member of this group');
-                    return;
-                }
-
-                // Verify password
-                const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
-                const group = groupSnapshot.val();
-
-                if (!group) {
-                    showError('joinGroupError', 'Group not found');
-                    return;
-                }
-
-                if (group.password !== password) {
-                    showError('joinGroupError', 'Incorrect password');
-                    return;
-                }
-
-                // Add user to group
-                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
-                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
-
-                document.getElementById('joinGroupModal').classList.remove('active');
-                document.getElementById('joinGroupForm').reset();
-                hideError('joinGroupError');
-
-                // Select the joined group
-                selectGroup(groupId, group.name);
-            } catch (error) {
-                console.error('Error joining group:', error);
-                showError('joinGroupError', 'Failed to join group. Please try again.');
-            }
-        }
-
-        // ============================================
-        // MESSAGING
-        // ============================================
-        function selectGroup(groupId, groupName) {
+        // Switch Group
+        function switchGroup(groupId) {
             if (currentGroupId === groupId) return;
-
-            // Update UI
-            currentGroupId = groupId;
-            document.getElementById('currentGroupName').textContent = groupName;
             
-            // Update active group in sidebar
+            if (messagesRef) {
+                messagesRef.off();
+                messagesRef = null;
+            }
+            
+            currentGroupId = groupId;
+            
             document.querySelectorAll('.group-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.groupId === groupId) {
                     item.classList.add('active');
                 }
             });
-
-            // Cleanup old listener
-            if (messageListener) {
-                database.ref(`messages/${groupId}`).off('child_added', messageListener);
-                messageListener = null;
-            }
-
-            // Load messages
-            loadMessages(groupId);
+            
+            currentGroupRef = database.ref(`groups/${groupId}`);
+            currentGroupRef.once('value', (snapshot) => {
+                const group = snapshot.val();
+                if (group) {
+                    document.getElementById('currentGroupName').textContent = group.name;
+                    loadMessages(groupId);
+                }
+            });
         }
 
-        async function loadMessages(groupId) {
-            if (!groupId || !currentUser) return;
-
+        // Load Messages
+        function loadMessages(groupId) {
             const messagesContainer = document.getElementById('messagesContainer');
-            messagesContainer.innerHTML = '';
-
-            try {
-                const messagesRef = database.ref(`messages/${groupId}`);
+            messagesContainer.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+            
+            messagesRef = database.ref(`messages/${groupId}`).orderByChild('timestamp');
+            messagesRef.on('value', (snapshot) => {
+                const messages = snapshot.val() || {};
+                const messagesArray = Object.entries(messages)
+                    .map(([id, msg]) => ({ id, ...msg }))
+                    .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
                 
-                messageListener = messagesRef.on('child_added', async (snapshot) => {
-                    const message = snapshot.val();
-                    if (!message) return;
-
-                    const messageEl = document.createElement('div');
-                    messageEl.className = `message ${message.senderId === currentUser.uid ? 'own' : 'other'}`;
+                if (messagesArray.length === 0) {
+                    messagesContainer.innerHTML = '<div class="empty-state"><h3>هنوز پیامی ارسال نشده</h3><p>اولین پیام را ارسال کنید!</p></div>';
+                    return;
+                }
+                
+                messagesContainer.innerHTML = '';
+                messagesArray.forEach(msg => {
+                    const isOwn = msg.userId === currentUser.uid;
+                    const userData = msg.userData || {};
+                    const username = userData.username || 'کاربر ناشناس';
                     
-                    const bubble = document.createElement('div');
-                    bubble.className = 'message-bubble';
-                    bubble.textContent = message.text || '';
-
-                    const info = document.createElement('div');
-                    info.className = 'message-info';
-
-                    if (message.senderId !== currentUser.uid) {
-                        const sender = document.createElement('div');
-                        sender.className = 'message-sender';
-                        try {
-                            const userSnapshot = await database.ref(`users/${message.senderId}`).once('value');
-                            const userData = userSnapshot.val();
-                            sender.textContent = userData ? userData.username : 'Unknown';
-                        } catch (error) {
-                            sender.textContent = 'Unknown';
-                        }
-                        messageEl.appendChild(sender);
-                    }
-
-                    messageEl.appendChild(bubble);
-                    info.textContent = getTimeString(message.timestamp);
-                    messageEl.appendChild(info);
-
+                    const messageEl = document.createElement('div');
+                    messageEl.className = `message ${isOwn ? 'own' : 'other'}`;
+                    messageEl.innerHTML = `
+                        <div class="message-header">${isOwn ? 'شما' : escapeHtml(username)}</div>
+                        <div class="message-content">${escapeHtml(msg.text)}</div>
+                        <div class="message-time">${formatTime(msg.timestamp)}</div>
+                    `;
                     messagesContainer.appendChild(messageEl);
-                    scrollToBottom();
                 });
-            } catch (error) {
-                console.error('Error loading messages:', error);
-                messagesContainer.innerHTML = '<div class="empty-state"><p>Error loading messages</p></div>';
-            }
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
         }
+
+        // Send Message
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
 
         async function sendMessage() {
-            if (!currentGroupId || !currentUser) {
-                alert('Please select a group first');
+            if (!currentGroupId) {
+                alert('لطفا ابتدا یک گروه انتخاب کنید');
                 return;
             }
-
+            
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
-
+            
             if (!text) return;
-
-            try {
-                const messageRef = database.ref(`messages/${currentGroupId}`).push();
-                await messageRef.set({
-                    text: text,
-                    senderId: currentUser.uid,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-
-                input.value = '';
-                input.style.height = 'auto';
-            } catch (error) {
-                console.error('Error sending message:', error);
-                alert('Failed to send message. Please try again.');
-            }
+            
+            const userDataSnapshot = await database.ref(`users/${currentUser.uid}`).once('value');
+            const userData = userDataSnapshot.val() || {};
+            const username = userData.username || getUsernameFromEmail(currentUser.email);
+            
+            const messageRef = database.ref(`messages/${currentGroupId}`).push();
+            await messageRef.set({
+                text: text,
+                userId: currentUser.uid,
+                userData: {
+                    username: username
+                },
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            input.value = '';
+            input.style.height = 'auto';
         }
 
-        // ============================================
-        // EMOJI SUPPORT
-        // ============================================
+        // Emoji Panel
         function initEmojiPanel() {
             const emojiGrid = document.getElementById('emojiGrid');
             emojis.forEach(emoji => {
                 const emojiItem = document.createElement('div');
                 emojiItem.className = 'emoji-item';
                 emojiItem.textContent = emoji;
-                emojiItem.addEventListener('click', () => insertEmoji(emoji));
+                emojiItem.addEventListener('click', () => {
+                    insertEmoji(emoji);
+                });
                 emojiGrid.appendChild(emojiItem);
-            });
-
-            document.getElementById('emojiBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                const panel = document.getElementById('emojiPanel');
-                panel.classList.toggle('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                const panel = document.getElementById('emojiPanel');
-                const btn = document.getElementById('emojiBtn');
-                if (!panel.contains(e.target) && e.target !== btn) {
-                    panel.classList.remove('active');
-                }
             });
         }
 
         function insertEmoji(emoji) {
             const input = document.getElementById('messageInput');
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.substring(0, start) + emoji + text.substring(end);
-            input.selectionStart = input.selectionEnd = start + emoji.length;
+            const cursorPos = input.selectionStart;
+            const textBefore = input.value.substring(0, cursorPos);
+            const textAfter = input.value.substring(cursorPos);
+            input.value = textBefore + emoji + textAfter;
             input.focus();
+            input.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+            input.dispatchEvent(new Event('input'));
         }
 
-        // ============================================
-        // EVENT HANDLERS
-        // ============================================
-        function initEventHandlers() {
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', async () => {
-                if (confirm('Are you sure you want to logout?')) {
-                    try {
-                        await auth.signOut();
-                    } catch (error) {
-                        console.error('Error logging out:', error);
+        document.getElementById('emojiBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const panel = document.getElementById('emojiPanel');
+            panel.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('emojiPanel');
+            const btn = document.getElementById('emojiBtn');
+            if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                panel.classList.remove('show');
+            }
+        });
+
+        // Create Group
+        document.getElementById('createGroupBtn').addEventListener('click', () => {
+            document.getElementById('createGroupModal').classList.add('show');
+            document.getElementById('createGroupForm').reset();
+            hideError('createGroupError');
+        });
+
+        document.getElementById('cancelCreateGroup').addEventListener('click', () => {
+            document.getElementById('createGroupModal').classList.remove('show');
+        });
+
+        document.getElementById('createGroupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError('createGroupError');
+            
+            const groupName = document.getElementById('groupNameInput').value.trim();
+            const groupPassword = document.getElementById('groupPasswordInput').value;
+            
+            if (!groupName || !groupPassword) {
+                showError('createGroupError', 'لطفا تمام فیلدها را پر کنید');
+                return;
+            }
+            
+            const passwordValidation = validatePassword(groupPassword);
+            if (!passwordValidation.valid) {
+                showError('createGroupError', passwordValidation.message);
+                return;
+            }
+            
+            try {
+                const groupRef = database.ref('groups').push();
+                await groupRef.set({
+                    name: groupName,
+                    password: groupPassword,
+                    owner: currentUser.uid,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                const groupId = groupRef.key;
+                
+                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
+                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
+                
+                document.getElementById('createGroupModal').classList.remove('show');
+                switchGroup(groupId);
+            } catch (error) {
+                showError('createGroupError', 'خطا در ایجاد گروه: ' + error.message);
+            }
+        });
+
+        // Join Group
+        document.getElementById('joinGroupBtn').addEventListener('click', async () => {
+            const modal = document.getElementById('joinGroupModal');
+            const select = document.getElementById('joinGroupSelect');
+            
+            try {
+                const groupsSnapshot = await database.ref('groups').once('value');
+                const allGroups = groupsSnapshot.val() || {};
+                const userGroupsSnapshot = await database.ref(`userGroups/${currentUser.uid}`).once('value');
+                const userGroups = userGroupsSnapshot.val() || {};
+                
+                select.innerHTML = '<option value="">-- انتخاب کنید --</option>';
+                Object.entries(allGroups).forEach(([groupId, group]) => {
+                    if (!userGroups[groupId]) {
+                        const option = document.createElement('option');
+                        option.value = groupId;
+                        option.textContent = group.name;
+                        select.appendChild(option);
                     }
-                }
-            });
-
-            // Create group modal
-            document.getElementById('createGroupBtn').addEventListener('click', () => {
-                document.getElementById('createGroupModal').classList.add('active');
-                loadAllGroups();
-            });
-
-            document.getElementById('closeCreateModal').addEventListener('click', () => {
-                document.getElementById('createGroupModal').classList.remove('active');
-                document.getElementById('createGroupForm').reset();
-                hideError('createGroupError');
-            });
-
-            document.getElementById('createGroupForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-                createGroup();
-            });
-
-            // Join group modal
-            document.getElementById('joinGroupBtn').addEventListener('click', () => {
-                document.getElementById('joinGroupModal').classList.add('active');
-                loadAllGroups();
-            });
-
-            document.getElementById('closeJoinModal').addEventListener('click', () => {
-                document.getElementById('joinGroupModal').classList.remove('active');
+                });
+                
+                modal.classList.add('show');
                 document.getElementById('joinGroupForm').reset();
                 hideError('joinGroupError');
-            });
-
-            document.getElementById('joinGroupForm').addEventListener('submit', (e) => {
-                e.preventDefault();
-                joinGroup();
-            });
-
-            // Send message
-            document.getElementById('sendBtn').addEventListener('click', sendMessage);
-
-            document.getElementById('messageInput').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            // Auto-resize textarea
-            document.getElementById('messageInput').addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-            });
-        }
-
-        // ============================================
-        // CLEANUP
-        // ============================================
-        function cleanupListeners() {
-            if (messageListener) {
-                if (currentGroupId) {
-                    database.ref(`messages/${currentGroupId}`).off('child_added', messageListener);
-                }
-                messageListener = null;
-            }
-
-            if (groupsListener) {
-                if (currentUser) {
-                    database.ref(`userGroups/${currentUser.uid}`).off('value', groupsListener);
-                }
-                groupsListener = null;
-            }
-
-            if (allGroupsListener) {
-                database.ref('groups').off('value', allGroupsListener);
-                allGroupsListener = null;
-            }
-
-            currentGroupId = null;
-        }
-
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        function init() {
-            try {
-                initAuth();
-                initEventHandlers();
-                initEmojiPanel();
             } catch (error) {
-                console.error('Initialization error:', error);
-                showError('authError', 'Application initialization failed. Please refresh the page.');
+                showError('joinGroupError', 'خطا در بارگذاری گروه‌ها');
+            }
+        });
+
+        document.getElementById('cancelJoinGroup').addEventListener('click', () => {
+            document.getElementById('joinGroupModal').classList.remove('show');
+        });
+
+        document.getElementById('joinGroupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError('joinGroupError');
+            
+            const groupId = document.getElementById('joinGroupSelect').value;
+            const password = document.getElementById('joinGroupPassword').value;
+            
+            if (!groupId || !password) {
+                showError('joinGroupError', 'لطفا تمام فیلدها را پر کنید');
+                return;
+            }
+            
+            try {
+                const groupSnapshot = await database.ref(`groups/${groupId}`).once('value');
+                const group = groupSnapshot.val();
+                
+                if (!group) {
+                    showError('joinGroupError', 'گروه یافت نشد');
+                    return;
+                }
+                
+                if (group.password !== password) {
+                    showError('joinGroupError', 'رمز گروه اشتباه است');
+                    return;
+                }
+                
+                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).set(true);
+                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).set(true);
+                
+                document.getElementById('joinGroupModal').classList.remove('show');
+                switchGroup(groupId);
+            } catch (error) {
+                showError('joinGroupError', 'خطا در پیوستن به گروه: ' + error.message);
+            }
+        });
+
+        // Leave Group
+        async function leaveGroup(groupId) {
+            if (!confirm('آیا مطمئن هستید که می‌خواهید از این گروه خارج شوید؟')) {
+                return;
+            }
+            
+            try {
+                await database.ref(`groupMembers/${groupId}/${currentUser.uid}`).remove();
+                await database.ref(`userGroups/${currentUser.uid}/${groupId}`).remove();
+                
+                if (currentGroupId === groupId) {
+                    currentGroupId = null;
+                    if (messagesRef) {
+                        messagesRef.off();
+                        messagesRef = null;
+                    }
+                    document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
+                    document.getElementById('messagesContainer').innerHTML = `
+                        <div class="empty-state">
+                            <h3>گروهی را انتخاب کنید</h3>
+                            <p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                alert('خطا در ترک گروه: ' + error.message);
             }
         }
 
-        // Start app when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
+        // Delete Group
+        let deleteGroupId = null;
+
+        function showDeleteModal(groupId, groupName) {
+            deleteGroupId = groupId;
+            document.getElementById('deleteGroupModal').classList.add('show');
         }
+
+        document.getElementById('cancelDeleteGroup').addEventListener('click', () => {
+            document.getElementById('deleteGroupModal').classList.remove('show');
+            deleteGroupId = null;
+        });
+
+        document.getElementById('confirmDeleteGroup').addEventListener('click', async () => {
+            if (!deleteGroupId) return;
+            
+            try {
+                const membersSnapshot = await database.ref(`groupMembers/${deleteGroupId}`).once('value');
+                const members = membersSnapshot.val() || {};
+                
+                const removePromises = Object.keys(members).map(userId => {
+                    return database.ref(`userGroups/${userId}/${deleteGroupId}`).remove();
+                });
+                await Promise.all(removePromises);
+                
+                await database.ref(`groups/${deleteGroupId}`).remove();
+                await database.ref(`groupMembers/${deleteGroupId}`).remove();
+                await database.ref(`messages/${deleteGroupId}`).remove();
+                
+                document.getElementById('deleteGroupModal').classList.remove('show');
+                deleteGroupId = null;
+                
+                if (currentGroupId === deleteGroupId) {
+                    currentGroupId = null;
+                    if (messagesRef) {
+                        messagesRef.off();
+                        messagesRef = null;
+                    }
+                    document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
+                    document.getElementById('messagesContainer').innerHTML = `
+                        <div class="empty-state">
+                            <h3>گروهی را انتخاب کنید</h3>
+                            <p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                alert('خطا در حذف گروه: ' + error.message);
+            }
+        });
+
+        // Auth State Listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadUserData(user).then(() => {
+                    showChatScreen();
+                });
+            } else {
+                document.getElementById('authContainer').style.display = 'flex';
+                document.getElementById('chatContainer').classList.remove('active');
+            }
+        });
+
+        // Initialize
+        initEmojiPanel();
     </script>
 </body>
 </html>
