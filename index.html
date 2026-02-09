@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Chat - Real-time Group Chat</title>
+    <title>Amirtaha - Real-time Group Chat</title>
     <style>
         * {
             margin: 0;
@@ -523,7 +523,7 @@
     <!-- Auth Screen -->
     <div class="auth-container" id="authContainer">
         <div class="auth-box">
-            <h1>💬 Nova Chat</h1>
+            <h1>💬 Amirtaha Chat</h1>
             <div class="error-message" id="authError"></div>
             <div class="auth-tabs">
                 <button class="auth-tab active" data-tab="login">Login</button>
@@ -559,7 +559,7 @@
         <div class="chat-container" id="chatContainer">
             <div class="sidebar">
                 <div class="sidebar-header">
-                    <h2>Nova Chat</h2>
+                    <h2>Amirtaha Chat</h2>
                 </div>
                 <div class="sidebar-section">
                     <h3>My Groups</h3>
@@ -584,7 +584,7 @@
                 </div>
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
-                        <h3>Welcome to Nova Chat!</h3>
+                        <h3>Welcome to Amirtaha Chat!</h3>
                         <p>Select or create a group to start messaging</p>
                     </div>
                 </div>
@@ -752,7 +752,7 @@
                 }
 
                 try {
-                    const email = `${username}@nova.local`;
+                    const email = `${username}@Amirtaha.local`;
                     await auth.signInWithEmailAndPassword(email, password);
                 } catch (error) {
                     let message = 'Login failed';
@@ -788,7 +788,7 @@
                 }
 
                 try {
-                    const email = `${username}@nova.local`;
+                    const email = `${username}@Amirtaha.local`;
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                     const user = userCredential.user;
                     
@@ -820,7 +820,7 @@
                         if (!userData || !userData.username) {
                             // Extract username from email
                             const email = user.email;
-                            const username = email.replace('@nova.local', '');
+                            const username = email.replace('@Amirtaha.local', '');
                             await database.ref(`users/${user.uid}`).set({
                                 username: username,
                                 createdAt: firebase.database.ServerValue.TIMESTAMP
