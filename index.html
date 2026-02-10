@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Nova Chat - چت گروهی آنلاین و امن">
     <title>Nova Chat - چت گروهی آنلاین</title>
     
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -56,6 +56,7 @@
             flex-direction: column;
         }
 
+        /* Auth Screen */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -83,7 +84,6 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
             margin-bottom: 10px;
         }
 
@@ -133,8 +133,7 @@
             font-weight: 500;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px 16px;
             background: var(--bg-tertiary);
@@ -145,8 +144,7 @@
             transition: all 0.3s ease;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
@@ -164,21 +162,6 @@
         }
 
         .error-message.show {
-            display: block;
-        }
-
-        .success-message {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: none;
-            font-size: 0.9rem;
-        }
-
-        .success-message.show {
             display: block;
         }
 
@@ -210,6 +193,7 @@
             cursor: not-allowed;
         }
 
+        /* Chat Screen */
         .chat-container {
             display: none;
             height: 100%;
@@ -220,6 +204,7 @@
             display: flex;
         }
 
+        /* Sidebar */
         .sidebar {
             width: 320px;
             background: var(--bg-secondary);
@@ -253,6 +238,7 @@
             justify-content: center;
             font-weight: bold;
             color: white;
+            font-size: 1.2rem;
         }
 
         .logout-btn {
@@ -395,6 +381,7 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
+        /* Main Chat Area */
         .main-chat {
             flex: 1;
             display: flex;
@@ -465,6 +452,7 @@
         .message-content {
             font-size: 1rem;
             line-height: 1.5;
+            word-break: break-word;
         }
 
         .message-time {
@@ -550,6 +538,7 @@
             cursor: not-allowed;
         }
 
+        /* Emoji Panel */
         .emoji-panel {
             position: absolute;
             bottom: 100%;
@@ -592,6 +581,7 @@
             transform: scale(1.1);
         }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -662,6 +652,7 @@
             background: #dc2626;
         }
 
+        /* Loading */
         .loading {
             text-align: center;
             padding: 20px;
@@ -679,6 +670,7 @@
             color: var(--text-primary);
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -696,24 +688,30 @@
             background: var(--primary);
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 height: 100vh;
                 border-radius: 0;
             }
+
             .chat-container {
                 flex-direction: column;
             }
+
             .sidebar {
                 width: 100%;
                 height: 40%;
             }
+
             .main-chat {
                 height: 60%;
             }
+
             .message {
                 max-width: 85%;
             }
+
             .emoji-panel {
                 width: 100%;
                 left: 0;
@@ -723,6 +721,7 @@
 </head>
 <body>
     <div class="container">
+        <!-- Auth Screen -->
         <div class="auth-container" id="authContainer">
             <div class="auth-box">
                 <div class="auth-header">
@@ -731,40 +730,43 @@
                 </div>
                 
                 <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login" type="button">ورود</button>
-                    <button class="auth-tab" data-tab="signup" type="button">ثبت نام</button>
+                    <button class="auth-tab active" data-tab="login">ورود</button>
+                    <button class="auth-tab" data-tab="signup">ثبت نام</button>
                 </div>
 
+                <!-- Login Form -->
                 <form class="auth-form active" id="loginForm">
                     <div class="form-group">
-                        <label for="loginUsername">نام کاربری</label>
+                        <label>نام کاربری</label>
                         <input type="text" id="loginUsername" required autocomplete="username">
                     </div>
                     <div class="form-group">
-                        <label for="loginPassword">رمز عبور</label>
+                        <label>رمز عبور</label>
                         <input type="password" id="loginPassword" required autocomplete="current-password">
                     </div>
                     <div class="error-message" id="loginError"></div>
-                    <button type="submit" class="btn" id="loginBtn">ورود</button>
+                    <button type="submit" class="btn">ورود</button>
                 </form>
 
+                <!-- Sign Up Form -->
                 <form class="auth-form" id="signupForm">
                     <div class="form-group">
-                        <label for="signupUsername">نام کاربری</label>
+                        <label>نام کاربری</label>
                         <input type="text" id="signupUsername" required autocomplete="username">
                     </div>
                     <div class="form-group">
-                        <label for="signupPassword">رمز عبور (حداقل ۶ کاراکتر)</label>
+                        <label>رمز عبور (حداقل ۶ کاراکتر)</label>
                         <input type="password" id="signupPassword" required autocomplete="new-password">
                     </div>
                     <div class="error-message" id="signupError"></div>
-                    <div class="success-message" id="signupSuccess"></div>
-                    <button type="submit" class="btn" id="signupBtn">ثبت نام</button>
+                    <button type="submit" class="btn">ثبت نام</button>
                 </form>
             </div>
         </div>
 
+        <!-- Chat Screen -->
         <div class="chat-container" id="chatContainer">
+            <!-- Sidebar -->
             <div class="sidebar">
                 <div class="sidebar-header">
                     <div class="user-info">
@@ -774,12 +776,12 @@
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">آنلاین</div>
                         </div>
                     </div>
-                    <button class="logout-btn" id="logoutBtn" type="button">خروج</button>
+                    <button class="logout-btn" id="logoutBtn">خروج</button>
                 </div>
 
                 <div class="sidebar-actions">
-                    <button class="action-btn" id="createGroupBtn" type="button">➕ گروه جدید</button>
-                    <button class="action-btn" id="joinGroupBtn" type="button">🔗 پیوستن</button>
+                    <button class="action-btn" id="createGroupBtn">➕ گروه جدید</button>
+                    <button class="action-btn" id="joinGroupBtn">🔗 پیوستن</button>
                 </div>
 
                 <div class="groups-list">
@@ -793,6 +795,7 @@
                 </div>
             </div>
 
+            <!-- Main Chat Area -->
             <div class="main-chat">
                 <div class="chat-header">
                     <h2 id="currentGroupName">گروهی انتخاب نشده</h2>
@@ -807,7 +810,7 @@
 
                 <div class="input-area">
                     <div class="input-wrapper">
-                        <button class="emoji-btn" id="emojiBtn" type="button">😊</button>
+                        <button class="emoji-btn" id="emojiBtn">😊</button>
                         <div class="emoji-panel" id="emojiPanel">
                             <div class="emoji-grid" id="emojiGrid"></div>
                         </div>
@@ -817,13 +820,14 @@
                             placeholder="پیام خود را بنویسید..."
                             rows="1"
                         ></textarea>
-                        <button class="send-btn" id="sendBtn" type="button">ارسال</button>
+                        <button class="send-btn" id="sendBtn">ارسال</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Create Group Modal -->
     <div class="modal" id="createGroupModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -831,22 +835,23 @@
             </div>
             <form id="createGroupForm">
                 <div class="form-group">
-                    <label for="groupNameInput">نام گروه</label>
+                    <label>نام گروه</label>
                     <input type="text" id="groupNameInput" required>
                 </div>
                 <div class="form-group">
-                    <label for="groupPasswordInput">رمز گروه (حداقل ۶ کاراکتر)</label>
+                    <label>رمز گروه (حداقل ۶ کاراکتر)</label>
                     <input type="password" id="groupPasswordInput" required>
                 </div>
                 <div class="error-message" id="createGroupError"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" id="cancelCreateGroup">انصراف</button>
-                    <button type="submit" class="btn" id="createGroupSubmitBtn">ایجاد</button>
+                    <button type="submit" class="btn">ایجاد</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Join Group Modal -->
     <div class="modal" id="joinGroupModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -854,13 +859,13 @@
             </div>
             <form id="joinGroupForm">
                 <div class="form-group">
-                    <label for="joinGroupSelect">انتخاب گروه</label>
+                    <label>انتخاب گروه</label>
                     <select id="joinGroupSelect">
                         <option value="">-- انتخاب کنید --</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="joinGroupPassword">رمز گروه</label>
+                    <label>رمز گروه</label>
                     <input type="password" id="joinGroupPassword" required>
                 </div>
                 <div class="error-message" id="joinGroupError"></div>
@@ -872,6 +877,7 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
     <div class="modal" id="deleteGroupModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -888,49 +894,38 @@
     </div>
 
     <script>
-        console.log('🚀 Nova Chat Starting...');
-        
+        // ✅ Firebase Configuration - تنظیمات شما
         const firebaseConfig = {
             apiKey: "AIzaSyAAcLK4sFnrpx8tlltEBRoTV_-VYMndrGQ",
             authDomain: "nova-chat-f73f0.firebaseapp.com",
             databaseURL: "https://nova-chat-f73f0-default-rtdb.firebaseio.com",
             projectId: "nova-chat-f73f0",
-            storageBucket: "nova-chat-f73f0.appspot.com",
+            storageBucket: "nova-chat-f73f0.firebasestorage.app",
             messagingSenderId: "1067975852327",
-            appId: "1:1067975852327:web:e7df44a35cbe54a0d4a902"
+            appId: "1:1067975852327:web:4fef32f62ec67471d4a902"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
-        console.log('✅ Firebase Initialized');
 
+        // App State
         let currentUser = null;
         let currentGroupId = null;
-        let currentGroupRef = null;
         let messagesRef = null;
-        let groupsRef = null;
         let userGroupsRef = null;
 
-        const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾'];
+        // Emoji List
+        const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','👍','👎','✌️','🤞','🤟','🤘','🤙','👌','🤌','🤏','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏'];
 
+        // Utility Functions
         function showError(elementId, message) {
-            console.error('❌ Error:', message);
             const errorEl = document.getElementById(elementId);
             if (errorEl) {
                 errorEl.textContent = message;
                 errorEl.classList.add('show');
                 setTimeout(() => errorEl.classList.remove('show'), 5000);
-            }
-        }
-
-        function showSuccess(elementId, message) {
-            console.log('✅ Success:', message);
-            const successEl = document.getElementById(elementId);
-            if (successEl) {
-                successEl.textContent = message;
-                successEl.classList.add('show');
-                setTimeout(() => successEl.classList.remove('show'), 5000);
             }
         }
 
@@ -941,7 +936,6 @@
 
         function validatePassword(password) {
             if (password.length < 6) return { valid: false, message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' };
-            if (password.includes(' ')) return { valid: false, message: 'رمز عبور نباید شامل فاصله باشد' };
             return { valid: true };
         }
 
@@ -951,12 +945,17 @@
             return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
         }
 
+        function getUsernameFromEmail(email) {
+            return email.replace('@nova.local', '');
+        }
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
+        // Auth Tab Switching
         document.querySelectorAll('.auth-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.dataset.tab;
@@ -969,140 +968,96 @@
             });
         });
 
+        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            console.log('🔑 Login attempt...');
             hideError('loginError');
-            
-            const loginBtn = document.getElementById('loginBtn');
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'در حال ورود...';
             
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
             
             if (!username || !password) {
                 showError('loginError', 'لطفا تمام فیلدها را پر کنید');
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'ورود';
                 return;
             }
             
-            const email = username + '@novachat.local';
-            console.log('📧 Trying to login with:', email);
+            const email = username + '@nova.local';
             
             try {
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                console.log('✅ Login successful!', userCredential.user.uid);
                 await loadUserData(userCredential.user);
                 showChatScreen();
             } catch (error) {
-                console.error('❌ Login error:', error.code, error.message);
+                console.error('Login error:', error);
                 let errorMessage = 'خطا در ورود';
-                if (error.code === 'auth/user-not-found') errorMessage = 'کاربری با این نام کاربری یافت نشد. لطفا ابتدا ثبت‌نام کنید';
+                if (error.code === 'auth/user-not-found') errorMessage = 'کاربری با این نام یافت نشد';
                 else if (error.code === 'auth/wrong-password') errorMessage = 'رمز عبور اشتباه است';
                 else if (error.code === 'auth/invalid-email') errorMessage = 'نام کاربری نامعتبر است';
-                else if (error.code === 'auth/network-request-failed') errorMessage = 'خطا در اتصال به اینترنت';
-                else if (error.code === 'auth/too-many-requests') errorMessage = 'تلاش‌های زیاد. لطفا کمی صبر کنید';
-                else errorMessage = error.message;
+                else if (error.code === 'auth/too-many-requests') errorMessage = 'تلاش‌های ناموفق زیاد. کمی صبر کنید';
                 showError('loginError', errorMessage);
-            } finally {
-                loginBtn.disabled = false;
-                loginBtn.textContent = 'ورود';
             }
         });
 
+        // Sign Up
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            console.log('📝 Signup attempt...');
             hideError('signupError');
-            
-            const signupBtn = document.getElementById('signupBtn');
-            signupBtn.disabled = true;
-            signupBtn.textContent = 'در حال ثبت نام...';
             
             const username = document.getElementById('signupUsername').value.trim();
             const password = document.getElementById('signupPassword').value;
             
             if (!username || !password) {
                 showError('signupError', 'لطفا تمام فیلدها را پر کنید');
-                signupBtn.disabled = false;
-                signupBtn.textContent = 'ثبت نام';
                 return;
             }
             
             const passwordValidation = validatePassword(password);
             if (!passwordValidation.valid) {
                 showError('signupError', passwordValidation.message);
-                signupBtn.disabled = false;
-                signupBtn.textContent = 'ثبت نام';
                 return;
             }
             
-            const email = username + '@novachat.local';
-            console.log('📧 Creating account with:', email);
+            const email = username + '@nova.local';
             
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                console.log('✅ Account created!', userCredential.user.uid);
-                
                 await database.ref('users/' + userCredential.user.uid).set({
                     username: username,
                     email: email,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-                console.log('✅ User data saved');
-                
-                showSuccess('signupSuccess', 'ثبت‌نام موفق! در حال ورود...');
-                
                 await loadUserData(userCredential.user);
-                setTimeout(() => {
-                    showChatScreen();
-                }, 1000);
-                
+                showChatScreen();
             } catch (error) {
-                console.error('❌ Signup error:', error.code, error.message);
+                console.error('Signup error:', error);
                 let errorMessage = 'خطا در ثبت نام';
-                if (error.code === 'auth/email-already-in-use') errorMessage = 'این نام کاربری قبلا استفاده شده است';
-                else if (error.code === 'auth/weak-password') errorMessage = 'رمز عبور ضعیف است (حداقل 6 کاراکتر)';
+                if (error.code === 'auth/email-already-in-use') errorMessage = 'این نام کاربری قبلا استفاده شده';
+                else if (error.code === 'auth/weak-password') errorMessage = 'رمز عبور ضعیف است';
                 else if (error.code === 'auth/invalid-email') errorMessage = 'نام کاربری نامعتبر است';
-                else errorMessage = error.message;
                 showError('signupError', errorMessage);
-            } finally {
-                signupBtn.disabled = false;
-                signupBtn.textContent = 'ثبت نام';
             }
         });
 
+        // Load User Data
         async function loadUserData(user) {
-            console.log('👤 Loading user data...', user.uid);
             currentUser = user;
-            try {
-                const userData = await database.ref('users/' + user.uid).once('value');
-                const username = userData.val()?.username || user.email.split('@')[0];
-                console.log('✅ User data loaded:', username);
-                
-                document.getElementById('userDisplayName').textContent = username;
-                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
-                
-                loadUserGroups();
-            } catch (error) {
-                console.error('❌ Error loading user data:', error);
-            }
+            const userData = await database.ref('users/' + user.uid).once('value');
+            const username = userData.val()?.username || getUsernameFromEmail(user.email);
+            document.getElementById('userDisplayName').textContent = username;
+            document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+            loadUserGroups();
         }
 
+        // Show Chat Screen
         function showChatScreen() {
-            console.log('💬 Showing chat screen');
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('chatContainer').classList.add('active');
         }
 
+        // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-            if (confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')) {
-                console.log('👋 Logging out...');
+            if (confirm('آیا مطمئن هستید؟')) {
                 if (messagesRef) messagesRef.off();
-                if (currentGroupRef) currentGroupRef.off();
-                if (groupsRef) groupsRef.off();
                 if (userGroupsRef) userGroupsRef.off();
                 await auth.signOut();
                 currentUser = null;
@@ -1111,27 +1066,24 @@
                 document.getElementById('chatContainer').classList.remove('active');
                 document.getElementById('loginForm').reset();
                 document.getElementById('signupForm').reset();
-                console.log('✅ Logged out');
             }
         });
 
+        // Load User Groups
         function loadUserGroups() {
             if (!currentUser) return;
-            console.log('📂 Loading user groups...');
             
             userGroupsRef = database.ref('userGroups/' + currentUser.uid);
             userGroupsRef.on('value', (snapshot) => {
                 const userGroups = snapshot.val() || {};
                 const groupIds = Object.keys(userGroups);
-                console.log('📂 User groups:', groupIds);
                 
                 if (groupIds.length === 0) {
-                    document.getElementById('groupsList').innerHTML = '<div class="empty-state"><h3>هنوز گروهی وجود ندارد</h3><p>یک گروه جدید بسازید یا به گروهی بپیوندید</p></div>';
+                    document.getElementById('groupsList').innerHTML = '<div class="empty-state"><h3>هنوز گروهی وجود ندارد</h3><p>یک گروه جدید بسازید</p></div>';
                     return;
                 }
                 
-                groupsRef = database.ref('groups');
-                groupsRef.once('value', (groupsSnapshot) => {
+                database.ref('groups').once('value', (groupsSnapshot) => {
                     const allGroups = groupsSnapshot.val() || {};
                     const groupsList = document.getElementById('groupsList');
                     groupsList.innerHTML = '<h3>گروه‌های من</h3>';
@@ -1141,26 +1093,32 @@
                         if (group) {
                             const groupItem = document.createElement('div');
                             groupItem.className = 'group-item';
-                            groupItem.dataset.groupId = groupId;
-                            const isOwner = group.owner === currentUser.uid;
-                            groupItem.innerHTML = '<div class="group-name">' + escapeHtml(group.name) + '</div><div class="group-menu"><button class="group-menu-btn" type="button">⋮</button><div class="group-menu-dropdown"><div class="menu-item ' + (isOwner ? 'danger' : '') + '" data-action="' + (isOwner ? 'delete' : 'leave') + '">' + (isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه') + '</div></div></div>';
                             if (currentGroupId === groupId) groupItem.classList.add('active');
+                            groupItem.dataset.groupId = groupId;
+                            
+                            const isOwner = group.owner === currentUser.uid;
+                            groupItem.innerHTML = '<div class="group-name">' + escapeHtml(group.name) + '</div><div class="group-menu"><button class="group-menu-btn">⋮</button><div class="group-menu-dropdown"><div class="menu-item ' + (isOwner ? 'danger' : '') + '" data-action="' + (isOwner ? 'delete' : 'leave') + '">' + (isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه') + '</div></div></div>';
+                            
                             groupItem.querySelector('.group-name').addEventListener('click', () => switchGroup(groupId));
+                            
                             const menuBtn = groupItem.querySelector('.group-menu-btn');
                             const menuDropdown = groupItem.querySelector('.group-menu-dropdown');
                             menuBtn.addEventListener('click', (e) => {
                                 e.stopPropagation();
-                                document.querySelectorAll('.group-menu-dropdown').forEach(m => { if (m !== menuDropdown) m.classList.remove('show'); });
+                                document.querySelectorAll('.group-menu-dropdown').forEach(m => {
+                                    if (m !== menuDropdown) m.classList.remove('show');
+                                });
                                 menuDropdown.classList.toggle('show');
                             });
-                            const menuItem = groupItem.querySelector('.menu-item');
-                            menuItem.addEventListener('click', (e) => {
+                            
+                            groupItem.querySelector('.menu-item').addEventListener('click', (e) => {
                                 e.stopPropagation();
-                                const action = menuItem.dataset.action;
+                                const action = e.target.dataset.action;
                                 if (action === 'leave') leaveGroup(groupId);
                                 else if (action === 'delete') showDeleteModal(groupId);
                                 menuDropdown.classList.remove('show');
                             });
+                            
                             groupsList.appendChild(groupItem);
                         }
                     });
@@ -1168,17 +1126,18 @@
             });
         }
 
+        // Switch Group
         function switchGroup(groupId) {
             if (currentGroupId === groupId) return;
-            console.log('🔄 Switching to group:', groupId);
             if (messagesRef) messagesRef.off();
+            
             currentGroupId = groupId;
             document.querySelectorAll('.group-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.groupId === groupId) item.classList.add('active');
             });
-            currentGroupRef = database.ref('groups/' + groupId);
-            currentGroupRef.once('value', (snapshot) => {
+            
+            database.ref('groups/' + groupId).once('value', (snapshot) => {
                 const group = snapshot.val();
                 if (group) {
                     document.getElementById('currentGroupName').textContent = group.name;
@@ -1187,22 +1146,25 @@
             });
         }
 
+        // Load Messages
         function loadMessages(groupId) {
-            console.log('📨 Loading messages for group:', groupId);
             const messagesContainer = document.getElementById('messagesContainer');
             messagesContainer.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
+            
             messagesRef = database.ref('messages/' + groupId).orderByChild('timestamp');
             messagesRef.on('value', (snapshot) => {
                 const messages = snapshot.val() || {};
-                const messagesArray = Object.entries(messages).map(([id, msg]) => ({ id, ...msg })).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+                const messagesArray = Object.entries(messages).map(([id, msg]) => ({id, ...msg})).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+                
                 if (messagesArray.length === 0) {
                     messagesContainer.innerHTML = '<div class="empty-state"><h3>هنوز پیامی ارسال نشده</h3><p>اولین پیام را ارسال کنید!</p></div>';
                     return;
                 }
+                
                 messagesContainer.innerHTML = '';
                 messagesArray.forEach(msg => {
                     const isOwn = msg.userId === currentUser.uid;
-                    const username = msg.userData?.username || 'کاربر ناشناس';
+                    const username = msg.userData?.username || 'کاربر';
                     const messageEl = document.createElement('div');
                     messageEl.className = 'message ' + (isOwn ? 'own' : 'other');
                     messageEl.innerHTML = '<div class="message-header">' + (isOwn ? 'شما' : escapeHtml(username)) + '</div><div class="message-content">' + escapeHtml(msg.text) + '</div><div class="message-time">' + formatTime(msg.timestamp) + '</div>';
@@ -1212,6 +1174,37 @@
             });
         }
 
+        // Send Message
+        async function sendMessage() {
+            if (!currentGroupId) {
+                alert('لطفا ابتدا یک گروه انتخاب کنید');
+                return;
+            }
+            
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            try {
+                const userDataSnapshot = await database.ref('users/' + currentUser.uid).once('value');
+                const userData = userDataSnapshot.val() || {};
+                const username = userData.username || getUsernameFromEmail(currentUser.email);
+                
+                await database.ref('messages/' + currentGroupId).push().set({
+                    text: text,
+                    userId: currentUser.uid,
+                    userData: { username: username },
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                input.value = '';
+                input.style.height = 'auto';
+            } catch (error) {
+                console.error('Send error:', error);
+                alert('خطا در ارسال پیام');
+            }
+        }
+
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
         document.getElementById('messageInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -1219,59 +1212,27 @@
                 sendMessage();
             }
         });
-
         document.getElementById('messageInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 150) + 'px';
         });
 
-        async function sendMessage() {
-            if (!currentGroupId) {
-                alert('لطفا ابتدا یک گروه انتخاب کنید');
-                return;
-            }
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (!text) return;
-            console.log('📤 Sending message...');
-            try {
-                const userDataSnapshot = await database.ref('users/' + currentUser.uid).once('value');
-                const userData = userDataSnapshot.val() || {};
-                const username = userData.username || currentUser.email.split('@')[0];
-                const messageRef = database.ref('messages/' + currentGroupId).push();
-                await messageRef.set({
-                    text: text,
-                    userId: currentUser.uid,
-                    userData: { username: username },
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                console.log('✅ Message sent');
-                input.value = '';
-                input.style.height = 'auto';
-            } catch (error) {
-                console.error('❌ Send message error:', error);
-                alert('خطا در ارسال پیام: ' + error.message);
-            }
-        }
-
+        // Emoji Panel
         function initEmojiPanel() {
             const emojiGrid = document.getElementById('emojiGrid');
             emojis.forEach(emoji => {
                 const emojiItem = document.createElement('div');
                 emojiItem.className = 'emoji-item';
                 emojiItem.textContent = emoji;
-                emojiItem.addEventListener('click', () => insertEmoji(emoji));
+                emojiItem.addEventListener('click', () => {
+                    const input = document.getElementById('messageInput');
+                    const cursorPos = input.selectionStart;
+                    input.value = input.value.substring(0, cursorPos) + emoji + input.value.substring(cursorPos);
+                    input.focus();
+                    input.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
+                });
                 emojiGrid.appendChild(emojiItem);
             });
-        }
-
-        function insertEmoji(emoji) {
-            const input = document.getElementById('messageInput');
-            const cursorPos = input.selectionStart;
-            input.value = input.value.substring(0, cursorPos) + emoji + input.value.substring(cursorPos);
-            input.focus();
-            input.setSelectionRange(cursorPos + emoji.length, cursorPos + emoji.length);
-            input.dispatchEvent(new Event('input'));
         }
 
         document.getElementById('emojiBtn').addEventListener('click', (e) => {
@@ -1283,10 +1244,13 @@
             const panel = document.getElementById('emojiPanel');
             const btn = document.getElementById('emojiBtn');
             if (!panel.contains(e.target) && !btn.contains(e.target)) panel.classList.remove('show');
+            if (!e.target.closest('.group-menu')) {
+                document.querySelectorAll('.group-menu-dropdown').forEach(m => m.classList.remove('show'));
+            }
         });
 
+        // Create Group
         document.getElementById('createGroupBtn').addEventListener('click', () => {
-            console.log('➕ Opening create group modal');
             document.getElementById('createGroupModal').classList.add('show');
             document.getElementById('createGroupForm').reset();
             hideError('createGroupError');
@@ -1298,82 +1262,54 @@
 
         document.getElementById('createGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            console.log('➕ Creating group...');
             hideError('createGroupError');
-            
-            const submitBtn = document.getElementById('createGroupSubmitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'در حال ایجاد...';
             
             const groupName = document.getElementById('groupNameInput').value.trim();
             const groupPassword = document.getElementById('groupPasswordInput').value;
             
             if (!groupName || !groupPassword) {
                 showError('createGroupError', 'لطفا تمام فیلدها را پر کنید');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'ایجاد';
                 return;
             }
             
             const passwordValidation = validatePassword(groupPassword);
             if (!passwordValidation.valid) {
                 showError('createGroupError', passwordValidation.message);
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'ایجاد';
-                return;
-            }
-            
-            if (!currentUser) {
-                showError('createGroupError', 'لطفا ابتدا وارد حساب خود شوید');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'ایجاد';
                 return;
             }
             
             try {
-                console.log('📝 Creating group data...');
                 const groupRef = database.ref('groups').push();
-                const groupId = groupRef.key;
-                console.log('🆔 Group ID:', groupId);
-                
                 await groupRef.set({
                     name: groupName,
                     password: groupPassword,
                     owner: currentUser.uid,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-                console.log('✅ Group created in database');
                 
+                const groupId = groupRef.key;
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
-                console.log('✅ Added to group members');
-                
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                console.log('✅ Added to user groups');
                 
                 document.getElementById('createGroupModal').classList.remove('show');
-                console.log('✅ Group creation complete!');
-                
-                setTimeout(() => {
-                    switchGroup(groupId);
-                }, 500);
-                
+                switchGroup(groupId);
             } catch (error) {
-                console.error('❌ Create group error:', error);
-                showError('createGroupError', 'خطا در ایجاد گروه: ' + error.message + ' (کد: ' + error.code + ')');
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'ایجاد';
+                console.error('Create group error:', error);
+                showError('createGroupError', 'خطا در ایجاد گروه');
             }
         });
 
+        // Join Group
         document.getElementById('joinGroupBtn').addEventListener('click', async () => {
-            console.log('🔗 Opening join group modal');
+            const modal = document.getElementById('joinGroupModal');
             const select = document.getElementById('joinGroupSelect');
+            
             try {
                 const groupsSnapshot = await database.ref('groups').once('value');
                 const allGroups = groupsSnapshot.val() || {};
                 const userGroupsSnapshot = await database.ref('userGroups/' + currentUser.uid).once('value');
                 const userGroups = userGroupsSnapshot.val() || {};
+                
                 select.innerHTML = '<option value="">-- انتخاب کنید --</option>';
                 Object.entries(allGroups).forEach(([groupId, group]) => {
                     if (!userGroups[groupId]) {
@@ -1383,12 +1319,13 @@
                         select.appendChild(option);
                     }
                 });
-                document.getElementById('joinGroupModal').classList.add('show');
+                
+                modal.classList.add('show');
                 document.getElementById('joinGroupForm').reset();
                 hideError('joinGroupError');
             } catch (error) {
-                console.error('❌ Load groups error:', error);
-                showError('joinGroupError', 'خطا در بارگذاری گروه‌ها');
+                console.error('Load groups error:', error);
+                alert('خطا در بارگذاری گروه‌ها');
             }
         });
 
@@ -1398,55 +1335,62 @@
 
         document.getElementById('joinGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            console.log('🔗 Joining group...');
             hideError('joinGroupError');
+            
             const groupId = document.getElementById('joinGroupSelect').value;
             const password = document.getElementById('joinGroupPassword').value;
+            
             if (!groupId || !password) {
                 showError('joinGroupError', 'لطفا تمام فیلدها را پر کنید');
                 return;
             }
+            
             try {
                 const groupSnapshot = await database.ref('groups/' + groupId).once('value');
                 const group = groupSnapshot.val();
+                
                 if (!group) {
                     showError('joinGroupError', 'گروه یافت نشد');
                     return;
                 }
+                
                 if (group.password !== password) {
                     showError('joinGroupError', 'رمز گروه اشتباه است');
                     return;
                 }
+                
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                console.log('✅ Joined group successfully');
+                
                 document.getElementById('joinGroupModal').classList.remove('show');
-                setTimeout(() => switchGroup(groupId), 500);
+                switchGroup(groupId);
             } catch (error) {
-                console.error('❌ Join group error:', error);
-                showError('joinGroupError', 'خطا در پیوستن به گروه: ' + error.message);
+                console.error('Join error:', error);
+                showError('joinGroupError', 'خطا در پیوستن به گروه');
             }
         });
 
+        // Leave Group
         async function leaveGroup(groupId) {
-            if (!confirm('آیا مطمئن هستید که می‌خواهید از این گروه خارج شوید؟')) return;
-            console.log('👋 Leaving group:', groupId);
+            if (!confirm('آیا مطمئن هستید؟')) return;
+            
             try {
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).remove();
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).remove();
-                console.log('✅ Left group successfully');
+                
                 if (currentGroupId === groupId) {
                     currentGroupId = null;
                     if (messagesRef) messagesRef.off();
                     document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3><p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p></div>';
+                    document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3></div>';
                 }
             } catch (error) {
-                console.error('❌ Leave group error:', error);
-                alert('خطا در ترک گروه: ' + error.message);
+                console.error('Leave error:', error);
+                alert('خطا در ترک گروه');
             }
         }
 
+        // Delete Group
         let deleteGroupId = null;
 
         function showDeleteModal(groupId) {
@@ -1461,31 +1405,37 @@
 
         document.getElementById('confirmDeleteGroup').addEventListener('click', async () => {
             if (!deleteGroupId) return;
-            console.log('🗑️ Deleting group:', deleteGroupId);
+            
             try {
                 const membersSnapshot = await database.ref('groupMembers/' + deleteGroupId).once('value');
                 const members = membersSnapshot.val() || {};
-                await Promise.all(Object.keys(members).map(userId => database.ref('userGroups/' + userId + '/' + deleteGroupId).remove()));
+                
+                await Promise.all(Object.keys(members).map(userId => 
+                    database.ref('userGroups/' + userId + '/' + deleteGroupId).remove()
+                ));
+                
                 await database.ref('groups/' + deleteGroupId).remove();
                 await database.ref('groupMembers/' + deleteGroupId).remove();
                 await database.ref('messages/' + deleteGroupId).remove();
-                console.log('✅ Group deleted successfully');
+                
                 document.getElementById('deleteGroupModal').classList.remove('show');
+                
                 if (currentGroupId === deleteGroupId) {
                     currentGroupId = null;
                     if (messagesRef) messagesRef.off();
                     document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3><p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p></div>';
+                    document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3></div>';
                 }
+                
                 deleteGroupId = null;
             } catch (error) {
-                console.error('❌ Delete group error:', error);
-                alert('خطا در حذف گروه: ' + error.message);
+                console.error('Delete error:', error);
+                alert('خطا در حذف گروه');
             }
         });
 
+        // Auth State Listener
         auth.onAuthStateChanged((user) => {
-            console.log('🔄 Auth state changed:', user ? user.uid : 'null');
             if (user) {
                 loadUserData(user).then(() => showChatScreen());
             } else {
@@ -1494,8 +1444,9 @@
             }
         });
 
+        // Initialize
         initEmojiPanel();
-        console.log('✅ Nova Chat Ready!');
+        console.log('✅ Nova Chat initialized!');
     </script>
 </body>
 </html>
