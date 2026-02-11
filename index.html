@@ -223,24 +223,6 @@
 
         .mobile-menu-toggle {
             display: none;
-            position: fixed;
-            bottom: 120px;
-            left: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
-            z-index: 1001;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle:active {
-            transform: scale(0.95);
         }
 
         .mobile-overlay {
@@ -597,6 +579,31 @@
             position: relative;
         }
 
+        .mobile-menu-toggle {
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            min-width: 50px;
+            min-height: 50px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .mobile-menu-toggle:active {
+            transform: scale(0.95);
+        }
+
         .emoji-btn {
             padding: 12px;
             background: var(--bg-tertiary);
@@ -855,8 +862,6 @@
 
             .mobile-menu-toggle {
                 display: flex;
-                align-items: center;
-                justify-content: center;
             }
 
             .mobile-overlay.show {
@@ -979,7 +984,6 @@
         </div>
 
         <div class="chat-container" id="chatContainer">
-            <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
             <div class="mobile-overlay" id="mobileOverlay"></div>
 
             <div class="sidebar" id="sidebar">
@@ -1024,6 +1028,7 @@
 
                 <div class="input-area">
                     <div class="input-wrapper">
+                        <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
                         <button class="emoji-btn" id="emojiBtn">😊</button>
                         <div class="emoji-panel" id="emojiPanel">
                             <div class="emoji-grid" id="emojiGrid"></div>
