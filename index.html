@@ -531,7 +531,6 @@
             text-align: right;
         }
 
-        /* Delete Message Button */
         .delete-message-btn {
             position: absolute;
             top: 8px;
@@ -1124,15 +1123,14 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // تنظیم persistence به SESSION - با بستن تب لاگ اوت می‌شه
-        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch((error) => {
-            console.error('Persistence error:', error);
-        });
+        // ⭐ هیچ persistence نداریم - همیشه باید لاگین کرد
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
 
         let currentUser = null;
         let currentGroupId = null;
         let messagesRef = null;
         let userGroupsRef = null;
+        let isAuthenticating = false;
 
         const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','👍','👎','✌️','🤞','🤟','🤘','🤙','👌','🤌','🤏','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏'];
 
@@ -1197,17 +1195,24 @@
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (isAuthenticating) return;
+            isAuthenticating = true;
+            
             hideError('loginError');
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
+            
             if (!username || !password) {
                 showError('loginError', 'لطفا تمام فیلدها را پر کنید');
+                isAuthenticating = false;
                 return;
             }
+            
             const email = username + '@amirtaha.chat';
             try {
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                await loadUserData(userCredential.user);
+                currentUser = userCredential.user;
+                await loadUserData(currentUser);
                 showChatScreen();
             } catch (error) {
                 let msg = 'خطا در ورود';
@@ -1217,22 +1222,31 @@
                 else if (error.code === 'auth/invalid-credential') msg = 'نام کاربری یا رمز عبور اشتباه است';
                 showError('loginError', msg);
             }
+            isAuthenticating = false;
         });
 
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (isAuthenticating) return;
+            isAuthenticating = true;
+            
             hideError('signupError');
             const username = document.getElementById('signupUsername').value.trim();
             const password = document.getElementById('signupPassword').value;
+            
             if (!username || !password) {
                 showError('signupError', 'لطفا تمام فیلدها را پر کنید');
+                isAuthenticating = false;
                 return;
             }
+            
             const pwdCheck = validatePassword(password);
             if (!pwdCheck.valid) {
                 showError('signupError', pwdCheck.message);
+                isAuthenticating = false;
                 return;
             }
+            
             const email = username + '@amirtaha.chat';
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
@@ -1241,7 +1255,8 @@
                     email: email,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-                await loadUserData(userCredential.user);
+                currentUser = userCredential.user;
+                await loadUserData(currentUser);
                 showChatScreen();
             } catch (error) {
                 let msg = 'خطا در ثبت نام';
@@ -1249,10 +1264,10 @@
                 else if (error.code === 'auth/weak-password') msg = 'رمز عبور ضعیف است';
                 showError('signupError', msg);
             }
+            isAuthenticating = false;
         });
 
         async function loadUserData(user) {
-            currentUser = user;
             const userData = await database.ref('users/' + user.uid).once('value');
             const username = userData.val()?.username || getUsernameFromEmail(user.email);
             document.getElementById('userDisplayName').textContent = username;
@@ -1621,17 +1636,11 @@
             });
         });
 
-        // Auth State Listener - فقط اگر کاربر لاگین کرده باشه چت نمایش داده میشه
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                loadUserData(user).then(() => showChatScreen());
-            } else {
-                showAuthScreen();
-            }
-        });
+        // ⭐ مهم: به طور پیش‌فرض همیشه صفحه Auth نمایش داده میشه
+        showAuthScreen();
 
         initEmojis();
-        console.log('✅ Amirtaha Chat Ready!');
+        console.log('✅ Amirtaha Chat Ready! هر کسی باید لاگین کنه');
     </script>
 </body>
 </html>
