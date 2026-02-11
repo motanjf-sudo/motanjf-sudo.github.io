@@ -1779,8 +1779,8 @@
                                 👤
                             </div>
                             <div class="selected-avatar-text">
-                                <div class="main">انتخاب آواتار</div>
-                                <div class="sub">روی اینجا کلیک کنید تا آواتار انتخاب کنید</div>
+                                <div class="main">انتخاب پروفایل</div>
+                                <div class="sub">روی اینجا کلیک کنید تا پروفایل انتخاب کنید</div>
                             </div>
                         </div>
                         <div class="avatar-grid" id="signupAvatarGrid" style="display: none;">
@@ -1893,19 +1893,19 @@
                 <h3>تغییر پروفایل</h3>
             </div>
             <div class="form-group">
-                <label>آواتار فعلی</label>
+                <label>پروفایل فعلی</label>
                 <div class="selected-avatar-preview">
                     <div class="selected-avatar-display" id="currentUserAvatarDisplay">
                         👤
                     </div>
                     <div class="selected-avatar-text">
                         <div class="main" id="currentUserAvatarText">انتخاب کنید</div>
-                        <div class="sub">یک آواتار جدید انتخاب کنید</div>
+                        <div class="sub">یک پروفایل جدید انتخاب کنید</div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label>انتخاب آواتار جدید</label>
+                <label>انتخاب پروفایل جدید</label>
                 <div class="avatar-grid" id="userAvatarChangeGrid">
                     <!-- Populated by JS -->
                 </div>
@@ -1958,14 +1958,14 @@
                 <!-- Group Avatar Selection -->
                 <div class="form-group">
                     <label>
-                        آواتار گروه <span class="optional">(اختیاری)</span>
+                        پروفایل گروه <span class="optional">(اختیاری)</span>
                     </label>
                     <div class="selected-avatar-preview" id="createGroupAvatarPreview">
                         <div class="selected-avatar-display" id="createGroupAvatarDisplay">
                             👥
                         </div>
                         <div class="selected-avatar-text">
-                            <div class="main">انتخاب آواتار گروه</div>
+                            <div class="main">انتخاب پروفایل گروه</div>
                             <div class="sub">روی اینجا کلیک کنید</div>
                         </div>
                     </div>
@@ -2030,22 +2030,22 @@
     <div class="modal" id="changeGroupAvatarModal" role="dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>تغییر آواتار گروه</h3>
+                <h3>تغییر پروفایل گروه</h3>
             </div>
             <div class="form-group">
-                <label>آواتار فعلی گروه</label>
+                <label>پروفایل فعلی گروه</label>
                 <div class="selected-avatar-preview">
                     <div class="selected-avatar-display" id="currentGroupAvatarDisplay">
                         👥
                     </div>
                     <div class="selected-avatar-text">
                         <div class="main" id="currentGroupAvatarText">انتخاب کنید</div>
-                        <div class="sub">یک آواتار جدید انتخاب کنید</div>
+                        <div class="sub">یک پروفایل جدید انتخاب کنید</div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label>انتخاب آواتار جدید</label>
+                <label>انتخاب پروفایل جدید</label>
                 <div class="avatar-grid" id="groupAvatarChangeGrid">
                     <!-- Populated by JS -->
                 </div>
@@ -2315,7 +2315,7 @@
                 populateAvatarGrid('signupAvatarGrid', selectedSignupAvatar, (avatar) => {
                     selectedSignupAvatar = avatar;
                     displayAvatar(document.getElementById('signupAvatarDisplay'), avatar, '👤');
-                    document.querySelector('#signupAvatarPreview .main').textContent = 'آواتار انتخاب شد';
+                    document.querySelector('#signupAvatarPreview .main').textContent = 'پروفایل انتخاب شد';
                     document.querySelector('#signupAvatarPreview .sub').textContent = 'کلیک کنید برای تغییر';
                 });
             }
@@ -2460,12 +2460,12 @@
                 );
                 
                 document.getElementById('currentUserAvatarText').textContent = 
-                    currentAvatar ? 'آواتار فعلی' : 'هنوز آواتاری انتخاب نکرده‌اید';
+                    currentAvatar ? 'پروفایل فعلی' : 'هنوز پروفایلی انتخاب نکرده‌اید';
                 
                 populateAvatarGrid('userAvatarChangeGrid', currentAvatar, (avatar) => {
                     selectedUserAvatarChange = avatar;
                     displayAvatar(document.getElementById('currentUserAvatarDisplay'), avatar, username.charAt(0));
-                    document.getElementById('currentUserAvatarText').textContent = 'آواتار جدید انتخاب شد';
+                    document.getElementById('currentUserAvatarText').textContent = 'پروفایل جدید انتخاب شد';
                 });
                 
                 document.getElementById('changeUserAvatarModal').classList.add('show');
@@ -2488,7 +2488,7 @@
                 document.getElementById('changeUserAvatarModal').classList.remove('show');
             } catch (error) {
                 console.error('Error changing avatar:', error);
-                alert('خطا در تغییر آواتار');
+                alert('خطا در تغییر پروفایل');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -2515,8 +2515,8 @@
                     document.getElementById('signupForm').reset();
                     document.getElementById('signupAvatarGrid').style.display = 'none';
                     displayAvatar(document.getElementById('signupAvatarDisplay'), null, '👤');
-                    document.querySelector('#signupAvatarPreview .main').textContent = 'انتخاب آواتار';
-                    document.querySelector('#signupAvatarPreview .sub').textContent = 'روی اینجا کلیک کنید تا آواتار انتخاب کنید';
+                    document.querySelector('#signupAvatarPreview .main').textContent = 'انتخاب پروفایل';
+                    document.querySelector('#signupAvatarPreview .sub').textContent = 'روی اینجا کلیک کنید تا پروفایل انتخاب کنید';
                     
                     hideError('loginError');
                     hideError('signupError');
@@ -2579,7 +2579,7 @@
                             menuEl.innerHTML = `
                                 <button class="group-menu-btn">⋮</button>
                                 <div class="group-menu-dropdown">
-                                    ${isOwner ? '<div class="menu-item" data-action="change-avatar">🎨 تغییر آواتار</div>' : ''}
+                                    ${isOwner ? '<div class="menu-item" data-action="change-avatar">🎨 تغییر پروفایل</div>' : ''}
                                     <div class="menu-item ${isOwner ? 'danger' : ''}" data-action="${isOwner ? 'delete' : 'leave'}">
                                         ${isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه'}
                                     </div>
@@ -2861,7 +2861,7 @@
             document.getElementById('createGroupForm').reset();
             document.getElementById('createGroupAvatarGrid').style.display = 'none';
             displayAvatar(document.getElementById('createGroupAvatarDisplay'), null, '👥');
-            document.querySelector('#createGroupAvatarPreview .main').textContent = 'انتخاب آواتار گروه';
+            document.querySelector('#createGroupAvatarPreview .main').textContent = 'انتخاب پروفایل گروه';
             document.querySelector('#createGroupAvatarPreview .sub').textContent = 'روی اینجا کلیک کنید';
             hideError('createGroupError');
             if (window.innerWidth <= 768) closeMobileSidebar();
@@ -2876,7 +2876,7 @@
                 populateAvatarGrid('createGroupAvatarGrid', selectedCreateGroupAvatar, (avatar) => {
                     selectedCreateGroupAvatar = avatar;
                     displayAvatar(document.getElementById('createGroupAvatarDisplay'), avatar, '👥');
-                    document.querySelector('#createGroupAvatarPreview .main').textContent = 'آواتار انتخاب شد';
+                    document.querySelector('#createGroupAvatarPreview .main').textContent = 'پروفایل انتخاب شد';
                     document.querySelector('#createGroupAvatarPreview .sub').textContent = 'کلیک کنید برای تغییر';
                 });
             }
@@ -3037,12 +3037,12 @@
             );
             
             document.getElementById('currentGroupAvatarText').textContent = 
-                currentAvatar ? 'آواتار فعلی گروه' : 'هنوز آواتاری انتخاب نشده';
+                currentAvatar ? 'پروفایل فعلی گروه' : 'هنوز پروفایلی انتخاب نشده';
             
             populateAvatarGrid('groupAvatarChangeGrid', currentAvatar, (avatar) => {
                 selectedGroupAvatarChange = avatar;
                 displayAvatar(document.getElementById('currentGroupAvatarDisplay'), avatar, groupName.charAt(0));
-                document.getElementById('currentGroupAvatarText').textContent = 'آواتار جدید انتخاب شد';
+                document.getElementById('currentGroupAvatarText').textContent = 'پروفایل جدید انتخاب شد';
             });
             
             document.getElementById('changeGroupAvatarModal').classList.add('show');
@@ -3078,7 +3078,7 @@
                 changeGroupAvatarId = null;
             } catch (error) {
                 console.error('Error changing group avatar:', error);
-                alert('خطا در تغییر آواتار گروه');
+                alert('خطا در تغییر پروفایل گروه');
             } finally {
                 setButtonLoading(btn, false);
             }
