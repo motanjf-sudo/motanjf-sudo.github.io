@@ -42,12 +42,14 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             font-size: 16px;
+            height: 100%;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            min-height: 100%;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -531,6 +533,10 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
+        .user-avatar, .group-avatar, .message-avatar, .chat-header-avatar {
+            cursor: pointer;
+        }
+
         .user-avatar {
             width: 48px;
             height: 48px;
@@ -823,6 +829,7 @@
             flex-direction: column;
             background: var(--bg-primary);
             min-width: 0;
+            position: relative;
         }
 
         .chat-header {
@@ -899,6 +906,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            cursor: pointer;
         }
 
         .messages-container {
@@ -989,6 +997,7 @@
             margin-bottom: 6px;
             font-weight: 700;
             letter-spacing: 0.3px;
+            cursor: pointer;
         }
 
         .message-content {
@@ -1199,6 +1208,104 @@
             transform: scale(1.1);
         }
 
+        /* ==================== Profile View Modal ==================== */
+        .profile-view-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .profile-view-modal.show {
+            display: flex;
+        }
+
+        .profile-view-content {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 24px 64px var(--shadow);
+            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .profile-view-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
+            overflow: hidden;
+        }
+
+        .profile-view-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-view-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        .profile-view-info {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+        }
+
+        .profile-view-close {
+            padding: 14px 32px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-height: 52px;
+        }
+
+        .profile-view-close:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
         /* ==================== Modals ==================== */
         .modal {
             display: none;
@@ -1232,17 +1339,6 @@
             overflow-y: auto;
             animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             margin: auto;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
         }
 
         .modal-header {
@@ -1409,8 +1505,34 @@
 
             .container {
                 height: 100vh;
+                height: 100dvh;
                 max-height: 100vh;
+                max-height: 100dvh;
                 border-radius: 0;
+            }
+
+            .chat-container {
+                height: 100%;
+            }
+
+            .main-chat {
+                height: 100%;
+            }
+
+            .messages-container {
+                flex: 1;
+                min-height: 0;
+            }
+
+            .input-area {
+                position: relative;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                border-top: 1px solid var(--border);
+                padding: 12px 16px;
+                min-height: 80px;
             }
 
             .auth-container {
@@ -1506,11 +1628,6 @@
                 font-size: 0.95rem;
                 right: 6px;
                 top: 6px;
-            }
-
-            .input-area {
-                padding: 14px 16px;
-                min-height: 80px;
             }
 
             .input-wrapper-container {
@@ -1613,6 +1730,25 @@
             .btn-primary,
             .btn-danger {
                 width: 100%;
+            }
+
+            .profile-view-content {
+                padding: 32px 24px;
+            }
+
+            .profile-view-avatar {
+                width: 160px;
+                height: 160px;
+                font-size: 4rem;
+                margin-bottom: 20px;
+            }
+
+            .profile-view-name {
+                font-size: 1.6rem;
+            }
+
+            .profile-view-info {
+                font-size: 1rem;
             }
         }
 
@@ -1836,7 +1972,7 @@
                             <textarea 
                                 class="message-input" 
                                 id="messageInput" 
-                                placeholder="پیام خود را بنویسید و Enter را بزنید..."
+                                placeholder="پیام خود را بنویسید..."
                                 rows="1"
                             ></textarea>
                         </div>
@@ -1846,6 +1982,18 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- ==================== Profile View Modal ==================== -->
+    <div class="profile-view-modal" id="profileViewModal">
+        <div class="profile-view-content">
+            <div class="profile-view-avatar" id="profileViewAvatar">
+                👤
+            </div>
+            <div class="profile-view-name" id="profileViewName">نام کاربر</div>
+            <div class="profile-view-info" id="profileViewInfo">کاربر</div>
+            <button class="profile-view-close" id="profileViewClose">بستن</button>
         </div>
     </div>
 
@@ -2203,6 +2351,30 @@
             }
         }
 
+        // ==================== Profile View Functions ====================
+        function showProfileView(name, avatar, type = 'user') {
+            const modal = document.getElementById('profileViewModal');
+            const avatarEl = document.getElementById('profileViewAvatar');
+            const nameEl = document.getElementById('profileViewName');
+            const infoEl = document.getElementById('profileViewInfo');
+            
+            displayAvatar(avatarEl, avatar, name.charAt(0).toUpperCase());
+            nameEl.textContent = name;
+            infoEl.textContent = type === 'group' ? 'گروه' : 'کاربر';
+            
+            modal.classList.add('show');
+        }
+
+        document.getElementById('profileViewClose').addEventListener('click', () => {
+            document.getElementById('profileViewModal').classList.remove('show');
+        });
+
+        document.getElementById('profileViewModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('profileViewModal')) {
+                document.getElementById('profileViewModal').classList.remove('show');
+            }
+        });
+
         // ==================== Avatar Upload Handlers ====================
         function setupAvatarUpload(previewId, inputId, callback) {
             const preview = document.getElementById(previewId);
@@ -2234,6 +2406,29 @@
                     }
                 }
             });
+        }
+
+        // ==================== Keyboard Handler for Android ====================
+        function setupKeyboardHandler() {
+            const messageInput = document.getElementById('messageInput');
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            messageInput.addEventListener('focus', () => {
+                setTimeout(() => {
+                    if (messagesContainer) {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                }, 300);
+            });
+
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', () => {
+                    const container = document.querySelector('.container');
+                    if (container && window.innerWidth <= 768) {
+                        container.style.height = window.visualViewport.height + 'px';
+                    }
+                });
+            }
         }
 
         // ==================== Mobile Sidebar ====================
@@ -2386,6 +2581,12 @@
                     username.charAt(0).toUpperCase()
                 );
                 
+                // Add click handler to show user profile
+                document.getElementById('userAvatar').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showProfileView(username, avatar, 'user');
+                });
+                
                 loadUserGroups();
             } catch (error) {
                 console.error('Error loading user data:', error);
@@ -2395,6 +2596,7 @@
         function showChatScreen() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('chatContainer').classList.add('active');
+            setupKeyboardHandler();
         }
 
         function showAuthScreen() {
@@ -2520,6 +2722,12 @@
                             avatarEl.className = 'group-avatar';
                             displayAvatar(avatarEl, groupAvatar, groupName.charAt(0).toUpperCase());
                             
+                            // Add click handler to show group profile
+                            avatarEl.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                showProfileView(groupName, groupAvatar, 'group');
+                            });
+                            
                             const infoEl = document.createElement('div');
                             infoEl.className = 'group-info';
                             infoEl.innerHTML = `
@@ -2543,10 +2751,6 @@
                             item.appendChild(infoEl);
                             item.appendChild(menuEl);
                             
-                            avatarEl.addEventListener('click', () => {
-                                switchGroup(groupId);
-                                if (window.innerWidth <= 768) closeMobileSidebar();
-                            });
                             infoEl.addEventListener('click', () => {
                                 switchGroup(groupId);
                                 if (window.innerWidth <= 768) closeMobileSidebar();
@@ -2612,11 +2816,21 @@
                     document.getElementById('currentGroupName').textContent = groupName;
                     document.getElementById('currentGroupNameSimple').textContent = groupName;
                     
+                    const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
                     displayAvatar(
-                        document.getElementById('chatHeaderAvatar'),
+                        chatHeaderAvatar,
                         groupAvatar,
                         groupName.charAt(0).toUpperCase()
                     );
+                    
+                    // Add click handler to show group profile in header
+                    chatHeaderAvatar.onclick = () => {
+                        showProfileView(groupName, groupAvatar, 'group');
+                    };
+                    
+                    document.getElementById('currentGroupName').onclick = () => {
+                        showProfileView(groupName, groupAvatar, 'group');
+                    };
                     
                     document.getElementById('chatHeaderGroup').style.display = 'flex';
                     document.getElementById('currentGroupNameSimple').style.display = 'none';
@@ -2662,13 +2876,40 @@
                     avatarEl.className = 'message-avatar';
                     displayAvatar(avatarEl, userAvatar, username.charAt(0).toUpperCase());
                     
+                    // Add click handler to show user profile from message
+                    if (!isOwn) {
+                        avatarEl.style.cursor = 'pointer';
+                        avatarEl.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showProfileView(username, userAvatar, 'user');
+                        });
+                    }
+                    
                     const contentWrapper = document.createElement('div');
                     contentWrapper.className = 'message-content-wrapper';
-                    contentWrapper.innerHTML = `
-                        <div class="message-header">${isOwn ? 'شما' : escapeHtml(username)}</div>
-                        <div class="message-content">${escapeHtml(message.text)}</div>
-                        <div class="message-time">${formatTime(message.timestamp)}</div>
-                    `;
+                    
+                    const headerEl = document.createElement('div');
+                    headerEl.className = 'message-header';
+                    headerEl.textContent = isOwn ? 'شما' : username;
+                    
+                    if (!isOwn) {
+                        headerEl.style.cursor = 'pointer';
+                        headerEl.addEventListener('click', () => {
+                            showProfileView(username, userAvatar, 'user');
+                        });
+                    }
+                    
+                    const contentEl = document.createElement('div');
+                    contentEl.className = 'message-content';
+                    contentEl.textContent = message.text;
+                    
+                    const timeEl = document.createElement('div');
+                    timeEl.className = 'message-time';
+                    timeEl.textContent = formatTime(message.timestamp);
+                    
+                    contentWrapper.appendChild(headerEl);
+                    contentWrapper.appendChild(contentEl);
+                    contentWrapper.appendChild(timeEl);
                     
                     messageEl.appendChild(avatarEl);
                     messageEl.appendChild(contentWrapper);
@@ -3122,6 +3363,7 @@
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
                 document.getElementById('emojiPanel').classList.remove('show');
+                document.getElementById('profileViewModal').classList.remove('show');
                 closeMobileSidebar();
             }
         });
@@ -3130,7 +3372,7 @@
         showAuthScreen();
         initEmojis();
         
-        console.log('✅ Amirtaha Chat با قابلیت آپلود عکس پروفایل - آماده است!');
+        console.log('✅ Amirtaha Chat - آماده است!');
     </script>
 </body>
 </html>
