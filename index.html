@@ -2,8 +2,11 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Chat - چت گروهی آنلاین</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>Amirtaha Chat - چت گروهی آنلاین</title>
     
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -15,6 +18,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
@@ -31,6 +35,13 @@
             --text-secondary: #cbd5e1;
             --border: #475569;
             --shadow: rgba(0, 0, 0, 0.3);
+            --mobile-header-height: 60px;
+            --mobile-input-height: 70px;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
@@ -42,6 +53,8 @@
             align-items: center;
             padding: 20px;
             color: var(--text-primary);
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
         .container {
@@ -54,6 +67,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         /* Auth Screen */
@@ -98,7 +112,7 @@
 
         .auth-tab {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
@@ -107,6 +121,8 @@
             font-size: 1rem;
             font-weight: 600;
             transition: all 0.3s ease;
+            min-height: 48px;
+            touch-action: manipulation;
         }
 
         .auth-tab.active {
@@ -131,17 +147,20 @@
             margin-bottom: 8px;
             color: var(--text-secondary);
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: var(--bg-tertiary);
             border: 2px solid var(--border);
             border-radius: 10px;
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 16px;
             transition: all 0.3s ease;
+            min-height: 50px;
+            touch-action: manipulation;
         }
 
         .form-group input:focus, .form-group select:focus {
@@ -167,7 +186,7 @@
 
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 10px;
@@ -177,6 +196,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            min-height: 52px;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -204,6 +225,47 @@
             display: flex;
         }
 
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+            z-index: 1001;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .mobile-menu-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-overlay.show {
+            opacity: 1;
+        }
+
         /* Sidebar */
         .sidebar {
             width: 320px;
@@ -212,6 +274,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
         .sidebar-header {
@@ -220,17 +285,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            min-height: var(--mobile-header-height);
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
@@ -238,11 +306,11 @@
             justify-content: center;
             font-weight: bold;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
 
         .logout-btn {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -250,6 +318,8 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .logout-btn:hover {
@@ -266,7 +336,7 @@
 
         .action-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -274,6 +344,9 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            min-height: 48px;
+            touch-action: manipulation;
+            white-space: nowrap;
         }
 
         .action-btn:hover {
@@ -281,10 +354,16 @@
             border-color: var(--primary);
         }
 
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
         .groups-list {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 10px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .groups-list h3 {
@@ -296,7 +375,7 @@
         }
 
         .group-item {
-            padding: 12px 15px;
+            padding: 14px 15px;
             margin-bottom: 8px;
             background: var(--bg-tertiary);
             border-radius: 10px;
@@ -306,11 +385,17 @@
             justify-content: space-between;
             align-items: center;
             position: relative;
+            min-height: 54px;
+            touch-action: manipulation;
         }
 
         .group-item:hover {
             background: var(--bg-primary);
             transform: translateX(-5px);
+        }
+
+        .group-item:active {
+            transform: translateX(-3px) scale(0.99);
         }
 
         .group-item.active {
@@ -321,6 +406,7 @@
         .group-name {
             flex: 1;
             font-weight: 500;
+            font-size: 1rem;
         }
 
         .group-menu {
@@ -328,14 +414,20 @@
         }
 
         .group-menu-btn {
-            padding: 5px 10px;
+            padding: 8px 12px;
             background: transparent;
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
             border-radius: 5px;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             transition: all 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
 
         .group-menu-btn:hover {
@@ -350,10 +442,11 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 5px;
-            min-width: 150px;
+            min-width: 160px;
             box-shadow: 0 5px 20px var(--shadow);
             display: none;
             z-index: 100;
+            margin-top: 5px;
         }
 
         .group-menu-dropdown.show {
@@ -361,16 +454,24 @@
         }
 
         .menu-item {
-            padding: 10px 15px;
+            padding: 12px 15px;
             color: var(--text-primary);
             cursor: pointer;
             border-radius: 5px;
             transition: all 0.2s ease;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            touch-action: manipulation;
         }
 
         .menu-item:hover {
             background: var(--bg-tertiary);
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
         }
 
         .menu-item.danger {
@@ -387,12 +488,16 @@
             display: flex;
             flex-direction: column;
             background: var(--bg-primary);
+            position: relative;
         }
 
         .chat-header {
             padding: 20px;
             border-bottom: 1px solid var(--border);
             background: var(--bg-secondary);
+            min-height: var(--mobile-header-height);
+            display: flex;
+            align-items: center;
         }
 
         .chat-header h2 {
@@ -403,10 +508,12 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
@@ -463,9 +570,10 @@
         }
 
         .input-area {
-            padding: 20px;
+            padding: 15px 20px;
             border-top: 1px solid var(--border);
             background: var(--bg-secondary);
+            min-height: var(--mobile-input-height);
         }
 
         .input-wrapper {
@@ -485,9 +593,11 @@
             font-size: 1.5rem;
             transition: all 0.3s ease;
             min-width: 50px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: manipulation;
         }
 
         .emoji-btn:hover {
@@ -495,19 +605,24 @@
             border-color: var(--primary);
         }
 
+        .emoji-btn:active {
+            transform: scale(0.95);
+        }
+
         .message-input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: var(--bg-tertiary);
             border: 2px solid var(--border);
             border-radius: 10px;
             color: var(--text-primary);
-            font-size: 1rem;
+            font-size: 16px;
             font-family: inherit;
             resize: none;
             min-height: 50px;
-            max-height: 150px;
+            max-height: 120px;
             transition: all 0.3s ease;
+            touch-action: manipulation;
         }
 
         .message-input:focus {
@@ -517,7 +632,7 @@
         }
 
         .send-btn {
-            padding: 12px 24px;
+            padding: 14px 24px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 10px;
@@ -526,11 +641,17 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-height: 50px;
+            touch-action: manipulation;
         }
 
         .send-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0) scale(0.98);
         }
 
         .send-btn:disabled {
@@ -548,12 +669,14 @@
             border: 1px solid var(--border);
             border-radius: 15px;
             padding: 15px;
-            width: 350px;
-            max-height: 300px;
+            width: 100%;
+            max-width: 350px;
+            max-height: 280px;
             overflow-y: auto;
             box-shadow: 0 10px 40px var(--shadow);
             display: none;
             z-index: 1000;
+            -webkit-overflow-scrolling: touch;
         }
 
         .emoji-panel.show {
@@ -567,18 +690,27 @@
         }
 
         .emoji-item {
-            padding: 8px;
+            padding: 10px;
             background: var(--bg-tertiary);
             border-radius: 8px;
             cursor: pointer;
             text-align: center;
             font-size: 1.5rem;
             transition: all 0.2s ease;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
         }
 
         .emoji-item:hover {
             background: var(--primary);
             transform: scale(1.1);
+        }
+
+        .emoji-item:active {
+            transform: scale(1.05);
         }
 
         /* Modal */
@@ -593,6 +725,7 @@
             z-index: 2000;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .modal.show {
@@ -606,6 +739,9 @@
             width: 90%;
             max-width: 500px;
             box-shadow: 0 20px 60px var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-header {
@@ -625,31 +761,43 @@
         }
 
         .btn-secondary {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--text-primary);
             cursor: pointer;
             transition: all 0.3s ease;
+            min-height: 48px;
+            touch-action: manipulation;
         }
 
         .btn-secondary:hover {
             background: var(--border);
         }
 
+        .btn-secondary:active {
+            transform: scale(0.98);
+        }
+
         .btn-danger {
-            padding: 10px 20px;
+            padding: 12px 20px;
             background: var(--danger);
             border: none;
             border-radius: 8px;
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            min-height: 48px;
+            touch-action: manipulation;
         }
 
         .btn-danger:hover {
             background: #dc2626;
+        }
+
+        .btn-danger:active {
+            transform: scale(0.98);
         }
 
         /* Loading */
@@ -661,7 +809,7 @@
 
         .empty-state {
             text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
 
@@ -688,34 +836,205 @@
             background: var(--primary);
         }
 
-        /* Responsive */
+        /* Responsive - Mobile First Approach */
         @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
             .container {
                 height: 100vh;
+                max-height: 100vh;
                 border-radius: 0;
             }
 
-            .chat-container {
-                flex-direction: column;
+            .auth-box {
+                padding: 25px;
             }
 
+            .auth-header h1 {
+                font-size: 2rem;
+            }
+
+            .chat-container {
+                flex-direction: row;
+            }
+
+            /* Sidebar as drawer on mobile */
             .sidebar {
-                width: 100%;
-                height: 40%;
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 85%;
+                max-width: 320px;
+                transform: translateX(-100%);
+                z-index: 1000;
+                box-shadow: 4px 0 15px var(--shadow);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-overlay.show {
+                display: block;
             }
 
             .main-chat {
-                height: 60%;
+                width: 100%;
+            }
+
+            .chat-header {
+                padding: 15px 20px;
+            }
+
+            .chat-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .messages-container {
+                padding: 15px;
+                gap: 12px;
             }
 
             .message {
                 max-width: 85%;
+                padding: 10px 14px;
+            }
+
+            .message-content {
+                font-size: 0.95rem;
+            }
+
+            .input-area {
+                padding: 12px 15px;
             }
 
             .emoji-panel {
-                width: 100%;
                 left: 0;
+                right: 0;
+                width: calc(100% - 30px);
+                max-width: none;
+                margin-left: 15px;
+                margin-right: 15px;
             }
+
+            .emoji-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 6px;
+            }
+
+            .emoji-item {
+                padding: 8px;
+                font-size: 1.3rem;
+                min-height: 40px;
+            }
+
+            .send-btn {
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+
+            .modal-content {
+                padding: 25px;
+                width: 95%;
+            }
+
+            .sidebar-actions {
+                padding: 12px 15px;
+            }
+
+            .action-btn {
+                font-size: 0.85rem;
+                padding: 10px 8px;
+            }
+
+            .group-item {
+                padding: 12px;
+                min-height: 50px;
+            }
+
+            .groups-list {
+                padding: 8px;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+
+            .message {
+                max-width: 75%;
+            }
+
+            .container {
+                height: 95vh;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1400px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            .sidebar {
+                width: 360px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .auth-box {
+                padding: 20px;
+                max-width: 400px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 5px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .messages-container {
+                padding: 10px 15px;
+            }
+
+            .input-area {
+                padding: 10px 15px;
+            }
+
+            .message-input {
+                max-height: 80px;
+            }
+        }
+
+        /* iPhone specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .message-input {
+                font-size: 16px !important;
+            }
+            
+            .form-group input {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Better touch targets */
+        button, .group-item, .menu-item {
+            min-height: 44px;
         }
     </style>
 </head>
@@ -725,7 +1044,7 @@
         <div class="auth-container" id="authContainer">
             <div class="auth-box">
                 <div class="auth-header">
-                    <h1>🌟 Nova Chat</h1>
+                    <h1>🌟 Amirtaha Chat</h1>
                     <p style="color: var(--text-secondary);">چت گروهی آنلاین و امن</p>
                 </div>
                 
@@ -766,8 +1085,12 @@
 
         <!-- Chat Screen -->
         <div class="chat-container" id="chatContainer">
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
+            <div class="mobile-overlay" id="mobileOverlay"></div>
+
             <!-- Sidebar -->
-            <div class="sidebar">
+            <div class="sidebar" id="sidebar">
                 <div class="sidebar-header">
                     <div class="user-info">
                         <div class="user-avatar" id="userAvatar">U</div>
@@ -804,7 +1127,7 @@
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
                         <h3>گروهی را انتخاب کنید</h3>
-                        <p>برای شروع چت، یک گروه از سمت چپ انتخاب کنید</p>
+                        <p>برای شروع چت، یک گروه از منو انتخاب کنید</p>
                     </div>
                 </div>
 
@@ -894,32 +1217,29 @@
     </div>
 
     <script>
-        // ✅ Firebase Configuration - تنظیمات شما
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAAcLK4sFnrpx8tlltEBRoTV_-VYMndrGQ",
-            authDomain: "nova-chat-f73f0.firebaseapp.com",
-            databaseURL: "https://nova-chat-f73f0-default-rtdb.firebaseio.com",
-            projectId: "nova-chat-f73f0",
-            storageBucket: "nova-chat-f73f0.firebasestorage.app",
+            authDomain: "amirtaha-chat-f73f0.firebaseapp.com",
+            databaseURL: "https://amirtaha-chat-f73f0-default-rtdb.firebaseio.com",
+            projectId: "amirtaha-chat-f73f0",
+            storageBucket: "amirtaha-chat-f73f0.firebasestorage.app",
             messagingSenderId: "1067975852327",
             appId: "1:1067975852327:web:4fef32f62ec67471d4a902"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // App State
         let currentUser = null;
         let currentGroupId = null;
         let messagesRef = null;
         let userGroupsRef = null;
+        let isMobileSidebarOpen = false;
 
-        // Emoji List
         const emojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','👍','👎','✌️','🤞','🤟','🤘','🤙','👌','🤌','🤏','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏'];
 
-        // Utility Functions
         function showError(elementId, message) {
             const errorEl = document.getElementById(elementId);
             if (errorEl) {
@@ -946,7 +1266,7 @@
         }
 
         function getUsernameFromEmail(email) {
-            return email.replace('@nova.local', '');
+            return email.replace('@amirtaha.local', '');
         }
 
         function escapeHtml(text) {
@@ -955,7 +1275,30 @@
             return div.innerHTML;
         }
 
-        // Auth Tab Switching
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            isMobileSidebarOpen = !isMobileSidebarOpen;
+            if (isMobileSidebarOpen) {
+                sidebar.classList.add('show');
+                overlay.classList.add('show');
+            } else {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            isMobileSidebarOpen = false;
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileSidebar);
+        document.getElementById('mobileOverlay').addEventListener('click', closeMobileSidebar);
+
         document.querySelectorAll('.auth-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.dataset.tab;
@@ -968,27 +1311,21 @@
             });
         });
 
-        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             hideError('loginError');
-            
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if (!username || !password) {
                 showError('loginError', 'لطفا تمام فیلدها را پر کنید');
                 return;
             }
-            
-            const email = username + '@nova.local';
-            
+            const email = username + '@amirtaha.local';
             try {
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 await loadUserData(userCredential.user);
                 showChatScreen();
             } catch (error) {
-                console.error('Login error:', error);
                 let errorMessage = 'خطا در ورود';
                 if (error.code === 'auth/user-not-found') errorMessage = 'کاربری با این نام یافت نشد';
                 else if (error.code === 'auth/wrong-password') errorMessage = 'رمز عبور اشتباه است';
@@ -998,27 +1335,21 @@
             }
         });
 
-        // Sign Up
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             hideError('signupError');
-            
             const username = document.getElementById('signupUsername').value.trim();
             const password = document.getElementById('signupPassword').value;
-            
             if (!username || !password) {
                 showError('signupError', 'لطفا تمام فیلدها را پر کنید');
                 return;
             }
-            
             const passwordValidation = validatePassword(password);
             if (!passwordValidation.valid) {
                 showError('signupError', passwordValidation.message);
                 return;
             }
-            
-            const email = username + '@nova.local';
-            
+            const email = username + '@amirtaha.local';
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 await database.ref('users/' + userCredential.user.uid).set({
@@ -1029,7 +1360,6 @@
                 await loadUserData(userCredential.user);
                 showChatScreen();
             } catch (error) {
-                console.error('Signup error:', error);
                 let errorMessage = 'خطا در ثبت نام';
                 if (error.code === 'auth/email-already-in-use') errorMessage = 'این نام کاربری قبلا استفاده شده';
                 else if (error.code === 'auth/weak-password') errorMessage = 'رمز عبور ضعیف است';
@@ -1038,7 +1368,6 @@
             }
         });
 
-        // Load User Data
         async function loadUserData(user) {
             currentUser = user;
             const userData = await database.ref('users/' + user.uid).once('value');
@@ -1048,13 +1377,11 @@
             loadUserGroups();
         }
 
-        // Show Chat Screen
         function showChatScreen() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('chatContainer').classList.add('active');
         }
 
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('آیا مطمئن هستید؟')) {
                 if (messagesRef) messagesRef.off();
@@ -1062,6 +1389,7 @@
                 await auth.signOut();
                 currentUser = null;
                 currentGroupId = null;
+                closeMobileSidebar();
                 document.getElementById('authContainer').style.display = 'flex';
                 document.getElementById('chatContainer').classList.remove('active');
                 document.getElementById('loginForm').reset();
@@ -1069,25 +1397,20 @@
             }
         });
 
-        // Load User Groups
         function loadUserGroups() {
             if (!currentUser) return;
-            
             userGroupsRef = database.ref('userGroups/' + currentUser.uid);
             userGroupsRef.on('value', (snapshot) => {
                 const userGroups = snapshot.val() || {};
                 const groupIds = Object.keys(userGroups);
-                
                 if (groupIds.length === 0) {
                     document.getElementById('groupsList').innerHTML = '<div class="empty-state"><h3>هنوز گروهی وجود ندارد</h3><p>یک گروه جدید بسازید</p></div>';
                     return;
                 }
-                
                 database.ref('groups').once('value', (groupsSnapshot) => {
                     const allGroups = groupsSnapshot.val() || {};
                     const groupsList = document.getElementById('groupsList');
                     groupsList.innerHTML = '<h3>گروه‌های من</h3>';
-                    
                     groupIds.forEach(groupId => {
                         const group = allGroups[groupId];
                         if (group) {
@@ -1095,12 +1418,12 @@
                             groupItem.className = 'group-item';
                             if (currentGroupId === groupId) groupItem.classList.add('active');
                             groupItem.dataset.groupId = groupId;
-                            
                             const isOwner = group.owner === currentUser.uid;
                             groupItem.innerHTML = '<div class="group-name">' + escapeHtml(group.name) + '</div><div class="group-menu"><button class="group-menu-btn">⋮</button><div class="group-menu-dropdown"><div class="menu-item ' + (isOwner ? 'danger' : '') + '" data-action="' + (isOwner ? 'delete' : 'leave') + '">' + (isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه') + '</div></div></div>';
-                            
-                            groupItem.querySelector('.group-name').addEventListener('click', () => switchGroup(groupId));
-                            
+                            groupItem.querySelector('.group-name').addEventListener('click', () => {
+                                switchGroup(groupId);
+                                if (window.innerWidth <= 768) closeMobileSidebar();
+                            });
                             const menuBtn = groupItem.querySelector('.group-menu-btn');
                             const menuDropdown = groupItem.querySelector('.group-menu-dropdown');
                             menuBtn.addEventListener('click', (e) => {
@@ -1110,7 +1433,6 @@
                                 });
                                 menuDropdown.classList.toggle('show');
                             });
-                            
                             groupItem.querySelector('.menu-item').addEventListener('click', (e) => {
                                 e.stopPropagation();
                                 const action = e.target.dataset.action;
@@ -1118,7 +1440,6 @@
                                 else if (action === 'delete') showDeleteModal(groupId);
                                 menuDropdown.classList.remove('show');
                             });
-                            
                             groupsList.appendChild(groupItem);
                         }
                     });
@@ -1126,17 +1447,14 @@
             });
         }
 
-        // Switch Group
         function switchGroup(groupId) {
             if (currentGroupId === groupId) return;
             if (messagesRef) messagesRef.off();
-            
             currentGroupId = groupId;
             document.querySelectorAll('.group-item').forEach(item => {
                 item.classList.remove('active');
                 if (item.dataset.groupId === groupId) item.classList.add('active');
             });
-            
             database.ref('groups/' + groupId).once('value', (snapshot) => {
                 const group = snapshot.val();
                 if (group) {
@@ -1146,21 +1464,17 @@
             });
         }
 
-        // Load Messages
         function loadMessages(groupId) {
             const messagesContainer = document.getElementById('messagesContainer');
             messagesContainer.innerHTML = '<div class="loading">در حال بارگذاری...</div>';
-            
             messagesRef = database.ref('messages/' + groupId).orderByChild('timestamp');
             messagesRef.on('value', (snapshot) => {
                 const messages = snapshot.val() || {};
                 const messagesArray = Object.entries(messages).map(([id, msg]) => ({id, ...msg})).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-                
                 if (messagesArray.length === 0) {
                     messagesContainer.innerHTML = '<div class="empty-state"><h3>هنوز پیامی ارسال نشده</h3><p>اولین پیام را ارسال کنید!</p></div>';
                     return;
                 }
-                
                 messagesContainer.innerHTML = '';
                 messagesArray.forEach(msg => {
                     const isOwn = msg.userId === currentUser.uid;
@@ -1174,33 +1488,27 @@
             });
         }
 
-        // Send Message
         async function sendMessage() {
             if (!currentGroupId) {
                 alert('لطفا ابتدا یک گروه انتخاب کنید');
                 return;
             }
-            
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
             if (!text) return;
-            
             try {
                 const userDataSnapshot = await database.ref('users/' + currentUser.uid).once('value');
                 const userData = userDataSnapshot.val() || {};
                 const username = userData.username || getUsernameFromEmail(currentUser.email);
-                
                 await database.ref('messages/' + currentGroupId).push().set({
                     text: text,
                     userId: currentUser.uid,
                     userData: { username: username },
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
-                
                 input.value = '';
                 input.style.height = 'auto';
             } catch (error) {
-                console.error('Send error:', error);
                 alert('خطا در ارسال پیام');
             }
         }
@@ -1214,10 +1522,9 @@
         });
         document.getElementById('messageInput').addEventListener('input', function() {
             this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
 
-        // Emoji Panel
         function initEmojiPanel() {
             const emojiGrid = document.getElementById('emojiGrid');
             emojis.forEach(emoji => {
@@ -1249,11 +1556,11 @@
             }
         });
 
-        // Create Group
         document.getElementById('createGroupBtn').addEventListener('click', () => {
             document.getElementById('createGroupModal').classList.add('show');
             document.getElementById('createGroupForm').reset();
             hideError('createGroupError');
+            if (window.innerWidth <= 768) closeMobileSidebar();
         });
 
         document.getElementById('cancelCreateGroup').addEventListener('click', () => {
@@ -1263,21 +1570,17 @@
         document.getElementById('createGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             hideError('createGroupError');
-            
             const groupName = document.getElementById('groupNameInput').value.trim();
             const groupPassword = document.getElementById('groupPasswordInput').value;
-            
             if (!groupName || !groupPassword) {
                 showError('createGroupError', 'لطفا تمام فیلدها را پر کنید');
                 return;
             }
-            
             const passwordValidation = validatePassword(groupPassword);
             if (!passwordValidation.valid) {
                 showError('createGroupError', passwordValidation.message);
                 return;
             }
-            
             try {
                 const groupRef = database.ref('groups').push();
                 await groupRef.set({
@@ -1286,30 +1589,24 @@
                     owner: currentUser.uid,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
-                
                 const groupId = groupRef.key;
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                
                 document.getElementById('createGroupModal').classList.remove('show');
                 switchGroup(groupId);
             } catch (error) {
-                console.error('Create group error:', error);
                 showError('createGroupError', 'خطا در ایجاد گروه');
             }
         });
 
-        // Join Group
         document.getElementById('joinGroupBtn').addEventListener('click', async () => {
             const modal = document.getElementById('joinGroupModal');
             const select = document.getElementById('joinGroupSelect');
-            
             try {
                 const groupsSnapshot = await database.ref('groups').once('value');
                 const allGroups = groupsSnapshot.val() || {};
                 const userGroupsSnapshot = await database.ref('userGroups/' + currentUser.uid).once('value');
                 const userGroups = userGroupsSnapshot.val() || {};
-                
                 select.innerHTML = '<option value="">-- انتخاب کنید --</option>';
                 Object.entries(allGroups).forEach(([groupId, group]) => {
                     if (!userGroups[groupId]) {
@@ -1319,12 +1616,11 @@
                         select.appendChild(option);
                     }
                 });
-                
                 modal.classList.add('show');
                 document.getElementById('joinGroupForm').reset();
                 hideError('joinGroupError');
+                if (window.innerWidth <= 768) closeMobileSidebar();
             } catch (error) {
-                console.error('Load groups error:', error);
                 alert('خطا در بارگذاری گروه‌ها');
             }
         });
@@ -1336,48 +1632,37 @@
         document.getElementById('joinGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             hideError('joinGroupError');
-            
             const groupId = document.getElementById('joinGroupSelect').value;
             const password = document.getElementById('joinGroupPassword').value;
-            
             if (!groupId || !password) {
                 showError('joinGroupError', 'لطفا تمام فیلدها را پر کنید');
                 return;
             }
-            
             try {
                 const groupSnapshot = await database.ref('groups/' + groupId).once('value');
                 const group = groupSnapshot.val();
-                
                 if (!group) {
                     showError('joinGroupError', 'گروه یافت نشد');
                     return;
                 }
-                
                 if (group.password !== password) {
                     showError('joinGroupError', 'رمز گروه اشتباه است');
                     return;
                 }
-                
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                
                 document.getElementById('joinGroupModal').classList.remove('show');
                 switchGroup(groupId);
             } catch (error) {
-                console.error('Join error:', error);
                 showError('joinGroupError', 'خطا در پیوستن به گروه');
             }
         });
 
-        // Leave Group
         async function leaveGroup(groupId) {
             if (!confirm('آیا مطمئن هستید؟')) return;
-            
             try {
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).remove();
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).remove();
-                
                 if (currentGroupId === groupId) {
                     currentGroupId = null;
                     if (messagesRef) messagesRef.off();
@@ -1385,12 +1670,10 @@
                     document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3></div>';
                 }
             } catch (error) {
-                console.error('Leave error:', error);
                 alert('خطا در ترک گروه');
             }
         }
 
-        // Delete Group
         let deleteGroupId = null;
 
         function showDeleteModal(groupId) {
@@ -1405,36 +1688,34 @@
 
         document.getElementById('confirmDeleteGroup').addEventListener('click', async () => {
             if (!deleteGroupId) return;
-            
             try {
                 const membersSnapshot = await database.ref('groupMembers/' + deleteGroupId).once('value');
                 const members = membersSnapshot.val() || {};
-                
                 await Promise.all(Object.keys(members).map(userId => 
                     database.ref('userGroups/' + userId + '/' + deleteGroupId).remove()
                 ));
-                
                 await database.ref('groups/' + deleteGroupId).remove();
                 await database.ref('groupMembers/' + deleteGroupId).remove();
                 await database.ref('messages/' + deleteGroupId).remove();
-                
                 document.getElementById('deleteGroupModal').classList.remove('show');
-                
                 if (currentGroupId === deleteGroupId) {
                     currentGroupId = null;
                     if (messagesRef) messagesRef.off();
                     document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
                     document.getElementById('messagesContainer').innerHTML = '<div class="empty-state"><h3>گروهی را انتخاب کنید</h3></div>';
                 }
-                
                 deleteGroupId = null;
             } catch (error) {
-                console.error('Delete error:', error);
                 alert('خطا در حذف گروه');
             }
         });
 
-        // Auth State Listener
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('show');
+            });
+        });
+
         auth.onAuthStateChanged((user) => {
             if (user) {
                 loadUserData(user).then(() => showChatScreen());
@@ -1444,9 +1725,23 @@
             }
         });
 
-        // Initialize
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) e.preventDefault();
+            lastTouchEnd = now;
+        }, false);
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth > 768) closeMobileSidebar();
+            }, 250);
+        });
+
         initEmojiPanel();
-        console.log('✅ Nova Chat initialized!');
+        console.log('✅ Amirtaha Chat initialized!');
     </script>
 </body>
 </html>
