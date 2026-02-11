@@ -1124,6 +1124,11 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
+        // تنظیم persistence به SESSION - با بستن تب لاگ اوت می‌شه
+        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch((error) => {
+            console.error('Persistence error:', error);
+        });
+
         let currentUser = null;
         let currentGroupId = null;
         let messagesRef = null;
@@ -1209,6 +1214,7 @@
                 if (error.code === 'auth/user-not-found') msg = 'کاربری یافت نشد';
                 else if (error.code === 'auth/wrong-password') msg = 'رمز عبور اشتباه است';
                 else if (error.code === 'auth/invalid-email') msg = 'نام کاربری نامعتبر است';
+                else if (error.code === 'auth/invalid-credential') msg = 'نام کاربری یا رمز عبور اشتباه است';
                 showError('loginError', msg);
             }
         });
@@ -1259,6 +1265,11 @@
             document.getElementById('chatContainer').classList.add('active');
         }
 
+        function showAuthScreen() {
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('chatContainer').classList.remove('active');
+        }
+
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('آیا مطمئن هستید؟')) {
                 if (messagesRef) messagesRef.off();
@@ -1267,8 +1278,9 @@
                 currentUser = null;
                 currentGroupId = null;
                 closeMobileSidebar();
-                document.getElementById('authContainer').style.display = 'flex';
-                document.getElementById('chatContainer').classList.remove('active');
+                showAuthScreen();
+                document.getElementById('loginForm').reset();
+                document.getElementById('signupForm').reset();
             }
         });
 
@@ -1609,12 +1621,12 @@
             });
         });
 
+        // Auth State Listener - فقط اگر کاربر لاگین کرده باشه چت نمایش داده میشه
         auth.onAuthStateChanged((user) => {
             if (user) {
                 loadUserData(user).then(() => showChatScreen());
             } else {
-                document.getElementById('authContainer').style.display = 'flex';
-                document.getElementById('chatContainer').classList.remove('active');
+                showAuthScreen();
             }
         });
 
