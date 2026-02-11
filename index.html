@@ -224,7 +224,7 @@
         .mobile-menu-toggle {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 120px;
             left: 20px;
             width: 56px;
             height: 56px;
@@ -1353,7 +1353,6 @@
                     el.className = 'message ' + (isOwn ? 'own' : 'other');
                     el.innerHTML = '<div class="message-header">' + (isOwn ? 'شما' : escapeHtml(username)) + '</div><div class="message-content">' + escapeHtml(msg.text) + '</div><div class="message-time">' + formatTime(msg.timestamp) + '</div>' + (isOwn ? '<button class="delete-message-btn" data-message-id="' + msg.id + '" title="حذف پیام">🗑️</button>' : '');
                     
-                    // Add delete event listener
                     if (isOwn) {
                         const deleteBtn = el.querySelector('.delete-message-btn');
                         deleteBtn.addEventListener('click', () => deleteMessage(msg.id));
@@ -1365,10 +1364,8 @@
             });
         }
 
-        // Delete Message Function
         async function deleteMessage(messageId) {
             if (!currentGroupId || !messageId) return;
-            
             if (confirm('آیا می‌خواهید این پیام را حذف کنید؟')) {
                 try {
                     await database.ref('messages/' + currentGroupId + '/' + messageId).remove();
