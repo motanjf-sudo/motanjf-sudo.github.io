@@ -82,7 +82,6 @@
             position: relative;
         }
 
-        /* ==================== Auth Screen ==================== */
         .auth-container {
             display: flex;
             justify-content: center;
@@ -103,14 +102,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .auth-header {
@@ -153,9 +146,8 @@
             border-radius: 10px;
             font-size: 1.05rem;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             min-height: 52px;
-            touch-action: manipulation;
             position: relative;
             overflow: hidden;
         }
@@ -182,10 +174,6 @@
             opacity: 1;
         }
 
-        .auth-tab:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
         .auth-form {
             display: none;
         }
@@ -196,14 +184,8 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .form-group {
@@ -216,7 +198,6 @@
             color: var(--text-primary);
             font-weight: 600;
             font-size: 0.98rem;
-            letter-spacing: 0.3px;
         }
 
         .form-group label .required {
@@ -260,14 +241,10 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .password-hint::before {
-            content: 'ℹ️';
-            font-size: 0.9rem;
+            content: 'ℹ️ ';
         }
 
         .avatar-preview-box {
@@ -317,7 +294,6 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 4px;
-            font-size: 1rem;
         }
 
         .avatar-preview-text .sub {
@@ -338,14 +314,6 @@
             margin-top: 16px;
             display: none;
             font-size: 0.92rem;
-            animation: shakeError 0.4s ease;
-            line-height: 1.5;
-        }
-
-        @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
         }
 
         .error-message.show {
@@ -366,7 +334,6 @@
             margin-top: 16px;
             display: none;
             font-size: 0.92rem;
-            animation: fadeIn 0.3s ease;
         }
 
         .success-message.show {
@@ -388,35 +355,11 @@
             font-size: 1.05rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             margin-top: 12px;
             min-height: 56px;
             position: relative;
             overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn span {
-            position: relative;
-            z-index: 1;
         }
 
         .btn:hover:not(:disabled) {
@@ -424,18 +367,9 @@
             box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
         }
 
-        .btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none !important;
-        }
-
-        .btn.loading {
-            pointer-events: none;
         }
 
         .btn.loading span {
@@ -460,7 +394,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ==================== Chat Screen ==================== */
         .chat-container {
             display: none;
             height: 100%;
@@ -482,7 +415,6 @@
             z-index: 999;
             opacity: 0;
             transition: opacity 0.3s ease;
-            backdrop-filter: blur(2px);
         }
 
         .mobile-overlay.show {
@@ -498,7 +430,7 @@
             overflow: hidden;
             position: relative;
             z-index: 1000;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s;
         }
 
         .sidebar-header {
@@ -518,14 +450,6 @@
             gap: 12px;
             flex: 1;
             min-width: 0;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
-            transition: background 0.3s ease;
-        }
-
-        .user-info:hover {
-            background: rgba(255, 255, 255, 0.05);
         }
 
         .user-avatar {
@@ -540,7 +464,6 @@
             font-weight: 700;
             color: white;
             font-size: 1.4rem;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
             overflow: hidden;
         }
 
@@ -596,13 +519,11 @@
             font-weight: 600;
             transition: all 0.3s ease;
             min-height: 44px;
-            white-space: nowrap;
         }
 
         .logout-btn:hover {
             background: var(--danger);
             border-color: var(--danger);
-            transform: scale(1.05);
         }
 
         .sidebar-actions {
@@ -625,7 +546,6 @@
             font-weight: 600;
             transition: all 0.3s ease;
             min-height: 52px;
-            white-space: nowrap;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -636,11 +556,6 @@
             background: var(--primary);
             border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-        .action-btn:active {
-            transform: translateY(0);
         }
 
         .ai-assistant-btn {
@@ -651,15 +566,12 @@
 
         .ai-assistant-btn:hover {
             background: linear-gradient(135deg, #059669, var(--ai-color));
-            border-color: var(--ai-color);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
         .groups-list {
             flex: 1;
             overflow-y: auto;
             padding: 12px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .groups-list h3 {
@@ -677,7 +589,7 @@
             background: var(--bg-tertiary);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -691,14 +603,9 @@
             border-color: var(--primary);
         }
 
-        .group-item:active {
-            transform: translateX(-3px) scale(0.99);
-        }
-
         .group-item.active {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            border-color: transparent;
         }
 
         .group-avatar {
@@ -713,7 +620,6 @@
             font-weight: 700;
             color: white;
             font-size: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
@@ -740,90 +646,6 @@
         .group-owner-badge {
             font-size: 0.75rem;
             color: var(--warning);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .group-menu {
-            position: relative;
-        }
-
-        .group-menu-btn {
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 1.4rem;
-            min-width: 40px;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .group-menu-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .group-menu-dropdown {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 6px;
-            min-width: 180px;
-            box-shadow: 0 8px 24px var(--shadow);
-            display: none;
-            z-index: 100;
-            animation: dropdownSlide 0.2s ease;
-        }
-
-        @keyframes dropdownSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .group-menu-dropdown.show {
-            display: block;
-        }
-
-        .menu-item {
-            padding: 12px 16px;
-            color: var(--text-primary);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
-            font-weight: 500;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .menu-item:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .menu-item.danger {
-            color: var(--danger);
-        }
-
-        .menu-item.danger:hover {
-            background: rgba(239, 68, 68, 0.15);
         }
 
         .main-chat {
@@ -832,7 +654,6 @@
             flex-direction: column;
             background: var(--bg-primary);
             min-width: 0;
-            position: relative;
         }
 
         .chat-header {
@@ -858,42 +679,6 @@
             display: none;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .chat-header-group {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .chat-header-avatar {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            color: white;
-            font-weight: 700;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .chat-header-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .chat-header h2 {
@@ -901,22 +686,15 @@
             color: var(--text-primary);
             font-weight: 700;
             flex: 1;
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            overflow-x: hidden;
             padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
 
         .message {
@@ -926,27 +704,19 @@
             word-wrap: break-word;
             animation: messageSlide 0.3s ease;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             display: flex;
             gap: 12px;
         }
 
         @keyframes messageSlide {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message.own {
             align-self: flex-end;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            border-bottom-left-radius: 4px;
             flex-direction: row-reverse;
         }
 
@@ -954,7 +724,6 @@
             align-self: flex-start;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            border-bottom-right-radius: 4px;
             border: 1px solid var(--border);
         }
 
@@ -963,7 +732,6 @@
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
             color: var(--text-primary);
             border: 2px solid var(--ai-color);
-            border-bottom-right-radius: 4px;
             max-width: 80%;
         }
 
@@ -979,7 +747,6 @@
             font-size: 1.2rem;
             color: white;
             font-weight: 700;
-            align-self: flex-start;
             overflow: hidden;
         }
 
@@ -987,10 +754,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .message.own .message-avatar {
-            background: rgba(255, 255, 255, 0.25);
         }
 
         .message.ai .message-avatar {
@@ -1008,7 +771,6 @@
             opacity: 0.85;
             margin-bottom: 6px;
             font-weight: 700;
-            letter-spacing: 0.3px;
         }
 
         .message.ai .message-header {
@@ -1027,8 +789,6 @@
             font-size: 0.75rem;
             opacity: 0.7;
             margin-top: 6px;
-            text-align: left;
-            font-weight: 500;
         }
 
         .delete-message-btn {
@@ -1048,9 +808,6 @@
             justify-content: center;
             opacity: 0;
             transition: all 0.3s ease;
-            padding: 0;
-            backdrop-filter: blur(4px);
-            z-index: 1;
         }
 
         .message.own:hover .delete-message-btn {
@@ -1059,7 +816,6 @@
 
         .delete-message-btn:hover {
             background: var(--danger);
-            transform: scale(1.15) rotate(10deg);
         }
 
         .input-area {
@@ -1089,18 +845,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .emoji-btn:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: scale(1.1);
         }
 
         .message-input-wrapper {
             flex: 1;
-            position: relative;
             min-width: 0;
         }
 
@@ -1116,20 +864,11 @@
             resize: none;
             min-height: 54px;
             max-height: 140px;
-            transition: all 0.3s ease;
-            line-height: 1.5;
-        }
-
-        .message-input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.6;
         }
 
         .message-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: var(--bg-secondary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
 
         .send-btn {
@@ -1143,13 +882,10 @@
             cursor: pointer;
             min-height: 54px;
             min-width: 100px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
         }
 
         .send-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
         }
 
         .send-btn:disabled {
@@ -1172,7 +908,6 @@
             box-shadow: 0 12px 48px var(--shadow);
             display: none;
             z-index: 1000;
-            animation: dropdownSlide 0.2s ease;
         }
 
         .emoji-panel.show {
@@ -1196,18 +931,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
         }
 
         .emoji-item:hover {
             background: var(--primary);
             transform: scale(1.2);
-            border-color: var(--primary-light);
-            z-index: 1;
         }
 
-        /* ==================== AI Chat Modal ==================== */
         .ai-chat-modal {
             display: none;
             position: fixed;
@@ -1220,8 +950,6 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            backdrop-filter: blur(8px);
-            animation: fadeIn 0.3s ease;
         }
 
         .ai-chat-modal.show {
@@ -1236,21 +964,9 @@
             height: 85vh;
             max-height: 700px;
             box-shadow: 0 24px 64px var(--shadow);
-            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
         }
 
         .ai-chat-header {
@@ -1278,7 +994,6 @@
             justify-content: center;
             font-size: 1.8rem;
             color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
         .ai-chat-title h3 {
@@ -1306,13 +1021,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
         }
 
         .ai-chat-close:hover {
             background: var(--danger);
-            border-color: var(--danger);
-            transform: rotate(90deg);
         }
 
         .ai-messages-container {
@@ -1348,15 +1060,11 @@
             resize: none;
             min-height: 54px;
             max-height: 140px;
-            transition: all 0.3s ease;
-            line-height: 1.5;
         }
 
         .ai-message-input:focus {
             outline: none;
             border-color: var(--ai-color);
-            background: var(--bg-secondary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
         }
 
         .ai-send-btn {
@@ -1370,13 +1078,10 @@
             cursor: pointer;
             min-height: 54px;
             min-width: 100px;
-            transition: all 0.3s ease;
-            white-space: nowrap;
         }
 
         .ai-send-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
         }
 
         .ai-send-btn:disabled {
@@ -1409,24 +1114,14 @@
             animation: bounce 1.4s infinite ease-in-out;
         }
 
-        .ai-thinking-dots span:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-
-        .ai-thinking-dots span:nth-child(2) {
-            animation-delay: -0.16s;
-        }
+        .ai-thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .ai-thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
 
         @keyframes bounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-            }
-            40% {
-                transform: scale(1);
-            }
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
         }
 
-        /* ==================== Modals ==================== */
         .modal {
             display: none;
             position: fixed;
@@ -1439,9 +1134,6 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.3s ease;
-            overflow-y: auto;
         }
 
         .modal.show {
@@ -1457,8 +1149,6 @@
             box-shadow: 0 24px 64px var(--shadow);
             max-height: 90vh;
             overflow-y: auto;
-            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: auto;
         }
 
         .modal-header {
@@ -1476,7 +1166,6 @@
             gap: 12px;
             justify-content: flex-end;
             margin-top: 24px;
-            flex-wrap: wrap;
         }
 
         .btn-secondary {
@@ -1489,13 +1178,11 @@
             min-height: 52px;
             font-weight: 600;
             font-size: 1rem;
-            transition: all 0.3s ease;
             min-width: 100px;
         }
 
         .btn-secondary:hover {
             background: var(--border);
-            transform: translateY(-2px);
         }
 
         .btn-primary {
@@ -1508,14 +1195,11 @@
             min-height: 52px;
             font-weight: 700;
             font-size: 1rem;
-            transition: all 0.3s ease;
             min-width: 100px;
-            position: relative;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
         }
 
         .btn-primary:disabled {
@@ -1523,31 +1207,10 @@
             cursor: not-allowed;
         }
 
-        .btn-danger {
-            padding: 14px 24px;
-            background: var(--danger);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            min-height: 52px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            min-width: 100px;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
-        }
-
         .loading {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-secondary);
-            font-size: 1.05rem;
         }
 
         .loading::after {
@@ -1574,42 +1237,10 @@
             font-weight: 700;
         }
 
-        .empty-state p {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-tertiary);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 5px;
-            transition: background 0.3s ease;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        /* ==================== Responsive Design ==================== */
         @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .container {
-                height: 100vh;
-                border-radius: 0;
-            }
-
+            body { padding: 0; }
+            .container { height: 100vh; border-radius: 0; }
+            
             .sidebar {
                 position: fixed;
                 right: 0;
@@ -1618,7 +1249,6 @@
                 width: 85%;
                 max-width: 340px;
                 transform: translateX(100%);
-                box-shadow: -4px 0 24px var(--shadow);
             }
 
             .sidebar.show {
@@ -1660,38 +1290,27 @@
 
                 <form class="auth-form active" id="loginForm">
                     <div class="form-group">
-                        <label for="loginUsername">
-                            نام کاربری <span class="required">*</span>
-                        </label>
+                        <label for="loginUsername">نام کاربری <span class="required">*</span></label>
                         <input type="text" id="loginUsername" required placeholder="نام کاربری خود را وارد کنید">
                     </div>
                     <div class="form-group">
-                        <label for="loginPassword">
-                            رمز عبور <span class="required">*</span>
-                        </label>
-                        <input type="password" id="loginPassword" required placeholder="رمز عبور خود را وارد کنید">
+                        <label for="loginPassword">رمز عبور <span class="required">*</span></label>
+                        <input type="password" id="loginPassword" required placeholder="رمز عبور">
                     </div>
                     <div class="error-message" id="loginError"></div>
-                    <button type="submit" class="btn">
-                        <span>ورود به حساب کاربری</span>
-                    </button>
+                    <button type="submit" class="btn"><span>ورود</span></button>
                 </form>
 
                 <form class="auth-form" id="signupForm">
                     <div class="form-group">
-                        <label for="signupUsername">
-                            نام کاربری <span class="required">*</span>
-                        </label>
-                        <input type="text" id="signupUsername" required placeholder="نام کاربری خود را بنویسید">
+                        <label for="signupUsername">نام کاربری <span class="required">*</span></label>
+                        <input type="text" id="signupUsername" required placeholder="نام کاربری">
                     </div>
                     <div class="form-group">
-                        <label for="signupPassword">
-                            رمز عبور <span class="required">*</span>
-                        </label>
+                        <label for="signupPassword">رمز عبور <span class="required">*</span></label>
                         <input type="password" id="signupPassword" required placeholder="حداقل ۶ کاراکتر" minlength="6">
                         <div class="password-hint">رمز عبور باید حداقل ۶ کاراکتر باشد</div>
                     </div>
-                    
                     <div class="form-group">
                         <label>عکس پروفایل <span class="optional">(اختیاری)</span></label>
                         <div class="avatar-preview-box" id="signupAvatarPreview">
@@ -1703,12 +1322,9 @@
                         </div>
                         <input type="file" id="signupAvatarInput" class="file-input-hidden" accept="image/*">
                     </div>
-                    
                     <div class="error-message" id="signupError"></div>
                     <div class="success-message" id="signupSuccess"></div>
-                    <button type="submit" class="btn">
-                        <span>ساخت حساب کاربری</span>
-                    </button>
+                    <button type="submit" class="btn"><span>ثبت نام</span></button>
                 </form>
             </div>
         </div>
@@ -1719,7 +1335,7 @@
 
             <aside class="sidebar" id="sidebar">
                 <div class="sidebar-header">
-                    <div class="user-info" id="userInfo">
+                    <div class="user-info">
                         <div class="user-avatar" id="userAvatar">U</div>
                         <div class="user-details">
                             <div class="username" id="userDisplayName">کاربر</div>
@@ -1755,7 +1371,7 @@
                     <div id="groupsList">
                         <div class="empty-state">
                             <h3>هنوز گروهی وجود ندارد</h3>
-                            <p>یک گروه جدید بسازید یا به گروهی بپیوندید</p>
+                            <p>یک گروه جدید بسازید</p>
                         </div>
                     </div>
                 </div>
@@ -1764,17 +1380,13 @@
             <main class="main-chat">
                 <div class="chat-header">
                     <button class="mobile-menu-toggle" id="mobileMenuToggle">☰</button>
-                    <div class="chat-header-group" id="chatHeaderGroup" style="display: none;">
-                        <div class="chat-header-avatar" id="chatHeaderAvatar">G</div>
-                        <h2 id="currentGroupName">گروهی انتخاب نشده</h2>
-                    </div>
-                    <h2 id="currentGroupNameSimple" style="flex: 1;">گروهی انتخاب نشده</h2>
+                    <h2 id="currentGroupName">گروهی انتخاب نشده</h2>
                 </div>
 
                 <div class="messages-container" id="messagesContainer">
                     <div class="empty-state">
                         <h3>گروهی را انتخاب کنید</h3>
-                        <p>برای شروع چت، یک گروه از لیست سمت راست انتخاب کنید</p>
+                        <p>برای شروع چت، یک گروه انتخاب کنید</p>
                     </div>
                 </div>
 
@@ -1836,7 +1448,7 @@
             <form id="createGroupForm">
                 <div class="form-group">
                     <label for="groupNameInput">نام گروه <span class="required">*</span></label>
-                    <input type="text" id="groupNameInput" required placeholder="نام گروه را وارد کنید">
+                    <input type="text" id="groupNameInput" required placeholder="نام گروه">
                 </div>
                 <div class="form-group">
                     <label for="groupPasswordInput">رمز گروه <span class="required">*</span></label>
@@ -1849,7 +1461,7 @@
                         <div class="avatar-preview-img" id="createGroupAvatarImg">👥</div>
                         <div class="avatar-preview-text">
                             <div class="main">انتخاب عکس گروه</div>
-                            <div class="sub">کلیک کنید برای انتخاب عکس</div>
+                            <div class="sub">کلیک کنید</div>
                         </div>
                     </div>
                     <input type="file" id="createGroupAvatarInput" class="file-input-hidden" accept="image/*">
@@ -1857,7 +1469,7 @@
                 <div class="error-message" id="createGroupError"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" id="cancelCreateGroup">انصراف</button>
-                    <button type="submit" class="btn-primary" id="createGroupSubmit">ایجاد گروه</button>
+                    <button type="submit" class="btn-primary">ایجاد گروه</button>
                 </div>
             </form>
         </div>
@@ -1878,12 +1490,12 @@
                 </div>
                 <div class="form-group">
                     <label for="joinGroupPassword">رمز گروه <span class="required">*</span></label>
-                    <input type="password" id="joinGroupPassword" required placeholder="رمز گروه را وارد کنید">
+                    <input type="password" id="joinGroupPassword" required placeholder="رمز گروه">
                 </div>
                 <div class="error-message" id="joinGroupError"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" id="cancelJoinGroup">انصراف</button>
-                    <button type="submit" class="btn-primary" id="joinGroupSubmit">پیوستن</button>
+                    <button type="submit" class="btn-primary">پیوستن</button>
                 </div>
             </form>
         </div>
@@ -1892,7 +1504,6 @@
     <script type="module">
         import { GoogleGenerativeAI } from '@google/generative-ai';
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAAcLK4sFnrpx8tlltEBRoTV_-VYMndrGQ",
             authDomain: "nova-chat-f73f0.firebaseapp.com",
@@ -1907,8 +1518,8 @@
         const auth = firebase.auth();
         const database = firebase.database();
 
-        // Gemini AI با API Key شما
-        const GEMINI_API_KEY = 'AIzaSyCxTqTehxPNBuwUh31X6jwSzbSdptjxszA';
+        // 🔥 با API Key جدید شما
+        const GEMINI_API_KEY = 'AIzaSyAIDRARVuQbdpQ_8JMbnIAnzJWOU1-uzXE';
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
         const aiModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
@@ -1922,39 +1533,37 @@
 
         const messageEmojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','👍','👎','✌️','🤞','🤟','🤘','🤙','👌','🤌','🤏','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✨','🎉','🎊','🎈','🎁','🏆','🥇','🥈','🥉','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🔥','💯','✅','❌'];
 
-        function showError(elementId, message) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = message;
-                element.classList.add('show');
-                setTimeout(() => element.classList.remove('show'), 6000);
+        function showError(id, msg) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = msg;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 6000);
             }
         }
 
-        function hideError(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) element.classList.remove('show');
+        function hideError(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('show');
         }
 
-        function showSuccess(elementId, message) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = message;
-                element.classList.add('show');
-                setTimeout(() => element.classList.remove('show'), 4000);
+        function showSuccess(id, msg) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = msg;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 4000);
             }
         }
 
-        function formatTime(timestamp) {
-            if (!timestamp) return '';
-            const date = new Date(timestamp);
-            return date.getHours().toString().padStart(2, '0') + ':' + 
-                   date.getMinutes().toString().padStart(2, '0');
+        function formatTime(ts) {
+            if (!ts) return '';
+            const d = new Date(ts);
+            return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
         }
 
         function usernameToEmail(username) {
-            const cleanUsername = username.trim().replace(/\s+/g, '_').toLowerCase();
-            return cleanUsername + '@amirtaha.chat';
+            return username.trim().replace(/\s+/g, '_').toLowerCase() + '@amirtaha.chat';
         }
 
         function getUsernameFromEmail(email) {
@@ -1967,13 +1576,13 @@
             return div.innerHTML;
         }
 
-        function setButtonLoading(button, isLoading) {
-            if (isLoading) {
-                button.classList.add('loading');
-                button.disabled = true;
+        function setButtonLoading(btn, loading) {
+            if (loading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
             } else {
-                button.classList.remove('loading');
-                button.disabled = false;
+                btn.classList.remove('loading');
+                btn.disabled = false;
             }
         }
 
@@ -1986,33 +1595,28 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        
-                        const maxDimension = 400;
+                        const maxDim = 400;
                         if (width > height) {
-                            if (width > maxDimension) {
-                                height *= maxDimension / width;
-                                width = maxDimension;
+                            if (width > maxDim) {
+                                height *= maxDim / width;
+                                width = maxDim;
                             }
                         } else {
-                            if (height > maxDimension) {
-                                width *= maxDimension / height;
-                                height = maxDimension;
+                            if (height > maxDim) {
+                                width *= maxDim / height;
+                                height = maxDim;
                             }
                         }
-                        
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
                         let quality = 0.8;
                         let result = canvas.toDataURL('image/jpeg', quality);
-                        
                         while (result.length > maxSizeKB * 1024 && quality > 0.1) {
                             quality -= 0.1;
                             result = canvas.toDataURL('image/jpeg', quality);
                         }
-                        
                         resolve(result);
                     };
                     img.onerror = reject;
@@ -2023,81 +1627,58 @@
             });
         }
 
-        function displayAvatar(element, avatarData, fallbackText) {
-            element.innerHTML = '';
+        function displayAvatar(el, avatarData, fallback) {
+            el.innerHTML = '';
             if (avatarData && avatarData.startsWith('data:image')) {
                 const img = document.createElement('img');
                 img.src = avatarData;
-                element.appendChild(img);
+                el.appendChild(img);
             } else {
-                element.textContent = fallbackText || '?';
+                el.textContent = fallback || '?';
             }
         }
 
-        // AI Functions
         async function sendMessageToAI(userMessage) {
             try {
-                aiChatHistory.push({
-                    role: 'user',
-                    parts: [{ text: userMessage }]
-                });
-
+                aiChatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
                 const chat = aiModel.startChat({
                     history: aiChatHistory.slice(0, -1),
-                    generationConfig: {
-                        maxOutputTokens: 1000,
-                        temperature: 0.9,
-                    }
+                    generationConfig: { maxOutputTokens: 1000, temperature: 0.9 }
                 });
-
                 const result = await chat.sendMessage(userMessage);
                 const response = await result.response;
                 const text = response.text();
-
-                aiChatHistory.push({
-                    role: 'model',
-                    parts: [{ text: text }]
-                });
-
+                aiChatHistory.push({ role: 'model', parts: [{ text: text }] });
                 return text;
             } catch (error) {
                 console.error('AI Error:', error);
-                return 'متأسفم، در حال حاضر نمی‌توانم پاسخ دهم. لطفاً دوباره تلاش کنید.';
+                return 'متأسفم، در حال حاضر نمی‌توانم پاسخ دهم.';
             }
         }
 
         function addAIMessage(text, isUser = false) {
             const container = document.getElementById('aiMessagesContainer');
-            
             const messageEl = document.createElement('div');
             messageEl.className = isUser ? 'message own' : 'message ai';
-            
             const avatarEl = document.createElement('div');
             avatarEl.className = 'message-avatar';
             avatarEl.textContent = isUser ? '👤' : '🤖';
-            
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'message-content-wrapper';
-            
             const headerEl = document.createElement('div');
             headerEl.className = 'message-header';
             headerEl.textContent = isUser ? 'شما' : 'دستیار هوش مصنوعی';
-            
             const contentEl = document.createElement('div');
             contentEl.className = 'message-content';
             contentEl.textContent = text;
-            
             const timeEl = document.createElement('div');
             timeEl.className = 'message-time';
             timeEl.textContent = formatTime(Date.now());
-            
             contentWrapper.appendChild(headerEl);
             contentWrapper.appendChild(contentEl);
             contentWrapper.appendChild(timeEl);
-            
             messageEl.appendChild(avatarEl);
             messageEl.appendChild(contentWrapper);
-            
             container.appendChild(messageEl);
             container.scrollTop = container.scrollHeight;
         }
@@ -2107,24 +1688,16 @@
             const thinkingEl = document.createElement('div');
             thinkingEl.className = 'ai-thinking';
             thinkingEl.id = 'aiThinkingIndicator';
-            thinkingEl.innerHTML = `
-                <span>در حال فکر کردن</span>
-                <div class="ai-thinking-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
+            thinkingEl.innerHTML = '<span>در حال فکر کردن</span><div class="ai-thinking-dots"><span></span><span></span><span></span></div>';
             container.appendChild(thinkingEl);
             container.scrollTop = container.scrollHeight;
         }
 
         function hideAIThinking() {
-            const thinkingEl = document.getElementById('aiThinkingIndicator');
-            if (thinkingEl) thinkingEl.remove();
+            const el = document.getElementById('aiThinkingIndicator');
+            if (el) el.remove();
         }
 
-        // AI Modal
         document.getElementById('aiAssistantBtn').addEventListener('click', () => {
             document.getElementById('aiChatModal').classList.add('show');
             closeMobileSidebar();
@@ -2143,25 +1716,20 @@
         async function sendAIMessage() {
             const input = document.getElementById('aiMessageInput');
             const text = input.value.trim();
-            
             if (!text) return;
-            
             const sendBtn = document.getElementById('aiSendBtn');
             sendBtn.disabled = true;
-            
             addAIMessage(text, true);
             input.value = '';
             input.style.height = 'auto';
-            
             showAIThinking();
-            
             try {
                 const aiResponse = await sendMessageToAI(text);
                 hideAIThinking();
                 addAIMessage(aiResponse, false);
             } catch (error) {
                 hideAIThinking();
-                addAIMessage('متأسفم، خطایی رخ داد. لطفاً دوباره تلاش کنید.', false);
+                addAIMessage('متأسفم، خطایی رخ داد.', false);
             } finally {
                 sendBtn.disabled = false;
                 input.focus();
@@ -2182,29 +1750,22 @@
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
         });
 
-        // Auth Tab Switching
         document.querySelectorAll('.auth-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.dataset.tab;
-                
                 document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                
                 document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
                 document.getElementById(tabName + 'Form').classList.add('active');
-                
                 hideError('loginError');
                 hideError('signupError');
             });
         });
 
-        // Avatar Upload
         function setupAvatarUpload(previewId, inputId, callback) {
             const preview = document.getElementById(previewId);
             const input = document.getElementById(inputId);
-            
             preview.addEventListener('click', () => input.click());
-            
             input.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -2212,12 +1773,11 @@
                         alert('لطفا یک فایل تصویری انتخاب کنید');
                         return;
                     }
-                    
                     try {
                         const compressed = await compressImage(file);
                         callback(compressed);
                     } catch (error) {
-                        console.error('Error processing image:', error);
+                        console.error('Error:', error);
                         alert('خطا در پردازش تصویر');
                     }
                 }
@@ -2236,25 +1796,19 @@
             document.querySelector('#createGroupAvatarPreview .main').textContent = 'عکس انتخاب شد';
         });
 
-        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const loginBtn = e.target.querySelector('.btn');
             setButtonLoading(loginBtn, true);
             hideError('loginError');
-            
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
             if (!username || !password) {
                 showError('loginError', 'لطفا نام کاربری و رمز عبور را وارد کنید');
                 setButtonLoading(loginBtn, false);
                 return;
             }
-            
             const email = usernameToEmail(username);
-            
             try {
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 currentUser = userCredential.user;
@@ -2262,67 +1816,50 @@
                 showChatScreen();
             } catch (error) {
                 console.error('Login error:', error);
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                    showError('loginError', 'نام کاربری یا رمز عبور اشتباه است');
-                } else if (error.code === 'auth/wrong-password') {
-                    showError('loginError', 'رمز عبور اشتباه است');
-                } else {
-                    showError('loginError', 'خطایی رخ داد. لطفا دوباره تلاش کنید');
-                }
+                showError('loginError', 'نام کاربری یا رمز عبور اشتباه است');
             } finally {
                 setButtonLoading(loginBtn, false);
             }
         });
 
-        // Signup
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const signupBtn = e.target.querySelector('.btn');
             setButtonLoading(signupBtn, true);
             hideError('signupError');
-            
             const username = document.getElementById('signupUsername').value.trim();
             const password = document.getElementById('signupPassword').value;
-            
             if (!username || !password) {
                 showError('signupError', 'لطفا تمام فیلدها را پر کنید');
                 setButtonLoading(signupBtn, false);
                 return;
             }
-            
             if (password.length < 6) {
                 showError('signupError', 'رمز عبور باید حداقل ۶ کاراکتر باشد');
                 setButtonLoading(signupBtn, false);
                 return;
             }
-            
             const email = usernameToEmail(username);
-            
             try {
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                
                 await database.ref('users/' + userCredential.user.uid).set({
                     username: username,
                     email: email,
                     avatar: selectedSignupAvatar || '',
                     createdAt: Date.now()
                 });
-                
                 currentUser = userCredential.user;
                 showSuccess('signupSuccess', 'حساب شما با موفقیت ساخته شد!');
-                
                 setTimeout(async () => {
                     await loadUserData(currentUser);
                     showChatScreen();
                 }, 1000);
-                
             } catch (error) {
                 console.error('Signup error:', error);
                 if (error.code === 'auth/email-already-in-use') {
                     showError('signupError', 'این نام کاربری قبلاً استفاده شده است');
                 } else {
-                    showError('signupError', 'خطایی رخ داد. لطفا دوباره تلاش کنید');
+                    showError('signupError', 'خطایی رخ داد. دوباره تلاش کنید');
                 }
             } finally {
                 setButtonLoading(signupBtn, false);
@@ -2335,17 +1872,11 @@
                 const data = userData.val() || {};
                 const username = data.username || getUsernameFromEmail(user.email);
                 const avatar = data.avatar || '';
-                
                 document.getElementById('userDisplayName').textContent = username;
-                displayAvatar(
-                    document.getElementById('userAvatar'),
-                    avatar,
-                    username.charAt(0).toUpperCase()
-                );
-                
+                displayAvatar(document.getElementById('userAvatar'), avatar, username.charAt(0).toUpperCase());
                 loadUserGroups();
             } catch (error) {
-                console.error('Error loading user data:', error);
+                console.error('Error:', error);
             }
         }
 
@@ -2359,58 +1890,42 @@
             document.getElementById('chatContainer').classList.remove('active');
         }
 
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
-            if (confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')) {
+            if (confirm('آیا می‌خواهید خارج شوید؟')) {
                 try {
                     if (messagesRef) messagesRef.off();
                     if (userGroupsRef) userGroupsRef.off();
-                    
                     await auth.signOut();
-                    
                     currentUser = null;
                     currentGroupId = null;
                     selectedSignupAvatar = null;
                     aiChatHistory = [];
-                    
                     closeMobileSidebar();
                     showAuthScreen();
-                    
                     document.getElementById('loginForm').reset();
                     document.getElementById('signupForm').reset();
-                    
                     hideError('loginError');
                     hideError('signupError');
                 } catch (error) {
                     console.error('Logout error:', error);
-                    alert('خطا در خروج از حساب');
                 }
             }
         });
 
         function loadUserGroups() {
             if (!currentUser) return;
-            
             userGroupsRef = database.ref('userGroups/' + currentUser.uid);
             userGroupsRef.on('value', (snapshot) => {
                 const userGroups = snapshot.val() || {};
                 const groupIds = Object.keys(userGroups);
-                
                 if (groupIds.length === 0) {
-                    document.getElementById('groupsList').innerHTML = `
-                        <div class="empty-state">
-                            <h3>هنوز گروهی وجود ندارد</h3>
-                            <p>یک گروه جدید بسازید یا به گروهی بپیوندید</p>
-                        </div>
-                    `;
+                    document.getElementById('groupsList').innerHTML = '<div class="empty-state"><h3>هنوز گروهی وجود ندارد</h3><p>یک گروه جدید بسازید</p></div>';
                     return;
                 }
-                
                 database.ref('groups').once('value', (groupsSnapshot) => {
                     const allGroups = groupsSnapshot.val() || {};
                     const listContainer = document.getElementById('groupsList');
                     listContainer.innerHTML = '<h3>گروه‌های من</h3>';
-                    
                     groupIds.forEach(groupId => {
                         const group = allGroups[groupId];
                         if (group) {
@@ -2418,30 +1933,21 @@
                             item.className = 'group-item';
                             if (currentGroupId === groupId) item.classList.add('active');
                             item.dataset.groupId = groupId;
-                            
                             const isOwner = group.owner === currentUser.uid;
                             const groupAvatar = group.avatar || '';
                             const groupName = group.name || 'گروه';
-                            
                             const avatarEl = document.createElement('div');
                             avatarEl.className = 'group-avatar';
                             displayAvatar(avatarEl, groupAvatar, groupName.charAt(0).toUpperCase());
-                            
                             const infoEl = document.createElement('div');
                             infoEl.className = 'group-info';
-                            infoEl.innerHTML = `
-                                <div class="group-name">${escapeHtml(groupName)}</div>
-                                ${isOwner ? '<div class="group-owner-badge">👑 مالک گروه</div>' : ''}
-                            `;
-                            
+                            infoEl.innerHTML = `<div class="group-name">${escapeHtml(groupName)}</div>${isOwner ? '<div class="group-owner-badge">👑 مالک گروه</div>' : ''}`;
                             item.appendChild(avatarEl);
                             item.appendChild(infoEl);
-                            
                             infoEl.addEventListener('click', () => {
                                 switchGroup(groupId);
                                 closeMobileSidebar();
                             });
-                            
                             listContainer.appendChild(item);
                         }
                     });
@@ -2451,37 +1957,17 @@
 
         function switchGroup(groupId) {
             if (currentGroupId === groupId) return;
-            
             if (messagesRef) messagesRef.off();
-            
             currentGroupId = groupId;
-            
             document.querySelectorAll('.group-item').forEach(item => {
                 item.classList.remove('active');
-                if (item.dataset.groupId === groupId) {
-                    item.classList.add('active');
-                }
+                if (item.dataset.groupId === groupId) item.classList.add('active');
             });
-            
             database.ref('groups/' + groupId).once('value', (snapshot) => {
                 const group = snapshot.val();
                 if (group) {
                     const groupName = group.name || 'گروه';
-                    const groupAvatar = group.avatar || '';
-                    
                     document.getElementById('currentGroupName').textContent = groupName;
-                    document.getElementById('currentGroupNameSimple').textContent = groupName;
-                    
-                    const chatHeaderAvatar = document.getElementById('chatHeaderAvatar');
-                    displayAvatar(
-                        chatHeaderAvatar,
-                        groupAvatar,
-                        groupName.charAt(0).toUpperCase()
-                    );
-                    
-                    document.getElementById('chatHeaderGroup').style.display = 'flex';
-                    document.getElementById('currentGroupNameSimple').style.display = 'none';
-                    
                     loadMessages(groupId);
                 }
             });
@@ -2489,61 +1975,41 @@
 
         function loadMessages(groupId) {
             const container = document.getElementById('messagesContainer');
-            container.innerHTML = '<div class="loading">در حال بارگذاری پیام‌ها</div>';
-            
+            container.innerHTML = '<div class="loading">در حال بارگذاری</div>';
             messagesRef = database.ref('messages/' + groupId).orderByChild('timestamp');
             messagesRef.on('value', (snapshot) => {
                 const messages = snapshot.val() || {};
-                const messageArray = Object.entries(messages)
-                    .map(([id, msg]) => ({ id, ...msg }))
-                    .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-                
+                const messageArray = Object.entries(messages).map(([id, msg]) => ({ id, ...msg })).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
                 if (messageArray.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <h3>هنوز پیامی نیست</h3>
-                            <p>اولین نفری باشید که پیام می‌فرستد!</p>
-                        </div>
-                    `;
+                    container.innerHTML = '<div class="empty-state"><h3>هنوز پیامی نیست</h3><p>اولین پیام را بفرستید</p></div>';
                     return;
                 }
-                
                 container.innerHTML = '';
-                
                 messageArray.forEach(message => {
                     const isOwn = message.userId === currentUser.uid;
                     const username = message.userData?.username || 'کاربر';
                     const userAvatar = message.userData?.avatar || '';
-                    
                     const messageEl = document.createElement('div');
                     messageEl.className = 'message ' + (isOwn ? 'own' : 'other');
-                    
                     const avatarEl = document.createElement('div');
                     avatarEl.className = 'message-avatar';
                     displayAvatar(avatarEl, userAvatar, username.charAt(0).toUpperCase());
-                    
                     const contentWrapper = document.createElement('div');
                     contentWrapper.className = 'message-content-wrapper';
-                    
                     const headerEl = document.createElement('div');
                     headerEl.className = 'message-header';
                     headerEl.textContent = isOwn ? 'شما' : username;
-                    
                     const contentEl = document.createElement('div');
                     contentEl.className = 'message-content';
                     contentEl.textContent = message.text;
-                    
                     const timeEl = document.createElement('div');
                     timeEl.className = 'message-time';
                     timeEl.textContent = formatTime(message.timestamp);
-                    
                     contentWrapper.appendChild(headerEl);
                     contentWrapper.appendChild(contentEl);
                     contentWrapper.appendChild(timeEl);
-                    
                     messageEl.appendChild(avatarEl);
                     messageEl.appendChild(contentWrapper);
-                    
                     if (isOwn) {
                         const deleteBtn = document.createElement('button');
                         deleteBtn.className = 'delete-message-btn';
@@ -2551,64 +2017,49 @@
                         deleteBtn.addEventListener('click', () => deleteMessage(message.id));
                         messageEl.appendChild(deleteBtn);
                     }
-                    
                     container.appendChild(messageEl);
                 });
-                
                 container.scrollTop = container.scrollHeight;
             });
         }
 
         async function deleteMessage(messageId) {
             if (!currentGroupId || !messageId) return;
-            
-            if (confirm('آیا می‌خواهید این پیام را حذف کنید؟')) {
+            if (confirm('حذف پیام؟')) {
                 try {
                     await database.ref('messages/' + currentGroupId + '/' + messageId).remove();
                 } catch (error) {
-                    console.error('Delete message error:', error);
-                    alert('خطا در حذف پیام');
+                    console.error('Error:', error);
                 }
             }
         }
 
         async function sendMessage() {
             if (!currentGroupId) {
-                alert('لطفا ابتدا یک گروه انتخاب کنید');
+                alert('ابتدا یک گروه انتخاب کنید');
                 return;
             }
-            
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
-            
             if (!text) return;
-            
             const sendBtn = document.getElementById('sendBtn');
             sendBtn.disabled = true;
-            
             try {
                 const userSnapshot = await database.ref('users/' + currentUser.uid).once('value');
                 const userData = userSnapshot.val() || {};
                 const username = userData.username || getUsernameFromEmail(currentUser.email);
                 const avatar = userData.avatar || '';
-                
                 await database.ref('messages/' + currentGroupId).push().set({
                     text: text,
                     userId: currentUser.uid,
-                    userData: { 
-                        username: username,
-                        avatar: avatar
-                    },
+                    userData: { username: username, avatar: avatar },
                     timestamp: Date.now()
                 });
-                
                 input.value = '';
                 input.style.height = 'auto';
                 input.focus();
-                
             } catch (error) {
-                console.error('Send message error:', error);
-                alert('خطا در ارسال پیام');
+                console.error('Error:', error);
             } finally {
                 sendBtn.disabled = false;
             }
@@ -2628,7 +2079,6 @@
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
         });
 
-        // Emojis
         function initEmojis() {
             const grid = document.getElementById('emojiGrid');
             messageEmojis.forEach(emoji => {
@@ -2636,17 +2086,14 @@
                 item.type = 'button';
                 item.className = 'emoji-item';
                 item.textContent = emoji;
-                
                 item.addEventListener('click', () => {
                     const input = document.getElementById('messageInput');
                     const pos = input.selectionStart;
                     input.value = input.value.substring(0, pos) + emoji + input.value.substring(pos);
                     input.focus();
                     input.setSelectionRange(pos + emoji.length, pos + emoji.length);
-                    
                     document.getElementById('emojiPanel').classList.remove('show');
                 });
-                
                 grid.appendChild(item);
             });
         }
@@ -2659,13 +2106,11 @@
         document.addEventListener('click', (e) => {
             const panel = document.getElementById('emojiPanel');
             const btn = document.getElementById('emojiBtn');
-            
             if (!panel.contains(e.target) && !btn.contains(e.target)) {
                 panel.classList.remove('show');
             }
         });
 
-        // Create Group
         document.getElementById('createGroupBtn').addEventListener('click', () => {
             selectedCreateGroupAvatar = null;
             document.getElementById('createGroupModal').classList.add('show');
@@ -2682,26 +2127,21 @@
 
         document.getElementById('createGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const submitBtn = document.getElementById('createGroupSubmit');
+            const submitBtn = e.target.querySelector('.btn-primary');
             setButtonLoading(submitBtn, true);
             hideError('createGroupError');
-            
             const name = document.getElementById('groupNameInput').value.trim();
             const password = document.getElementById('groupPasswordInput').value;
-            
             if (!name || !password) {
                 showError('createGroupError', 'لطفا تمام فیلدها را پر کنید');
                 setButtonLoading(submitBtn, false);
                 return;
             }
-            
             if (password.length < 6) {
                 showError('createGroupError', 'رمز گروه باید حداقل ۶ کاراکتر باشد');
                 setButtonLoading(submitBtn, false);
                 return;
             }
-            
             try {
                 const groupRef = database.ref('groups').push();
                 await groupRef.set({
@@ -2711,36 +2151,27 @@
                     owner: currentUser.uid,
                     createdAt: Date.now()
                 });
-                
                 const groupId = groupRef.key;
-                
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                
                 document.getElementById('createGroupModal').classList.remove('show');
                 switchGroup(groupId);
-                
             } catch (error) {
-                console.error('Create group error:', error);
+                console.error('Error:', error);
                 showError('createGroupError', 'خطا در ایجاد گروه');
             } finally {
                 setButtonLoading(submitBtn, false);
             }
         });
 
-        // Join Group
         document.getElementById('joinGroupBtn').addEventListener('click', async () => {
             const select = document.getElementById('joinGroupSelect');
-            
             try {
                 const allGroupsSnapshot = await database.ref('groups').once('value');
                 const allGroups = allGroupsSnapshot.val() || {};
-                
                 const userGroupsSnapshot = await database.ref('userGroups/' + currentUser.uid).once('value');
                 const userGroups = userGroupsSnapshot.val() || {};
-                
                 select.innerHTML = '<option value="">-- یک گروه انتخاب کنید --</option>';
-                
                 Object.entries(allGroups).forEach(([groupId, group]) => {
                     if (!userGroups[groupId]) {
                         const option = document.createElement('option');
@@ -2749,20 +2180,16 @@
                         select.appendChild(option);
                     }
                 });
-                
                 if (select.options.length === 1) {
-                    alert('هیچ گروه جدیدی برای پیوستن وجود ندارد');
+                    alert('هیچ گروه جدیدی وجود ندارد');
                     return;
                 }
-                
                 document.getElementById('joinGroupModal').classList.add('show');
                 document.getElementById('joinGroupForm').reset();
                 hideError('joinGroupError');
                 closeMobileSidebar();
-                
             } catch (error) {
-                console.error('Load groups error:', error);
-                alert('خطا در بارگذاری گروه‌ها');
+                console.error('Error:', error);
             }
         });
 
@@ -2772,51 +2199,41 @@
 
         document.getElementById('joinGroupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const submitBtn = document.getElementById('joinGroupSubmit');
+            const submitBtn = e.target.querySelector('.btn-primary');
             setButtonLoading(submitBtn, true);
             hideError('joinGroupError');
-            
             const groupId = document.getElementById('joinGroupSelect').value;
             const password = document.getElementById('joinGroupPassword').value;
-            
             if (!groupId || !password) {
                 showError('joinGroupError', 'لطفا تمام فیلدها را پر کنید');
                 setButtonLoading(submitBtn, false);
                 return;
             }
-            
             try {
                 const groupSnapshot = await database.ref('groups/' + groupId).once('value');
                 const group = groupSnapshot.val();
-                
                 if (!group) {
                     showError('joinGroupError', 'گروه یافت نشد');
                     setButtonLoading(submitBtn, false);
                     return;
                 }
-                
                 if (group.password !== password) {
                     showError('joinGroupError', 'رمز گروه اشتباه است');
                     setButtonLoading(submitBtn, false);
                     return;
                 }
-                
                 await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).set(true);
                 await database.ref('userGroups/' + currentUser.uid + '/' + groupId).set(true);
-                
                 document.getElementById('joinGroupModal').classList.remove('show');
                 switchGroup(groupId);
-                
             } catch (error) {
-                console.error('Join group error:', error);
-                showError('joinGroupError', 'خطا در پیوستن به گروه');
+                console.error('Error:', error);
+                showError('joinGroupError', 'خطا در پیوستن');
             } finally {
                 setButtonLoading(submitBtn, false);
             }
         });
 
-        // Mobile
         function toggleMobileSidebar() {
             document.getElementById('sidebar').classList.toggle('show');
             document.getElementById('mobileOverlay').classList.toggle('show');
@@ -2832,9 +2249,7 @@
 
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('show');
-                }
+                if (e.target === modal) modal.classList.remove('show');
             });
         });
 
