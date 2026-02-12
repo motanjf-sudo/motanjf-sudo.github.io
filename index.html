@@ -231,10 +231,6 @@
             margin-right: 6px;
         }
 
-        .input-wrapper {
-            position: relative;
-        }
-
         .form-group input, .form-group select {
             width: 100%;
             padding: 16px 18px;
@@ -260,11 +256,6 @@
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
 
-        .form-group input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
         .password-hint {
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -277,11 +268,6 @@
         .password-hint::before {
             content: 'ℹ️';
             font-size: 0.9rem;
-        }
-
-        /* Avatar Upload */
-        .avatar-upload-container {
-            margin-top: 12px;
         }
 
         .avatar-preview-box {
@@ -315,7 +301,6 @@
             color: white;
             font-weight: 700;
             overflow: hidden;
-            object-fit: cover;
         }
 
         .avatar-preview-img img {
@@ -543,10 +528,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .user-avatar, .group-avatar, .message-avatar, .chat-header-avatar {
-            cursor: pointer;
-        }
-
         .user-avatar {
             width: 48px;
             height: 48px;
@@ -662,12 +643,10 @@
             transform: translateY(0);
         }
 
-        /* AI Assistant Button */
         .ai-assistant-btn {
             background: linear-gradient(135deg, var(--ai-color), #059669);
             border-color: var(--ai-color);
             color: white;
-            flex: 1;
         }
 
         .ai-assistant-btn:hover {
@@ -887,10 +866,6 @@
             border-color: var(--primary);
         }
 
-        .mobile-menu-toggle:active {
-            transform: scale(0.95);
-        }
-
         .chat-header-group {
             display: flex;
             align-items: center;
@@ -930,7 +905,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            cursor: pointer;
         }
 
         .messages-container {
@@ -1035,7 +1009,6 @@
             margin-bottom: 6px;
             font-weight: 700;
             letter-spacing: 0.3px;
-            cursor: pointer;
         }
 
         .message.ai .message-header {
@@ -1089,10 +1062,6 @@
             transform: scale(1.15) rotate(10deg);
         }
 
-        .delete-message-btn:active {
-            transform: scale(0.95);
-        }
-
         .input-area {
             padding: 18px 24px;
             border-top: 1px solid var(--border);
@@ -1127,10 +1096,6 @@
             background: var(--primary);
             border-color: var(--primary);
             transform: scale(1.1);
-        }
-
-        .emoji-btn:active {
-            transform: scale(1.05);
         }
 
         .message-input-wrapper {
@@ -1187,10 +1152,6 @@
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
         }
 
-        .send-btn:active:not(:disabled) {
-            transform: translateY(0) scale(0.98);
-        }
-
         .send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -1211,7 +1172,6 @@
             box-shadow: 0 12px 48px var(--shadow);
             display: none;
             z-index: 1000;
-            -webkit-overflow-scrolling: touch;
             animation: dropdownSlide 0.2s ease;
         }
 
@@ -1247,108 +1207,6 @@
             z-index: 1;
         }
 
-        .emoji-item:active {
-            transform: scale(1.1);
-        }
-
-        /* ==================== Profile View Modal ==================== */
-        .profile-view-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 3000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .profile-view-modal.show {
-            display: flex;
-        }
-
-        .profile-view-content {
-            background: var(--bg-secondary);
-            padding: 40px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 24px 64px var(--shadow);
-            animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-        }
-
-        @keyframes modalSlide {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .profile-view-avatar {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            margin: 0 auto 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.5);
-            overflow: hidden;
-        }
-
-        .profile-view-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-view-name {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            word-break: break-word;
-        }
-
-        .profile-view-info {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 32px;
-        }
-
-        .profile-view-close {
-            padding: 14px 32px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            min-height: 52px;
-        }
-
-        .profile-view-close:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
         /* ==================== AI Chat Modal ==================== */
         .ai-chat-modal {
             display: none;
@@ -1382,6 +1240,17 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .ai-chat-header {
@@ -1453,7 +1322,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .ai-input-area {
@@ -1526,7 +1394,6 @@
             background: rgba(16, 185, 129, 0.1);
             border-radius: 10px;
             align-self: flex-start;
-            animation: fadeIn 0.3s ease;
         }
 
         .ai-thinking-dots {
@@ -1654,24 +1521,6 @@
         .btn-primary:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-        }
-
-        .btn-primary.loading {
-            pointer-events: none;
-        }
-
-        .btn-primary.loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 18px;
-            height: 18px;
-            margin: -9px 0 0 -9px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
         }
 
         .btn-danger {
@@ -1978,40 +1827,6 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div class="profile-view-modal" id="profileViewModal">
-        <div class="profile-view-content">
-            <div class="profile-view-avatar" id="profileViewAvatar">👤</div>
-            <div class="profile-view-name" id="profileViewName">نام کاربر</div>
-            <div class="profile-view-info" id="profileViewInfo">کاربر</div>
-            <button class="profile-view-close" id="profileViewClose">بستن</button>
-        </div>
-    </div>
-
-    <!-- Change User Avatar Modal -->
-    <div class="modal" id="changeUserAvatarModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>تغییر عکس پروفایل</h3>
-            </div>
-            <div class="form-group">
-                <label>عکس پروفایل فعلی</label>
-                <div class="avatar-preview-box" id="changeUserAvatarPreview">
-                    <div class="avatar-preview-img" id="changeUserAvatarImg">👤</div>
-                    <div class="avatar-preview-text">
-                        <div class="main">انتخاب عکس جدید</div>
-                        <div class="sub">کلیک کنید برای تغییر عکس</div>
-                    </div>
-                </div>
-                <input type="file" id="changeUserAvatarInput" class="file-input-hidden" accept="image/*">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="cancelChangeUserAvatar">انصراف</button>
-                <button type="button" class="btn-primary" id="confirmChangeUserAvatar">ذخیره تغییرات</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Create Group Modal -->
     <div class="modal" id="createGroupModal">
         <div class="modal-content">
@@ -2074,53 +1889,10 @@
         </div>
     </div>
 
-    <!-- Change Group Avatar Modal -->
-    <div class="modal" id="changeGroupAvatarModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>تغییر عکس پروفایل گروه</h3>
-            </div>
-            <div class="form-group">
-                <label>عکس پروفایل فعلی گروه</label>
-                <div class="avatar-preview-box" id="changeGroupAvatarPreview">
-                    <div class="avatar-preview-img" id="changeGroupAvatarImg">👥</div>
-                    <div class="avatar-preview-text">
-                        <div class="main">انتخاب عکس جدید</div>
-                        <div class="sub">کلیک کنید برای تغییر عکس</div>
-                    </div>
-                </div>
-                <input type="file" id="changeGroupAvatarInput" class="file-input-hidden" accept="image/*">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="cancelChangeGroupAvatar">انصراف</button>
-                <button type="button" class="btn-primary" id="confirmChangeGroupAvatar">ذخیره تغییرات</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Group Modal -->
-    <div class="modal" id="deleteGroupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>⚠️ حذف گروه</h3>
-            </div>
-            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem; line-height: 1.6;">
-                آیا مطمئن هستید که می‌خواهید این گروه را حذف کنید؟ 
-                <strong style="color: var(--danger);">تمام پیام‌ها برای همیشه پاک خواهند شد.</strong>
-                این عمل غیرقابل بازگشت است.
-            </p>
-            <div class="modal-footer">
-                <button type="button" class="btn-secondary" id="cancelDeleteGroup">انصراف</button>
-                <button type="button" class="btn-danger" id="confirmDeleteGroup">حذف گروه</button>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
-        // ==================== Import Gemini AI ====================
         import { GoogleGenerativeAI } from '@google/generative-ai';
 
-        // ==================== Firebase Configuration ====================
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAAcLK4sFnrpx8tlltEBRoTV_-VYMndrGQ",
             authDomain: "nova-chat-f73f0.firebaseapp.com",
@@ -2134,31 +1906,22 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const database = firebase.database();
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
 
-        // ==================== 🔥 Gemini AI با API Key شما ====================
+        // Gemini AI با API Key شما
         const GEMINI_API_KEY = 'AIzaSyCxTqTehxPNBuwUh31X6jwSzbSdptjxszA';
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
         const aiModel = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-        // ==================== Global State ====================
         let currentUser = null;
         let currentGroupId = null;
-        let currentGroupData = null;
         let messagesRef = null;
         let userGroupsRef = null;
-        let isAuthenticating = false;
         let selectedSignupAvatar = null;
         let selectedCreateGroupAvatar = null;
-        let selectedUserAvatarChange = null;
-        let selectedGroupAvatarChange = null;
-        let changeGroupAvatarId = null;
         let aiChatHistory = [];
 
-        // ==================== Emoji Options ====================
         const messageEmojis = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','👍','👎','✌️','🤞','🤟','🤘','🤙','👌','🤌','🤏','✊','👊','🤛','🤜','👏','🙌','👐','🤲','🤝','🙏','✨','🎉','🎊','🎈','🎁','🏆','🥇','🥈','🥉','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🔥','💯','✅','❌'];
 
-        // ==================== Utility Functions ====================
         function showError(elementId, message) {
             const element = document.getElementById(elementId);
             if (element) {
@@ -2182,13 +1945,6 @@
             }
         }
 
-        function validatePassword(password) {
-            if (password.length < 6) {
-                return { valid: false, message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' };
-            }
-            return { valid: true };
-        }
-
         function formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
@@ -2196,13 +1952,13 @@
                    date.getMinutes().toString().padStart(2, '0');
         }
 
-        function getUsernameFromEmail(email) {
-            return email.replace('@amirtaha.chat', '');
-        }
-
         function usernameToEmail(username) {
             const cleanUsername = username.trim().replace(/\s+/g, '_').toLowerCase();
             return cleanUsername + '@amirtaha.chat';
+        }
+
+        function getUsernameFromEmail(email) {
+            return email.replace('@amirtaha.chat', '');
         }
 
         function escapeHtml(text) {
@@ -2221,21 +1977,6 @@
             }
         }
 
-        function getFirebaseErrorMessage(error) {
-            const errorMessages = {
-                'auth/user-not-found': 'این نام کاربری وجود ندارد. لطفا ثبت نام کنید.',
-                'auth/wrong-password': 'رمز عبور اشتباه است. دوباره تلاش کنید.',
-                'auth/invalid-email': 'نام کاربری نامعتبر است.',
-                'auth/invalid-credential': 'نام کاربری یا رمز عبور اشتباه است.',
-                'auth/email-already-in-use': 'این نام کاربری قبلاً استفاده شده است.',
-                'auth/weak-password': 'رمز عبور خیلی ضعیف است. رمز قوی‌تری انتخاب کنید.',
-                'auth/network-request-failed': 'خطای اتصال به اینترنت. اتصال خود را بررسی کنید.',
-                'auth/too-many-requests': 'تلاش‌های زیادی انجام شده. لطفا کمی صبر کنید.'
-            };
-            return errorMessages[error.code] || 'خطایی رخ داد. لطفا دوباره تلاش کنید.';
-        }
-
-        // ==================== Image Processing ====================
         function compressImage(file, maxSizeKB = 200) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -2261,7 +2002,6 @@
                         
                         canvas.width = width;
                         canvas.height = height;
-                        
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
                         
@@ -2294,7 +2034,7 @@
             }
         }
 
-        // ==================== AI Functions ====================
+        // AI Functions
         async function sendMessageToAI(userMessage) {
             try {
                 aiChatHistory.push({
@@ -2384,10 +2124,10 @@
             if (thinkingEl) thinkingEl.remove();
         }
 
-        // ==================== AI Chat Modal ====================
+        // AI Modal
         document.getElementById('aiAssistantBtn').addEventListener('click', () => {
             document.getElementById('aiChatModal').classList.add('show');
-            if (window.innerWidth <= 768) closeMobileSidebar();
+            closeMobileSidebar();
         });
 
         document.getElementById('aiChatClose').addEventListener('click', () => {
@@ -2442,49 +2182,34 @@
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
         });
 
-        // ==================== Profile View Functions ====================
-        function showProfileView(name, avatar, type = 'user') {
-            const modal = document.getElementById('profileViewModal');
-            const avatarEl = document.getElementById('profileViewAvatar');
-            const nameEl = document.getElementById('profileViewName');
-            const infoEl = document.getElementById('profileViewInfo');
-            
-            displayAvatar(avatarEl, avatar, name.charAt(0).toUpperCase());
-            nameEl.textContent = name;
-            infoEl.textContent = type === 'group' ? 'گروه' : 'کاربر';
-            
-            modal.classList.add('show');
-        }
-
-        document.getElementById('profileViewClose').addEventListener('click', () => {
-            document.getElementById('profileViewModal').classList.remove('show');
+        // Auth Tab Switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.dataset.tab;
+                
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                document.getElementById(tabName + 'Form').classList.add('active');
+                
+                hideError('loginError');
+                hideError('signupError');
+            });
         });
 
-        document.getElementById('profileViewModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('profileViewModal')) {
-                document.getElementById('profileViewModal').classList.remove('show');
-            }
-        });
-
-        // ==================== Avatar Upload Handlers ====================
+        // Avatar Upload
         function setupAvatarUpload(previewId, inputId, callback) {
             const preview = document.getElementById(previewId);
             const input = document.getElementById(inputId);
             
-            preview.addEventListener('click', () => {
-                input.click();
-            });
+            preview.addEventListener('click', () => input.click());
             
             input.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                     if (!file.type.startsWith('image/')) {
                         alert('لطفا یک فایل تصویری انتخاب کنید');
-                        return;
-                    }
-                    
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('حجم فایل باید کمتر از ۵ مگابایت باشد');
                         return;
                     }
                     
@@ -2499,55 +2224,23 @@
             });
         }
 
-        // ==================== Mobile Sidebar ====================
-        function toggleMobileSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-            document.getElementById('mobileOverlay').classList.toggle('show');
-        }
-
-        function closeMobileSidebar() {
-            document.getElementById('sidebar').classList.remove('show');
-            document.getElementById('mobileOverlay').classList.remove('show');
-        }
-
-        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileSidebar);
-        document.getElementById('mobileOverlay').addEventListener('click', closeMobileSidebar);
-
-        // ==================== Auth Tab Switching ====================
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.dataset.tab;
-                
-                document.querySelectorAll('.auth-tab').forEach(t => {
-                    t.classList.remove('active');
-                    t.setAttribute('aria-selected', 'false');
-                });
-                tab.classList.add('active');
-                tab.setAttribute('aria-selected', 'true');
-                
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                document.getElementById(tabName + 'Form').classList.add('active');
-                
-                hideError('loginError');
-                hideError('signupError');
-            });
-        });
-
-        // ==================== Setup Signup Avatar Upload ====================
         setupAvatarUpload('signupAvatarPreview', 'signupAvatarInput', (imageData) => {
             selectedSignupAvatar = imageData;
             displayAvatar(document.getElementById('signupAvatarImg'), imageData, '👤');
             document.querySelector('#signupAvatarPreview .main').textContent = 'عکس انتخاب شد';
-            document.querySelector('#signupAvatarPreview .sub').textContent = 'کلیک کنید برای تغییر';
         });
 
-        // ==================== Login Form ====================
+        setupAvatarUpload('createGroupAvatarPreview', 'createGroupAvatarInput', (imageData) => {
+            selectedCreateGroupAvatar = imageData;
+            displayAvatar(document.getElementById('createGroupAvatarImg'), imageData, '👥');
+            document.querySelector('#createGroupAvatarPreview .main').textContent = 'عکس انتخاب شد';
+        });
+
+        // Login
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (isAuthenticating) return;
-            isAuthenticating = true;
             
-            const loginBtn = document.getElementById('loginBtn');
+            const loginBtn = e.target.querySelector('.btn');
             setButtonLoading(loginBtn, true);
             hideError('loginError');
             
@@ -2557,7 +2250,6 @@
             if (!username || !password) {
                 showError('loginError', 'لطفا نام کاربری و رمز عبور را وارد کنید');
                 setButtonLoading(loginBtn, false);
-                isAuthenticating = false;
                 return;
             }
             
@@ -2570,20 +2262,23 @@
                 showChatScreen();
             } catch (error) {
                 console.error('Login error:', error);
-                showError('loginError', getFirebaseErrorMessage(error));
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                    showError('loginError', 'نام کاربری یا رمز عبور اشتباه است');
+                } else if (error.code === 'auth/wrong-password') {
+                    showError('loginError', 'رمز عبور اشتباه است');
+                } else {
+                    showError('loginError', 'خطایی رخ داد. لطفا دوباره تلاش کنید');
+                }
             } finally {
                 setButtonLoading(loginBtn, false);
-                isAuthenticating = false;
             }
         });
 
-        // ==================== Signup Form ====================
+        // Signup
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (isAuthenticating) return;
-            isAuthenticating = true;
             
-            const signupBtn = document.getElementById('signupBtn');
+            const signupBtn = e.target.querySelector('.btn');
             setButtonLoading(signupBtn, true);
             hideError('signupError');
             
@@ -2593,15 +2288,12 @@
             if (!username || !password) {
                 showError('signupError', 'لطفا تمام فیلدها را پر کنید');
                 setButtonLoading(signupBtn, false);
-                isAuthenticating = false;
                 return;
             }
             
-            const passwordCheck = validatePassword(password);
-            if (!passwordCheck.valid) {
-                showError('signupError', passwordCheck.message);
+            if (password.length < 6) {
+                showError('signupError', 'رمز عبور باید حداقل ۶ کاراکتر باشد');
                 setButtonLoading(signupBtn, false);
-                isAuthenticating = false;
                 return;
             }
             
@@ -2614,7 +2306,7 @@
                     username: username,
                     email: email,
                     avatar: selectedSignupAvatar || '',
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                    createdAt: Date.now()
                 });
                 
                 currentUser = userCredential.user;
@@ -2627,14 +2319,16 @@
                 
             } catch (error) {
                 console.error('Signup error:', error);
-                showError('signupError', getFirebaseErrorMessage(error));
+                if (error.code === 'auth/email-already-in-use') {
+                    showError('signupError', 'این نام کاربری قبلاً استفاده شده است');
+                } else {
+                    showError('signupError', 'خطایی رخ داد. لطفا دوباره تلاش کنید');
+                }
             } finally {
                 setButtonLoading(signupBtn, false);
-                isAuthenticating = false;
             }
         });
 
-        // ==================== Load User Data ====================
         async function loadUserData(user) {
             try {
                 const userData = await database.ref('users/' + user.uid).once('value');
@@ -2648,11 +2342,6 @@
                     avatar,
                     username.charAt(0).toUpperCase()
                 );
-                
-                document.getElementById('userAvatar').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    showProfileView(username, avatar, 'user');
-                });
                 
                 loadUserGroups();
             } catch (error) {
@@ -2670,53 +2359,7 @@
             document.getElementById('chatContainer').classList.remove('active');
         }
 
-        // ==================== Change User Avatar ====================
-        document.getElementById('userInfo').addEventListener('click', () => {
-            database.ref('users/' + currentUser.uid).once('value', (snapshot) => {
-                const userData = snapshot.val() || {};
-                const currentAvatar = userData.avatar || '';
-                const username = userData.username || '';
-                
-                selectedUserAvatarChange = currentAvatar;
-                displayAvatar(
-                    document.getElementById('changeUserAvatarImg'),
-                    currentAvatar,
-                    username.charAt(0).toUpperCase()
-                );
-                
-                document.getElementById('changeUserAvatarModal').classList.add('show');
-            });
-            
-            if (window.innerWidth <= 768) closeMobileSidebar();
-        });
-
-        setupAvatarUpload('changeUserAvatarPreview', 'changeUserAvatarInput', (imageData) => {
-            selectedUserAvatarChange = imageData;
-            displayAvatar(document.getElementById('changeUserAvatarImg'), imageData, '👤');
-            document.querySelector('#changeUserAvatarPreview .main').textContent = 'عکس جدید انتخاب شد';
-        });
-
-        document.getElementById('cancelChangeUserAvatar').addEventListener('click', () => {
-            document.getElementById('changeUserAvatarModal').classList.remove('show');
-        });
-
-        document.getElementById('confirmChangeUserAvatar').addEventListener('click', async () => {
-            const btn = document.getElementById('confirmChangeUserAvatar');
-            setButtonLoading(btn, true);
-            
-            try {
-                await database.ref('users/' + currentUser.uid + '/avatar').set(selectedUserAvatarChange || '');
-                await loadUserData(currentUser);
-                document.getElementById('changeUserAvatarModal').classList.remove('show');
-            } catch (error) {
-                console.error('Error changing avatar:', error);
-                alert('خطا در تغییر عکس پروفایل');
-            } finally {
-                setButtonLoading(btn, false);
-            }
-        });
-
-        // ==================== Logout ====================
+        // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('آیا مطمئن هستید که می‌خواهید خارج شوید؟')) {
                 try {
@@ -2727,7 +2370,6 @@
                     
                     currentUser = null;
                     currentGroupId = null;
-                    currentGroupData = null;
                     selectedSignupAvatar = null;
                     aiChatHistory = [];
                     
@@ -2736,9 +2378,6 @@
                     
                     document.getElementById('loginForm').reset();
                     document.getElementById('signupForm').reset();
-                    displayAvatar(document.getElementById('signupAvatarImg'), null, '👤');
-                    document.querySelector('#signupAvatarPreview .main').textContent = 'انتخاب عکس پروفایل';
-                    document.querySelector('#signupAvatarPreview .sub').textContent = 'کلیک کنید برای انتخاب عکس';
                     
                     hideError('loginError');
                     hideError('signupError');
@@ -2749,7 +2388,6 @@
             }
         });
 
-        // ==================== Load User Groups ====================
         function loadUserGroups() {
             if (!currentUser) return;
             
@@ -2789,11 +2427,6 @@
                             avatarEl.className = 'group-avatar';
                             displayAvatar(avatarEl, groupAvatar, groupName.charAt(0).toUpperCase());
                             
-                            avatarEl.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                showProfileView(groupName, groupAvatar, 'group');
-                            });
-                            
                             const infoEl = document.createElement('div');
                             infoEl.className = 'group-info';
                             infoEl.innerHTML = `
@@ -2801,53 +2434,12 @@
                                 ${isOwner ? '<div class="group-owner-badge">👑 مالک گروه</div>' : ''}
                             `;
                             
-                            const menuEl = document.createElement('div');
-                            menuEl.className = 'group-menu';
-                            menuEl.innerHTML = `
-                                <button class="group-menu-btn">⋮</button>
-                                <div class="group-menu-dropdown">
-                                    ${isOwner ? '<div class="menu-item" data-action="change-avatar">🎨 تغییر عکس</div>' : ''}
-                                    <div class="menu-item ${isOwner ? 'danger' : ''}" data-action="${isOwner ? 'delete' : 'leave'}">
-                                        ${isOwner ? '🗑️ حذف گروه' : '👋 ترک گروه'}
-                                    </div>
-                                </div>
-                            `;
-                            
                             item.appendChild(avatarEl);
                             item.appendChild(infoEl);
-                            item.appendChild(menuEl);
                             
                             infoEl.addEventListener('click', () => {
                                 switchGroup(groupId);
-                                if (window.innerWidth <= 768) closeMobileSidebar();
-                            });
-                            
-                            const menuBtn = menuEl.querySelector('.group-menu-btn');
-                            const dropdown = menuEl.querySelector('.group-menu-dropdown');
-                            
-                            menuBtn.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                document.querySelectorAll('.group-menu-dropdown').forEach(m => {
-                                    if (m !== dropdown) m.classList.remove('show');
-                                });
-                                dropdown.classList.toggle('show');
-                            });
-                            
-                            menuEl.querySelectorAll('.menu-item').forEach(menuItem => {
-                                menuItem.addEventListener('click', (e) => {
-                                    e.stopPropagation();
-                                    const action = menuItem.dataset.action;
-                                    
-                                    if (action === 'leave') {
-                                        leaveGroup(groupId);
-                                    } else if (action === 'delete') {
-                                        showDeleteModal(groupId);
-                                    } else if (action === 'change-avatar') {
-                                        showChangeGroupAvatarModal(groupId, group);
-                                    }
-                                    
-                                    dropdown.classList.remove('show');
-                                });
+                                closeMobileSidebar();
                             });
                             
                             listContainer.appendChild(item);
@@ -2857,7 +2449,6 @@
             });
         }
 
-        // ==================== Switch Group ====================
         function switchGroup(groupId) {
             if (currentGroupId === groupId) return;
             
@@ -2875,7 +2466,6 @@
             database.ref('groups/' + groupId).once('value', (snapshot) => {
                 const group = snapshot.val();
                 if (group) {
-                    currentGroupData = group;
                     const groupName = group.name || 'گروه';
                     const groupAvatar = group.avatar || '';
                     
@@ -2889,14 +2479,6 @@
                         groupName.charAt(0).toUpperCase()
                     );
                     
-                    chatHeaderAvatar.onclick = () => {
-                        showProfileView(groupName, groupAvatar, 'group');
-                    };
-                    
-                    document.getElementById('currentGroupName').onclick = () => {
-                        showProfileView(groupName, groupAvatar, 'group');
-                    };
-                    
                     document.getElementById('chatHeaderGroup').style.display = 'flex';
                     document.getElementById('currentGroupNameSimple').style.display = 'none';
                     
@@ -2905,7 +2487,6 @@
             });
         }
 
-        // ==================== Load Messages ====================
         function loadMessages(groupId) {
             const container = document.getElementById('messagesContainer');
             container.innerHTML = '<div class="loading">در حال بارگذاری پیام‌ها</div>';
@@ -2941,27 +2522,12 @@
                     avatarEl.className = 'message-avatar';
                     displayAvatar(avatarEl, userAvatar, username.charAt(0).toUpperCase());
                     
-                    if (!isOwn) {
-                        avatarEl.style.cursor = 'pointer';
-                        avatarEl.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            showProfileView(username, userAvatar, 'user');
-                        });
-                    }
-                    
                     const contentWrapper = document.createElement('div');
                     contentWrapper.className = 'message-content-wrapper';
                     
                     const headerEl = document.createElement('div');
                     headerEl.className = 'message-header';
                     headerEl.textContent = isOwn ? 'شما' : username;
-                    
-                    if (!isOwn) {
-                        headerEl.style.cursor = 'pointer';
-                        headerEl.addEventListener('click', () => {
-                            showProfileView(username, userAvatar, 'user');
-                        });
-                    }
                     
                     const contentEl = document.createElement('div');
                     contentEl.className = 'message-content';
@@ -2982,7 +2548,6 @@
                         const deleteBtn = document.createElement('button');
                         deleteBtn.className = 'delete-message-btn';
                         deleteBtn.textContent = '🗑️';
-                        deleteBtn.title = 'حذف پیام';
                         deleteBtn.addEventListener('click', () => deleteMessage(message.id));
                         messageEl.appendChild(deleteBtn);
                     }
@@ -2994,7 +2559,6 @@
             });
         }
 
-        // ==================== Delete Message ====================
         async function deleteMessage(messageId) {
             if (!currentGroupId || !messageId) return;
             
@@ -3008,7 +2572,6 @@
             }
         }
 
-        // ==================== Send Message ====================
         async function sendMessage() {
             if (!currentGroupId) {
                 alert('لطفا ابتدا یک گروه انتخاب کنید');
@@ -3036,7 +2599,7 @@
                         username: username,
                         avatar: avatar
                     },
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                    timestamp: Date.now()
                 });
                 
                 input.value = '';
@@ -3065,7 +2628,7 @@
             this.style.height = Math.min(this.scrollHeight, 140) + 'px';
         });
 
-        // ==================== Emoji Panel ====================
+        // Emojis
         function initEmojis() {
             const grid = document.getElementById('emojiGrid');
             messageEmojis.forEach(emoji => {
@@ -3081,9 +2644,7 @@
                     input.focus();
                     input.setSelectionRange(pos + emoji.length, pos + emoji.length);
                     
-                    if (window.innerWidth <= 768) {
-                        document.getElementById('emojiPanel').classList.remove('show');
-                    }
+                    document.getElementById('emojiPanel').classList.remove('show');
                 });
                 
                 grid.appendChild(item);
@@ -3102,31 +2663,17 @@
             if (!panel.contains(e.target) && !btn.contains(e.target)) {
                 panel.classList.remove('show');
             }
-            
-            if (!e.target.closest('.group-menu')) {
-                document.querySelectorAll('.group-menu-dropdown').forEach(m => {
-                    m.classList.remove('show');
-                });
-            }
         });
 
-        // ==================== Create Group Modal ====================
+        // Create Group
         document.getElementById('createGroupBtn').addEventListener('click', () => {
             selectedCreateGroupAvatar = null;
             document.getElementById('createGroupModal').classList.add('show');
             document.getElementById('createGroupForm').reset();
             displayAvatar(document.getElementById('createGroupAvatarImg'), null, '👥');
             document.querySelector('#createGroupAvatarPreview .main').textContent = 'انتخاب عکس گروه';
-            document.querySelector('#createGroupAvatarPreview .sub').textContent = 'کلیک کنید برای انتخاب عکس';
             hideError('createGroupError');
-            if (window.innerWidth <= 768) closeMobileSidebar();
-        });
-
-        setupAvatarUpload('createGroupAvatarPreview', 'createGroupAvatarInput', (imageData) => {
-            selectedCreateGroupAvatar = imageData;
-            displayAvatar(document.getElementById('createGroupAvatarImg'), imageData, '👥');
-            document.querySelector('#createGroupAvatarPreview .main').textContent = 'عکس انتخاب شد';
-            document.querySelector('#createGroupAvatarPreview .sub').textContent = 'کلیک کنید برای تغییر';
+            closeMobileSidebar();
         });
 
         document.getElementById('cancelCreateGroup').addEventListener('click', () => {
@@ -3149,9 +2696,8 @@
                 return;
             }
             
-            const passwordCheck = validatePassword(password);
-            if (!passwordCheck.valid) {
-                showError('createGroupError', passwordCheck.message);
+            if (password.length < 6) {
+                showError('createGroupError', 'رمز گروه باید حداقل ۶ کاراکتر باشد');
                 setButtonLoading(submitBtn, false);
                 return;
             }
@@ -3163,7 +2709,7 @@
                     password: password,
                     avatar: selectedCreateGroupAvatar || '',
                     owner: currentUser.uid,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                    createdAt: Date.now()
                 });
                 
                 const groupId = groupRef.key;
@@ -3182,7 +2728,7 @@
             }
         });
 
-        // ==================== Join Group Modal ====================
+        // Join Group
         document.getElementById('joinGroupBtn').addEventListener('click', async () => {
             const select = document.getElementById('joinGroupSelect');
             
@@ -3212,7 +2758,7 @@
                 document.getElementById('joinGroupModal').classList.add('show');
                 document.getElementById('joinGroupForm').reset();
                 hideError('joinGroupError');
-                if (window.innerWidth <= 768) closeMobileSidebar();
+                closeMobileSidebar();
                 
             } catch (error) {
                 console.error('Load groups error:', error);
@@ -3270,150 +2816,20 @@
             }
         });
 
-        // ==================== Change Group Avatar ====================
-        function showChangeGroupAvatarModal(groupId, groupData) {
-            changeGroupAvatarId = groupId;
-            const currentAvatar = groupData.avatar || '';
-            const groupName = groupData.name || 'گروه';
-            
-            selectedGroupAvatarChange = currentAvatar;
-            displayAvatar(
-                document.getElementById('changeGroupAvatarImg'),
-                currentAvatar,
-                groupName.charAt(0).toUpperCase()
-            );
-            
-            document.getElementById('changeGroupAvatarModal').classList.add('show');
+        // Mobile
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('show');
+            document.getElementById('mobileOverlay').classList.toggle('show');
         }
 
-        setupAvatarUpload('changeGroupAvatarPreview', 'changeGroupAvatarInput', (imageData) => {
-            selectedGroupAvatarChange = imageData;
-            displayAvatar(document.getElementById('changeGroupAvatarImg'), imageData, '👥');
-            document.querySelector('#changeGroupAvatarPreview .main').textContent = 'عکس جدید انتخاب شد';
-        });
-
-        document.getElementById('cancelChangeGroupAvatar').addEventListener('click', () => {
-            document.getElementById('changeGroupAvatarModal').classList.remove('show');
-            changeGroupAvatarId = null;
-        });
-
-        document.getElementById('confirmChangeGroupAvatar').addEventListener('click', async () => {
-            if (!changeGroupAvatarId) return;
-            
-            const btn = document.getElementById('confirmChangeGroupAvatar');
-            setButtonLoading(btn, true);
-            
-            try {
-                await database.ref('groups/' + changeGroupAvatarId + '/avatar').set(selectedGroupAvatarChange || '');
-                
-                if (currentGroupId === changeGroupAvatarId) {
-                    const snapshot = await database.ref('groups/' + changeGroupAvatarId).once('value');
-                    const group = snapshot.val();
-                    if (group) {
-                        displayAvatar(
-                            document.getElementById('chatHeaderAvatar'),
-                            group.avatar || '',
-                            group.name.charAt(0).toUpperCase()
-                        );
-                    }
-                }
-                
-                document.getElementById('changeGroupAvatarModal').classList.remove('show');
-                changeGroupAvatarId = null;
-            } catch (error) {
-                console.error('Error changing group avatar:', error);
-                alert('خطا در تغییر عکس پروفایل گروه');
-            } finally {
-                setButtonLoading(btn, false);
-            }
-        });
-
-        // ==================== Leave Group ====================
-        async function leaveGroup(groupId) {
-            if (!confirm('آیا مطمئن هستید که می‌خواهید از این گروه خارج شوید؟')) return;
-            
-            try {
-                await database.ref('groupMembers/' + groupId + '/' + currentUser.uid).remove();
-                await database.ref('userGroups/' + currentUser.uid + '/' + groupId).remove();
-                
-                if (currentGroupId === groupId) {
-                    currentGroupId = null;
-                    currentGroupData = null;
-                    if (messagesRef) messagesRef.off();
-                    document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('currentGroupNameSimple').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('chatHeaderGroup').style.display = 'none';
-                    document.getElementById('currentGroupNameSimple').style.display = 'block';
-                    document.getElementById('messagesContainer').innerHTML = `
-                        <div class="empty-state">
-                            <h3>گروهی را انتخاب کنید</h3>
-                            <p>برای شروع چت، یک گروه از لیست سمت راست انتخاب کنید</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Leave group error:', error);
-                alert('خطا در خروج از گروه');
-            }
+        function closeMobileSidebar() {
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('mobileOverlay').classList.remove('show');
         }
 
-        // ==================== Delete Group Modal ====================
-        let deleteGroupId = null;
+        document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileSidebar);
+        document.getElementById('mobileOverlay').addEventListener('click', closeMobileSidebar);
 
-        function showDeleteModal(groupId) {
-            deleteGroupId = groupId;
-            document.getElementById('deleteGroupModal').classList.add('show');
-        }
-
-        document.getElementById('cancelDeleteGroup').addEventListener('click', () => {
-            document.getElementById('deleteGroupModal').classList.remove('show');
-            deleteGroupId = null;
-        });
-
-        document.getElementById('confirmDeleteGroup').addEventListener('click', async () => {
-            if (!deleteGroupId) return;
-            
-            try {
-                const membersSnapshot = await database.ref('groupMembers/' + deleteGroupId).once('value');
-                const members = membersSnapshot.val() || {};
-                
-                await Promise.all(
-                    Object.keys(members).map(userId => 
-                        database.ref('userGroups/' + userId + '/' + deleteGroupId).remove()
-                    )
-                );
-                
-                await database.ref('groups/' + deleteGroupId).remove();
-                await database.ref('groupMembers/' + deleteGroupId).remove();
-                await database.ref('messages/' + deleteGroupId).remove();
-                
-                document.getElementById('deleteGroupModal').classList.remove('show');
-                
-                if (currentGroupId === deleteGroupId) {
-                    currentGroupId = null;
-                    currentGroupData = null;
-                    if (messagesRef) messagesRef.off();
-                    document.getElementById('currentGroupName').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('currentGroupNameSimple').textContent = 'گروهی انتخاب نشده';
-                    document.getElementById('chatHeaderGroup').style.display = 'none';
-                    document.getElementById('currentGroupNameSimple').style.display = 'block';
-                    document.getElementById('messagesContainer').innerHTML = `
-                        <div class="empty-state">
-                            <h3>گروهی را انتخاب کنید</h3>
-                            <p>برای شروع چت، یک گروه از لیست سمت راست انتخاب کنید</p>
-                        </div>
-                    `;
-                }
-                
-                deleteGroupId = null;
-                
-            } catch (error) {
-                console.error('Delete group error:', error);
-                alert('خطا در حذف گروه');
-            }
-        });
-
-        // ==================== Modal Click Outside ====================
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
@@ -3422,18 +2838,15 @@
             });
         });
 
-        // ==================== Keyboard Shortcuts ====================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.modal.show').forEach(m => m.classList.remove('show'));
                 document.getElementById('emojiPanel').classList.remove('show');
-                document.getElementById('profileViewModal').classList.remove('show');
                 document.getElementById('aiChatModal').classList.remove('show');
                 closeMobileSidebar();
             }
         });
 
-        // ==================== Initialize App ====================
         showAuthScreen();
         initEmojis();
         
