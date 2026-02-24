@@ -104,7 +104,10 @@ cursor:not-allowed;
 </div>
 
 <script>
-const API_KEY = "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";
+
+// 🔴 اینجا کلید API خودت را بگذار
+const API_KEY = "YOUR_API_KEY_HERE";
+
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("send");
@@ -145,6 +148,13 @@ messages:history
 });
 
 const data = await res.json();
+
+if(!res.ok){
+addMessage("خطا: " + (data.error?.message || "مشکل در ارتباط"),"ai");
+sendBtn.disabled=false;
+return;
+}
+
 const reply = data.choices[0].message.content;
 
 addMessage(reply,"ai");
