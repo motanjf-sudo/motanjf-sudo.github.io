@@ -1,283 +1,172 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>امیرطاها</title>
-  <style>
-    :root{
-      --bg:#0f172a; --panel:#111c36; --panel2:#16244a; --text:#e5e7eb;
-      --muted:#94a3b8; --border:#2a3a6a; --accent:#6366f1;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:Tahoma, "Segoe UI", sans-serif;
-      background:linear-gradient(135deg,#667eea,#764ba2);
-      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px;
-      color:var(--text);
-    }
-    .app{
-      width:min(980px, 100%); height:min(92vh, 900px);
-      background:var(--bg); border:1px solid rgba(255,255,255,.08);
-      border-radius:18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.35);
-      display:flex; flex-direction:column;
-    }
-    header{
-      padding:16px 18px; background:rgba(255,255,255,.04);
-      border-bottom:1px solid rgba(255,255,255,.08);
-      display:flex; align-items:center; gap:10px;
-    }
-    header .title{
-      font-weight:800; font-size:1.2rem; letter-spacing:.2px;
-    }
-    header .subtitle{color:var(--muted); font-size:.9rem}
-    .row{display:flex; gap:10px; align-items:center; width:100%}
-    .grow{flex:1}
-    .pill{
-      background:rgba(99,102,241,.15);
-      border:1px solid rgba(99,102,241,.35);
-      color:#c7d2fe; padding:8px 10px; border-radius:999px; font-size:.85rem;
-      display:flex; align-items:center; gap:8px;
-    }
-    main{
-      flex:1; overflow:auto; padding:18px;
-      display:flex; flex-direction:column; gap:12px;
-      background:radial-gradient(1200px 400px at 50% -10%, rgba(99,102,241,.18), transparent);
-    }
-    .msg{
-      max-width:min(78%, 720px);
-      border-radius:16px; padding:12px 14px; line-height:1.7;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      white-space:pre-wrap; word-break:break-word;
-    }
-    .me{align-self:flex-end; background:linear-gradient(135deg, rgba(99,102,241,.85), rgba(139,92,246,.85)); border-color:transparent;}
-    .ai{align-self:flex-start; background:rgba(255,255,255,.05);}
-    .meta{font-size:.78rem; color:rgba(255,255,255,.75); margin-bottom:6px; font-weight:700}
-    .me .meta{color:rgba(255,255,255,.9)}
-    .typing{opacity:.85; font-style:italic}
-    footer{
-      padding:14px; background:rgba(255,255,255,.03);
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .composer{
-      display:flex; gap:10px; align-items:flex-end;
-    }
-    textarea{
-      width:100%; resize:none; min-height:48px; max-height:160px;
-      border-radius:14px; padding:12px 12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:var(--panel); color:var(--text); outline:none;
-      font-size:1rem; line-height:1.6;
-    }
-    textarea:focus{border-color:rgba(99,102,241,.7); box-shadow:0 0 0 4px rgba(99,102,241,.15)}
-    button{
-      border:none; cursor:pointer; border-radius:14px;
-      padding:12px 16px; font-weight:800; font-size:1rem;
-      background:linear-gradient(135deg, #6366f1, #8b5cf6);
-      color:white; min-width:110px;
-      transition:transform .12s ease, opacity .2s ease;
-    }
-    button:active{transform:scale(.98)}
-    button:disabled{opacity:.55; cursor:not-allowed}
-    .smallbtn{
-      min-width:auto; padding:10px 12px; font-size:.92rem;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:var(--text);
-    }
-    .smallbtn:hover{border-color:rgba(99,102,241,.45)}
-    .bar{
-      display:flex; gap:10px; align-items:center;
-      margin-top:10px; flex-wrap:wrap;
-    }
-    input[type="text"]{
-      width:100%; padding:10px 12px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:var(--panel2); color:var(--text); outline:none;
-    }
-    .hint{color:var(--muted); font-size:.85rem}
-    @media (max-width:560px){
-      .msg{max-width:92%}
-      button{min-width:92px}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>امیرطاها</title>
+
+<style>
+body{
+margin:0;
+font-family:Tahoma;
+background:linear-gradient(135deg,#667eea,#764ba2);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+.app{
+width:100%;
+max-width:900px;
+height:90vh;
+background:#0f172a;
+border-radius:20px;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.header{
+padding:20px;
+background:#1e293b;
+color:white;
+font-size:22px;
+font-weight:bold;
+text-align:center;
+}
+.chat{
+flex:1;
+overflow:auto;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+.msg{
+max-width:70%;
+padding:12px;
+border-radius:12px;
+white-space:pre-wrap;
+}
+.user{
+align-self:flex-end;
+background:#6366f1;
+color:white;
+}
+.ai{
+align-self:flex-start;
+background:#334155;
+color:white;
+}
+.input-area{
+display:flex;
+padding:15px;
+background:#1e293b;
+gap:10px;
+}
+textarea{
+flex:1;
+padding:12px;
+border-radius:10px;
+border:none;
+resize:none;
+font-family:Tahoma;
+font-size:15px;
+}
+button{
+padding:12px 20px;
+border:none;
+border-radius:10px;
+background:#6366f1;
+color:white;
+cursor:pointer;
+font-weight:bold;
+}
+button:disabled{
+opacity:.6;
+cursor:not-allowed;
+}
+</style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="row">
-        <div class="title">امیرطاها</div>
-        <div class="subtitle">چت با هوش مصنوعی</div>
-        <div class="grow"></div>
-        <div class="pill" title="مدل و سرویس">
-          🤖 <span id="modelLabel">openai/gpt-4o-mini</span>
-        </div>
-      </div>
-    </header>
 
-    <main id="chat">
-      <div class="msg ai">
-        <div class="meta">🤖 AI</div>
-        سلام! من اینجام. هر چی دوست داری بپرس 🙂
-      </div>
-      <div class="msg ai">
-        <div class="meta">⚠️ نکته</div>
-        برای کار کردن، پایین صفحه API Key را وارد کن (فعلاً امنیتی نیست).
-      </div>
-    </main>
+<div class="app">
+<div class="header">امیرطاها - چت با هوش مصنوعی 🤖</div>
 
-    <footer>
-      <div class="composer">
-        <textarea id="input" placeholder="پیامت را بنویس و Enter بزن... (Shift+Enter برای خط جدید)"></textarea>
-        <button id="sendBtn">ارسال</button>
-      </div>
+<div class="chat" id="chat">
+<div class="msg ai">سلام 👋 هر سوالی داری بپرس.</div>
+</div>
 
-      <div class="bar">
-        <div style="flex:1; min-width:220px;">
-          <input id="apiKey" type="text" placeholder="API Key (مثلاً sk-or-...)" />
-          <div class="hint">اگر از OpenRouter استفاده می‌کنی همینجا کلیدت را بگذار.</div>
-        </div>
-        <button class="smallbtn" id="clearBtn" title="پاک کردن گفتگو">🧹 پاک کردن</button>
-        <button class="smallbtn" id="setModelBtn" title="تغییر مدل">⚙️ مدل</button>
-      </div>
-    </footer>
-  </div>
+<div class="input-area">
+<textarea id="input" rows="1" placeholder="پیامت را بنویس..."></textarea>
+<button id="send">ارسال</button>
+</div>
+</div>
 
-  <script>
-    // ===== تنظیمات =====
-    let MODEL = "openai/gpt-4o-mini";
-    const ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
+<script>
+const API_KEY = "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";
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const sendBtn = document.getElementById("send");
 
-    // تاریخچه گفتگو (برای اینکه AI زمینه مکالمه را داشته باشد)
-    const history = [
-      { role: "system", content: "You are a helpful assistant. Reply in Persian unless user asks otherwise." }
-    ];
+let history = [
+{ role: "system", content: "You are a helpful assistant. Reply in Persian." }
+];
 
-    const chatEl = document.getElementById("chat");
-    const inputEl = document.getElementById("input");
-    const sendBtn = document.getElementById("sendBtn");
-    const apiKeyEl = document.getElementById("apiKey");
-    const modelLabel = document.getElementById("modelLabel");
+function addMessage(text, role){
+const div = document.createElement("div");
+div.className = "msg " + (role === "user" ? "user" : "ai");
+div.textContent = text;
+chat.appendChild(div);
+chat.scrollTop = chat.scrollHeight;
+}
 
-    function addMsg(role, text) {
-      const wrap = document.createElement("div");
-      wrap.className = "msg " + (role === "user" ? "me" : "ai");
+async function sendMessage(){
+const text = input.value.trim();
+if(!text) return;
 
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = role === "user" ? "شما" : "🤖 AI";
+addMessage(text,"user");
+input.value="";
+sendBtn.disabled = true;
 
-      const content = document.createElement("div");
-      content.textContent = text;
+history.push({ role:"user", content:text });
 
-      wrap.appendChild(meta);
-      wrap.appendChild(content);
+try{
+const res = await fetch("https://openrouter.ai/api/v1/chat/completions",{
+method:"POST",
+headers:{
+"Authorization":"Bearer " + API_KEY,
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+model:"openai/gpt-4o-mini",
+messages:history
+})
+});
 
-      chatEl.appendChild(wrap);
-      chatEl.scrollTop = chatEl.scrollHeight;
-      return wrap;
-    }
+const data = await res.json();
+const reply = data.choices[0].message.content;
 
-    function addTyping() {
-      const wrap = document.createElement("div");
-      wrap.className = "msg ai typing";
-      wrap.textContent = "در حال تایپ...";
-      chatEl.appendChild(wrap);
-      chatEl.scrollTop = chatEl.scrollHeight;
-      return wrap;
-    }
+addMessage(reply,"ai");
+history.push({ role:"assistant", content:reply });
 
-    async function callAI(userText) {
-      const key = apiKeyEl.value.trim();
-      if (!key) {
-        addMsg("assistant", "اول API Key را پایین وارد کن 🙂");
-        return;
-      }
+}catch(e){
+addMessage("خطا در ارتباط با هوش مصنوعی ❌","ai");
+console.error(e);
+}
 
-      history.push({ role: "user", content: userText });
+sendBtn.disabled = false;
+}
 
-      const typingEl = addTyping();
-      sendBtn.disabled = true;
+sendBtn.onclick = sendMessage;
 
-      try {
-        const res = await fetch(ENDPOINT, {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + key,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: MODEL,
-            messages: history
-          })
-        });
+input.addEventListener("keydown",function(e){
+if(e.key==="Enter" && !e.shiftKey){
+e.preventDefault();
+sendMessage();
+}
+});
+</script>
 
-        const data = await res.json();
-
-        if (!res.ok) {
-          const errMsg = (data && (data.error?.message || data.message)) ? (data.error?.message || data.message) : "خطای ناشناخته";
-          typingEl.remove();
-          addMsg("assistant", "خطا: " + errMsg);
-          return;
-        }
-
-        const reply = data?.choices?.[0]?.message?.content ?? "";
-        typingEl.remove();
-        addMsg("assistant", reply || "پاسخی دریافت نشد.");
-
-        history.push({ role: "assistant", content: reply || "" });
-      } catch (e) {
-        typingEl.remove();
-        addMsg("assistant", "مشکل در اتصال. دوباره تلاش کن.");
-        console.error(e);
-      } finally {
-        sendBtn.disabled = false;
-      }
-    }
-
-    function send() {
-      const text = inputEl.value.trim();
-      if (!text) return;
-      inputEl.value = "";
-      inputEl.style.height = "auto";
-      addMsg("user", text);
-      callAI(text);
-      inputEl.focus();
-    }
-
-    // Auto-grow textarea
-    inputEl.addEventListener("input", () => {
-      inputEl.style.height = "auto";
-      inputEl.style.height = Math.min(inputEl.scrollHeight, 160) + "px";
-    });
-
-    // Enter to send, Shift+Enter for newline
-    inputEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        send();
-      }
-    });
-
-    sendBtn.addEventListener("click", send);
-
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      chatEl.innerHTML = "";
-      history.length = 1; // نگه داشتن فقط system
-      addMsg("assistant", "گفتگو پاک شد. دوباره شروع کنیم 🙂");
-    });
-
-    document.getElementById("setModelBtn").addEventListener("click", () => {
-      const m = prompt("نام مدل را وارد کن (مثلاً openai/gpt-4o-mini):", MODEL);
-      if (m && m.trim()) {
-        MODEL = m.trim();
-        modelLabel.textContent = MODEL;
-        addMsg("assistant", "مدل تنظیم شد روی: " + MODEL);
-      }
-    });
-
-    modelLabel.textContent = MODEL;
-  </script>
 </body>
 </html>
